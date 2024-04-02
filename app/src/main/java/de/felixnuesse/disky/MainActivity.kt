@@ -1,12 +1,13 @@
 package de.felixnuesse.disky
 
+import android.animation.ObjectAnimator
 import android.app.usage.StorageStatsManager
 import android.content.Context
 import android.os.Bundle
-import android.os.Environment
-import android.os.StatFs
 import android.os.storage.StorageManager
 import android.util.Log
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -91,7 +92,11 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         val prog = currentRoot.getCalculatedSize().div(getTotalDiskSpace().toDouble())
 
         binding.textView2.text = readableFileSize(currentRoot.getCalculatedSize())
-        binding.dataUsage.progress = (prog*100).toInt()
+
+        ObjectAnimator
+            .ofInt(binding.dataUsage, "progress", (prog*100).toInt())
+            .setDuration(300)
+            .start()
 
         //first, calculate percentages.
         var max = currentRoot.getCalculatedSize()
@@ -107,6 +112,9 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
 
 
         val recyclerView = binding.folders
+
+        val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(this, R.anim.recyclerview_animation)
+        recyclerView.setLayoutAnimation(animation)
         recyclerView.setLayoutManager(LinearLayoutManager(this))
         val recyclerViewAdapter = RecyclerViewAdapter(currentRoot.children, this)
         recyclerView.setAdapter(recyclerViewAdapter)
