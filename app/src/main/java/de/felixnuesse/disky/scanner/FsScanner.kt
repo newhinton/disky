@@ -11,8 +11,8 @@ class FsScanner(var mContext: Context, var callback: ScannerCallback?) {
 
 
 
-    fun scan(): FolderEntry {
-        val root = FolderEntry(Environment.getExternalStorageDirectory().toString())
+    fun scan(file: File): FolderEntry {
+        val root = FolderEntry(file.absolutePath+"/")
         scanFolder(root)
         return root
     }

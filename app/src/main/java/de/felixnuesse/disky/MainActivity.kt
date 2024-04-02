@@ -1,18 +1,23 @@
 package de.felixnuesse.disky
 
+import android.R.attr.tag
 import android.animation.ObjectAnimator
 import android.app.usage.StorageStatsManager
 import android.content.Context
 import android.os.Bundle
 import android.os.storage.StorageManager
+import android.os.storage.StorageVolume
 import android.util.Log
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import android.widget.AdapterView.OnItemClickListener
+import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import de.felixnuesse.disky.databinding.ActivityMainBinding
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.extensions.tag
@@ -22,6 +27,9 @@ import de.felixnuesse.disky.scanner.ScannerCallback
 import de.felixnuesse.disky.ui.ChangeFolderCallback
 import de.felixnuesse.disky.ui.RecyclerViewAdapter
 import de.felixnuesse.disky.utils.PermissionManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 
@@ -33,6 +41,11 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
     private var rootElement: FolderEntry? = null
     private var currentElement: FolderEntry? = null
 
+    private lateinit var storageManager: StorageManager
+    private lateinit var storageStatsManager: StorageStatsManager
+
+    private var selectedStorage: StorageVolume? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -43,24 +56,59 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
             permissions.requestStorage(this)
         }
 
+        storageManager = getSystemService(Context.STORAGE_SERVICE) as StorageManager
+        storageStatsManager = getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        var scanner = FsScanner(applicationContext, this)
+        val dropdown = (binding.dropdown as MaterialAutoCompleteTextView)
+        var storageList = arrayListOf<String>()
+        storageManager.storageVolumes.forEach {
+            storageList.add(it.mediaStoreVolumeName?: it.uuid.toString())
+            if(it.isPrimary) {
+                selectedStorage = it
+            }
+        }
+        dropdown.setAdapter(ArrayAdapter(this, android.R.layout.simple_list_item_1, storageList))
+        dropdown.setText(selectedStorage?.mediaStoreVolumeName?: selectedStorage?.uuid.toString(), false)
 
-        rootElement = scanner.scan()
-        if(rootElement != null) {
-            showFolder(rootElement!!)
+        binding.dropdown.onItemClickListener = OnItemClickListener { parent, view, position, id ->
+            selectedStorage = findStorageByNameOrUUID(storageList[position])
+            CoroutineScope(Dispatchers.IO).launch{
+                updateData()
+            }
         }
 
+        CoroutineScope(Dispatchers.IO).launch{
+            updateData()
+        }
+    }
 
+    fun findStorageByNameOrUUID(name: String): StorageVolume? {
+        storageManager.storageVolumes.forEach {
+            if((name == it.mediaStoreVolumeName) or (name == it.uuid.toString())){
+                return it
+            }
+        }
+        return null
+    }
 
-        //printDepthFirst("", root)
-
-
+    fun updateData() {
+        val scanner = FsScanner(applicationContext, this)
+        if(selectedStorage?.directory == null) {
+            Log.e(tag(), "There was an error loading data!")
+            return
+        }
+        rootElement = scanner.scan(selectedStorage!!.directory!!)
+        if(rootElement != null) {
+            runOnUiThread {
+                showFolder(rootElement!!)
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -73,8 +121,7 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
 
     //https://gist.github.com/li-jkwok/e460a042326e8509ada9ec23ae677bdf
     fun getTotalDiskSpace(): Long {
-        val storageManager = getSystemService(Context.STORAGE_SERVICE) as StorageManager
-        val storageStatsManager = getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
+
         val storageVolumes = storageManager.storageVolumes
         var totalBytes = 0L
         for (volume in storageVolumes) {
