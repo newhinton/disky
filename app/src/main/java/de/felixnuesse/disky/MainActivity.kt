@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.util.Log
+import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.AdapterView.OnItemClickListener
@@ -65,7 +66,6 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
             insets
         }
 
-        val dropdown = (binding.dropdown as MaterialAutoCompleteTextView)
         var storageList = arrayListOf<String>()
         storageManager.storageVolumes.forEach {
             storageList.add(it.mediaStoreVolumeName?: it.uuid.toString())
@@ -73,16 +73,22 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
                 selectedStorage = it
             }
         }
+
+        val dropdown = (binding.dropdown as MaterialAutoCompleteTextView)
         dropdown.setAdapter(ArrayAdapter(this, android.R.layout.simple_list_item_1, storageList))
         dropdown.setText(selectedStorage?.mediaStoreVolumeName?: selectedStorage?.uuid.toString(), false)
-
         binding.dropdown.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             selectedStorage = findStorageByNameOrUUID(storageList[position])
             CoroutineScope(Dispatchers.IO).launch{
                 updateData()
             }
         }
+        if(storageManager.storageVolumes.size==1){
+            binding.storageSelector.visibility = View.GONE
+        }
 
+
+        updateStaticElements(null)
         CoroutineScope(Dispatchers.IO).launch{
             updateData()
         }
@@ -107,6 +113,7 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         if(rootElement != null) {
             runOnUiThread {
                 showFolder(rootElement!!)
+                updateStaticElements(rootElement!!)
             }
         }
     }
@@ -119,31 +126,70 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         }
     }
 
-    //https://gist.github.com/li-jkwok/e460a042326e8509ada9ec23ae677bdf
-    fun getTotalDiskSpace(): Long {
 
-        val storageVolumes = storageManager.storageVolumes
-        var totalBytes = 0L
-        for (volume in storageVolumes) {
-            val uuid = volume.uuid?.let { UUID.fromString(it) } ?: StorageManager.UUID_DEFAULT
-            Log.e(tag(), "storage: $uuid")
-            totalBytes += storageStatsManager.getTotalBytes(uuid)
+    fun getTotalSpace(): Long {
+        if(selectedStorage == null)  {
+            return 0
         }
-        return totalBytes
+        // Assume Default storage if uuid invalid
+        val uuid = if(selectedStorage!!.uuid != null) {
+            UUID.fromString(selectedStorage!!.uuid)
+        } else {
+            StorageManager.UUID_DEFAULT
+        }
+
+        return storageStatsManager.getTotalBytes(uuid)
+    }
+
+    fun getFreeSpace(): Long {
+        if(selectedStorage == null)  {
+            return 0
+        }
+        // Assume Default storage if uuid invalid
+        val uuid = if(selectedStorage!!.uuid != null) {
+            UUID.fromString(selectedStorage!!.uuid)
+        } else {
+            StorageManager.UUID_DEFAULT
+        }
+
+        return storageStatsManager.getFreeBytes(uuid)
+    }
+
+    fun updateStaticElements(currentRoot: FolderEntry?) {
+
+        val rootTotal = getTotalSpace()
+        val rootUnused = getFreeSpace()
+        val rootUsage = rootTotal-rootUnused
+        val rootUsed = rootUsage.div(rootTotal.toDouble())
+        val rootFree = rootUnused.div(rootTotal.toDouble())
+
+        if(currentRoot != null) {
+            val currentlyUsed = currentRoot.getCalculatedSize().div(rootTotal.toDouble())
+            binding.usedText.text = readableFileSize(currentRoot.getCalculatedSize())
+            ObjectAnimator
+                .ofInt(binding.dataUsage, "progress", (currentlyUsed*100).toInt())
+                .setDuration(300)
+                .start()
+        } else {
+            binding.dataUsage.progress = 0
+        }
+
+        ObjectAnimator
+            .ofInt(binding.rootUsage, "progress", (rootUsed*100).toInt())
+            .setDuration(300)
+            .start()
+
+        binding.freeText.text = readableFileSize(rootUnused)
+        ObjectAnimator
+            .ofInt(binding.freeUsage, "progress", (rootFree*100).toInt())
+            .setDuration(300)
+            .start()
     }
 
     fun showFolder(currentRoot: FolderEntry) {
 
         currentElement = currentRoot
 
-        val prog = currentRoot.getCalculatedSize().div(getTotalDiskSpace().toDouble())
-
-        binding.textView2.text = readableFileSize(currentRoot.getCalculatedSize())
-
-        ObjectAnimator
-            .ofInt(binding.dataUsage, "progress", (prog*100).toInt())
-            .setDuration(300)
-            .start()
 
         //first, calculate percentages.
         var max = currentRoot.getCalculatedSize()

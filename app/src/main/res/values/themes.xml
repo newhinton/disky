@@ -42,6 +42,22 @@
     <style name="Widget.App.CircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
         <item name="trackThickness">4dp</item>
         <item name="trackCornerRadius">4dp</item>
+        <item name="indicatorColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="BaseCircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
+        <item name="trackThickness">4dp</item>
+        <item name="trackCornerRadius">4dp</item>
+        <item name="indicatorColor">?attr/colorSecondary</item>
+    </style>
+
+
+
+    <!-- Card Styles need to be applied to the card directly.-->
+    <style name="PrimaryCardStyle">
+        <item name="cardBackgroundColor">?attr/colorPrimaryContainer</item>
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
+        <item name="android:tint">?attr/colorOnPrimaryContainer</item>
     </style>
 
 </resources>

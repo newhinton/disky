@@ -24,11 +24,12 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:padding="8dp"
-        app:cardCornerRadius="8dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="@dimen/cardCornerRadius"
+        app:contentPadding="@dimen/cardPadding"
+        style="@style/PrimaryCardStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
@@ -40,7 +41,7 @@
             android:padding="8dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout"
+                android:id="@+id/storageSelector"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -60,6 +61,17 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/rootUsage"
+                style="@style/BaseCircularProgressIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:progress="75"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/dataUsage"
                 style="@style/Widget.App.CircularProgressIndicator"
                 android:layout_width="wrap_content"
@@ -68,25 +80,59 @@
                 android:progress="50"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/titleUsed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Overall Usage"
+                android:text="Overall Usage:"
+                android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/dataUsage"
                 app:layout_constraintTop_toTopOf="@+id/dataUsage" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/usedText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="TextView"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintStart_toStartOf="@+id/titleUsed"
+                app:layout_constraintTop_toBottomOf="@+id/titleUsed" />
+
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/freeUsage"
+                style="@style/Widget.App.CircularProgressIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:progress="50"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/titleUsed"
+                app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
+
+            <TextView
+                android:id="@+id/titleFree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Free:"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/freeUsage"
+                app:layout_constraintTop_toTopOf="@+id/freeUsage" />
+
+            <TextView
+                android:id="@+id/freeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="TextView"
+                app:layout_constraintStart_toStartOf="@+id/titleFree"
+                app:layout_constraintTop_toBottomOf="@+id/titleFree" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
