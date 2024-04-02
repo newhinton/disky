@@ -1,6 +1,9 @@
 package de.felixnuesse.disky.model
 
-class FileEntry(name: String, private var size: Long): FileSystemStructure(name) {
+import kotlinx.serialization.Serializable
+
+@Serializable
+class FileEntry(var filename: String, private var size: Long): FolderEntry(filename) {
 
     override fun getCalculatedSize(): Long {
         return size

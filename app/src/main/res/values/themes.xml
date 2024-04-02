@@ -3,7 +3,19 @@
     <style name="Base.Theme.Disky" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="circularProgressIndicatorStyle">@style/Widget.App.CircularProgressIndicator</item>
     </style>
 
     <style name="Theme.Disky" parent="Base.Theme.Disky" />
+
+    <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
+        <item name="trackThickness">4dp</item>
+        <item name="trackCornerRadius">4dp</item>
+    </style>
+
+    <style name="Widget.App.CircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
+        <item name="trackThickness">4dp</item>
+        <item name="trackCornerRadius">4dp</item>
+    </style>
+
 </resources>

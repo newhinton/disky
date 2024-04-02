@@ -7,14 +7,14 @@ import android.os.Build
 import android.os.Process
 import android.os.storage.StorageManager
 import de.felixnuesse.disky.model.FileEntry
-import de.felixnuesse.disky.model.FileSystemStructure
+import de.felixnuesse.disky.model.FolderEntry
 
 class AppScanner(var mContext: Context) {
 
 
-    fun scan(): FileSystemStructure {
+    fun scan(): FolderEntry {
 
-        var root = FileSystemStructure("/")
+        var root = FolderEntry("/")
 
         //https://tomas-repcik.medium.com/listing-all-installed-apps-in-android-13-via-packagemanager-3b04771dc73
         val pm = mContext.packageManager
@@ -33,7 +33,7 @@ class AppScanner(var mContext: Context) {
             it.category
 
 
-            var folder = FileSystemStructure(it.name?: it.packageName)
+            var folder = FolderEntry(it.name?: it.packageName)
             folder.parent=root
             root.children.add(folder)
 
