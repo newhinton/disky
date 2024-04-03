@@ -1,9 +1,9 @@
 package de.felixnuesse.disky.scanner
 
 import android.content.Context
-import android.os.Environment
-import de.felixnuesse.disky.model.FileEntry
-import de.felixnuesse.disky.model.FolderEntry
+import de.felixnuesse.disky.model.FileStorageElementEntry
+import de.felixnuesse.disky.model.FolderStorageElementEntry
+import de.felixnuesse.disky.model.StorageElementEntry
 import java.io.File
 
 
@@ -11,30 +11,27 @@ class FsScanner(var mContext: Context, var callback: ScannerCallback?) {
 
 
 
-    fun scan(file: File): FolderEntry {
-        val root = FolderEntry(file.absolutePath+"/")
+    fun scan(file: File): StorageElementEntry {
+        val root = StorageElementEntry(file.absolutePath+"/")
         scanFolder(root)
         return root
     }
 
-
-    private fun scanFolder(folder: FolderEntry): FolderEntry {
+    private fun scanFolder(folder: StorageElementEntry): StorageElementEntry {
         val directory = File(folder.getParentPath())
         callback?.currentlyScanning(directory.absolutePath)
         directory.listFiles()?.forEach {
             if(it.isFile){
-                var fe = FileEntry(it.name, it.length())
+                var fe = FileStorageElementEntry(it.name, it.length())
                 fe.parent=folder
-                folder.children.add(fe)
+                folder.addChildren(fe)
             }
             if(it.isDirectory){
-                var folderEntry = FolderEntry(it.name)
-                folderEntry.parent=folder
-                folder.children.add(scanFolder(folderEntry))
+                var storageElementEntry = FolderStorageElementEntry(it.name)
+                storageElementEntry.parent=folder
+                folder.addChildren(scanFolder(storageElementEntry))
             }
         }
         return folder
     }
-
-
 }

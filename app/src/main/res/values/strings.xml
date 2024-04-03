@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">disky</string>
+    <string name="apppackage_size_app">Apk</string>
+    <string name="apppackage_size_data">Userdata</string>
+    <string name="apppackage_size_externalcache">External Cache</string>
+    <string name="apppackage_size_cache">Cache</string>
+    <string name="apps">Apps</string>
 </resources>

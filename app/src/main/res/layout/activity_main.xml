@@ -101,7 +101,6 @@
                 app:layout_constraintStart_toStartOf="@+id/titleUsed"
                 app:layout_constraintTop_toBottomOf="@+id/titleUsed" />
 
-
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/freeUsage"
                 style="@style/Widget.App.CircularProgressIndicator"
@@ -149,5 +148,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/loading"
+        style="@style/Widget.App.CircularProgressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="@+id/folders"
+        app:layout_constraintEnd_toEndOf="@+id/folders"
+        app:layout_constraintStart_toStartOf="@+id/folders"
+        app:layout_constraintTop_toTopOf="@+id/folders" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package de.felixnuesse.disky
 
-import android.R.attr.tag
 import android.animation.ObjectAnimator
 import android.app.usage.StorageStatsManager
 import android.content.Context
@@ -22,7 +21,8 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import de.felixnuesse.disky.databinding.ActivityMainBinding
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.extensions.tag
-import de.felixnuesse.disky.model.FolderEntry
+import de.felixnuesse.disky.model.StorageElementEntry
+import de.felixnuesse.disky.scanner.AppScanner
 import de.felixnuesse.disky.scanner.FsScanner
 import de.felixnuesse.disky.scanner.ScannerCallback
 import de.felixnuesse.disky.ui.ChangeFolderCallback
@@ -39,8 +39,8 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
     private lateinit var binding: ActivityMainBinding
     private var permissions = PermissionManager(this)
 
-    private var rootElement: FolderEntry? = null
-    private var currentElement: FolderEntry? = null
+    private var rootElement: StorageElementEntry? = null
+    private var currentElement: StorageElementEntry? = null
 
     private lateinit var storageManager: StorageManager
     private lateinit var storageStatsManager: StorageStatsManager
@@ -56,6 +56,10 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         if(!permissions.grantedStorage()) {
             permissions.requestStorage(this)
         }
+        if(!permissions.grantedUsageStats()) {
+            permissions.requestUsageStats(this)
+        }
+
 
         storageManager = getSystemService(Context.STORAGE_SERVICE) as StorageManager
         storageStatsManager = getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
@@ -104,14 +108,22 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
     }
 
     fun updateData() {
+        runOnUiThread {
+            binding.folders.visibility = View.INVISIBLE
+            binding.loading.visibility = View.VISIBLE
+        }
         val scanner = FsScanner(applicationContext, this)
         if(selectedStorage?.directory == null) {
             Log.e(tag(), "There was an error loading data!")
             return
         }
         rootElement = scanner.scan(selectedStorage!!.directory!!)
+        AppScanner(this).scanApps(rootElement!!)
+
         if(rootElement != null) {
             runOnUiThread {
+                binding.folders.visibility = View.VISIBLE
+                binding.loading.visibility = View.INVISIBLE
                 showFolder(rootElement!!)
                 updateStaticElements(rootElement!!)
             }
@@ -155,7 +167,7 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         return storageStatsManager.getFreeBytes(uuid)
     }
 
-    fun updateStaticElements(currentRoot: FolderEntry?) {
+    fun updateStaticElements(currentRoot: StorageElementEntry?) {
 
         val rootTotal = getTotalSpace()
         val rootUnused = getFreeSpace()
@@ -186,22 +198,22 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
             .start()
     }
 
-    fun showFolder(currentRoot: FolderEntry) {
+    fun showFolder(currentRoot: StorageElementEntry) {
 
         currentElement = currentRoot
 
 
         //first, calculate percentages.
         var max = currentRoot.getCalculatedSize()
-        currentRoot.children.forEach {
+        currentRoot.getChildren().forEach {
             val percentage = (it.getCalculatedSize().toFloat()/max.toFloat())
             it.percent = (percentage*100).toInt()
         }
 
         //second, sort children
-        val l = currentElement!!.children.sortedWith(compareBy{ list -> list.getCalculatedSize()})
-        currentElement!!.children = arrayListOf()
-        currentElement!!.children.addAll(l.reversed())
+        val l = currentElement!!.getChildren().sortedWith(compareBy{ list -> list.getCalculatedSize()})
+        currentElement!!.clearChildren()
+        currentElement!!.getChildren().addAll(l.reversed())
 
 
         val recyclerView = binding.folders
@@ -209,19 +221,19 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(this, R.anim.recyclerview_animation)
         recyclerView.setLayoutAnimation(animation)
         recyclerView.setLayoutManager(LinearLayoutManager(this))
-        val recyclerViewAdapter = RecyclerViewAdapter(currentRoot.children, this)
+        val recyclerViewAdapter = RecyclerViewAdapter(this, currentRoot.getChildren(), this)
         recyclerView.setAdapter(recyclerViewAdapter)
     }
 
 
-    fun printDepthFirst(path: String, folderEntry: FolderEntry) {
+    fun printDepthFirst(path: String, storageElementEntry: StorageElementEntry) {
 
-        if(folderEntry.children.size != 0) {
-            folderEntry.children.forEach {
+        if(storageElementEntry.getChildren().size != 0) {
+            storageElementEntry.getChildren().forEach {
                 printDepthFirst(path+"/"+it.name, it)
             }
         } else {
-            Log.e(tag(), path+" - "+ readableFileSize(folderEntry.getCalculatedSize()))
+            Log.e(tag(), path+" - "+ readableFileSize(storageElementEntry.getCalculatedSize()))
         }
     }
 
@@ -229,7 +241,7 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
        // Log.e(tag(), "Current scan: $item")
     }
 
-    override fun changeFolder(folder: FolderEntry) {
+    override fun changeFolder(folder: StorageElementEntry) {
         showFolder(folder)
     }
 }
