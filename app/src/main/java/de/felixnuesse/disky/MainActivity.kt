@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import de.felixnuesse.disky.background.ScanService
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_COMPLETE
-import de.felixnuesse.disky.background.ScanService.Companion.SCAN_RESULT
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
 import de.felixnuesse.disky.databinding.ActivityMainBinding
 import de.felixnuesse.disky.extensions.readableFileSize
@@ -109,11 +108,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         val reciever = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
                 CoroutineScope(Dispatchers.IO).launch{
-                    val data = intent.getStringExtra(SCAN_RESULT)?:""
-                    Log.e(tag(), "Reading data took: ${System.currentTimeMillis()-lastScanStarted}ms")
-                    val res = StorageResult.fromString(data)
-                    Log.e(tag(), "Generating res took: ${System.currentTimeMillis()-lastScanStarted}ms")
-                    scanComplete(res)
+                    ScanService.getResult()?.let { scanComplete(it) }
                     Log.e(tag(), "Scanning and processing took: ${System.currentTimeMillis()-lastScanStarted}ms")
                 }
             }
@@ -133,8 +128,6 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
     fun updateStaticElements(currentRoot: StoragePrototype?, rootTotal: Long, rootUnused: Long) {
-        val rootUsage = rootTotal-rootUnused
-        val rootUsed = rootUsage.div(rootTotal.toDouble())
         val rootFree = rootUnused.div(rootTotal.toDouble())
 
         if(currentRoot != null) {
@@ -147,11 +140,6 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         } else {
             binding.dataUsage.progress = 0
         }
-
-        ObjectAnimator
-            .ofInt(binding.rootUsage, "progress", (rootUsed*100).toInt())
-            .setDuration(300)
-            .start()
 
         binding.freeText.text = readableFileSize(rootUnused)
         ObjectAnimator

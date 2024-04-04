@@ -37,9 +37,21 @@ class ScanService: Service(), ScannerCallback {
     companion object {
         val SCAN_STORAGE = "SCAN_STORAGE"
         val SCAN_COMPLETE = "SCAN_COMPLETE"
-        val SCAN_RESULT = "SCAN_RESULT"
         private val NOTIFICATION_CHANNEL_ID = "general_notification_channel"
         private val NOTIFICATION_ID = 5691
+        private var storageResult: StorageResult? = null
+
+        /**
+         * This method is destructive. The result can be fetched only once.
+         * If it has been fetched, it is discarded and a new one needs to be requested.
+         * This way, we guarantee somewhat recent data.
+         */
+        fun getResult(): StorageResult? {
+            var tempRes = storageResult
+            storageResult = null
+            return tempRes
+        }
+
     }
 
 
@@ -64,10 +76,10 @@ class ScanService: Service(), ScannerCallback {
         val context = this
         CoroutineScope(Dispatchers.IO).launch{
             val now = System.currentTimeMillis()
-            var result = scan(intent?.getStringExtra(SCAN_STORAGE))
+            val result = scan(intent?.getStringExtra(SCAN_STORAGE))
             Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-now}ms")
+            storageResult = result
             val resultIntent = Intent(SCAN_COMPLETE)
-            resultIntent.putExtra(SCAN_RESULT,  result?.asJsonString())
             LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
             stopForeground(STOP_FOREGROUND_REMOVE)
         }

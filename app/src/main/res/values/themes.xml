@@ -3,7 +3,7 @@
     <style name="Base.Theme.Disky" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="circularProgressIndicatorStyle">@style/Widget.App.CircularProgressIndicator</item>
+        <item name="circularProgressIndicatorStyle">@style/BaseCircularProgressIndicator</item>
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -37,21 +37,18 @@
     <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
         <item name="trackThickness">6dp</item>
         <item name="trackCornerRadius">4dp</item>
-    </style>
-
-    <style name="Widget.App.CircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
-        <item name="trackThickness">4dp</item>
-        <item name="trackCornerRadius">4dp</item>
-        <item name="indicatorColor">?attr/colorPrimary</item>
+        <item name="indicatorColor">?attr/colorOnPrimaryContainer</item>
     </style>
 
     <style name="BaseCircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
         <item name="trackThickness">4dp</item>
         <item name="trackCornerRadius">4dp</item>
-        <item name="indicatorColor">?attr/colorSecondary</item>
+        <item name="indicatorColor">?attr/colorPrimary</item>
     </style>
 
-
+    <style name="CircularProgressBackground" parent="BaseCircularProgressIndicator">
+        <item name="indicatorColor">?attr/colorOnPrimaryContainer</item>
+    </style>
 
     <!-- Card Styles need to be applied to the card directly.-->
     <style name="PrimaryCardStyle">

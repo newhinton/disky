@@ -22,14 +22,15 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
+        style="@style/PrimaryCardStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
+        app:cardBackgroundColor="?attr/colorSecondaryContainer"
         app:cardCornerRadius="@dimen/cardCornerRadius"
         app:contentPadding="@dimen/cardPadding"
-        style="@style/PrimaryCardStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
@@ -37,7 +38,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/colorPrimaryContainer"
             android:padding="8dp">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -61,23 +61,23 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/rootUsage"
-                style="@style/BaseCircularProgressIndicator"
+                android:id="@+id/dataUsageBackground"
+                style="@style/CircularProgressBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:progress="75"
+                android:progress="100"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/dataUsage"
-                style="@style/Widget.App.CircularProgressIndicator"
+                style="@style/BaseCircularProgressIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:progress="50"
+                android:progress="10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
@@ -102,13 +102,25 @@
                 app:layout_constraintTop_toBottomOf="@+id/titleUsed" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/freeUsage"
-                style="@style/Widget.App.CircularProgressIndicator"
+                android:id="@+id/freeUsageBackground"
+                style="@style/CircularProgressBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:progress="50"
+                android:progress="100"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/titleUsed"
+                app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/freeUsage"
+                style="@style/BaseCircularProgressIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:progress="10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/titleUsed"
                 app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
@@ -152,7 +164,7 @@
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/loading"
-        style="@style/Widget.App.CircularProgressIndicator"
+        style="@style/BaseCircularProgressIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
