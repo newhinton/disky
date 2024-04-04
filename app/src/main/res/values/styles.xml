@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.Disky" parent="Base.Theme.Disky" />
+    <style name="Theme.Disky" parent="Base.Theme.Disky" >
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@drawable/icon_logo</item>
+        <item name="android:windowSplashScreenBackground" tools:targetApi="31">?attr/colorSurface</item>
+    </style>
 
     <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
         <item name="trackThickness">6dp</item>
