@@ -9,7 +9,7 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/leafImage"
         android:layout_width="36dp"
         android:layout_height="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,7 +28,7 @@
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/size"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/leafImage"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

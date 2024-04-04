@@ -15,9 +15,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import de.felixnuesse.disky.R
-import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.extensions.tag
-import de.felixnuesse.disky.model.StorageElementEntry
+import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageResult
 import de.felixnuesse.disky.scanner.AppScanner
 import de.felixnuesse.disky.scanner.FsScanner
@@ -26,7 +25,6 @@ import de.felixnuesse.disky.scanner.SystemScanner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.nio.charset.Charset
 import java.util.UUID
 
 
@@ -65,9 +63,11 @@ class ScanService: Service(), ScannerCallback {
 
         val context = this
         CoroutineScope(Dispatchers.IO).launch{
+            val now = System.currentTimeMillis()
             var result = scan(intent?.getStringExtra(SCAN_STORAGE))
+            Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-now}ms")
             val resultIntent = Intent(SCAN_COMPLETE)
-            resultIntent.putExtra(SCAN_RESULT,  result?.asJSON().toString())
+            resultIntent.putExtra(SCAN_RESULT,  result?.asJsonString())
             LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
             stopForeground(STOP_FOREGROUND_REMOVE)
         }
@@ -78,8 +78,9 @@ class ScanService: Service(), ScannerCallback {
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL_ID,
             getString(R.string.foreground_service_notification_channel_name),
-            NotificationManager.IMPORTANCE_DEFAULT
+            NotificationManager.IMPORTANCE_LOW
         )
+        channel.setSound(null, null)
         notificationManager.createNotificationChannel(channel)
     }
 
@@ -95,7 +96,7 @@ class ScanService: Service(), ScannerCallback {
 
     private fun scan(storage: String?): StorageResult? {
         val selectedStorage = findStorageByNameOrUUID(storage)
-        val rootElement: StorageElementEntry
+        val rootElement: StoragePrototype
 
         val scanner = FsScanner(this, this)
         if(selectedStorage?.directory == null) {

@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.os.Parcelable
 import android.os.storage.StorageManager
 import android.util.Log
 import android.view.View
@@ -28,12 +27,15 @@ import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
 import de.felixnuesse.disky.databinding.ActivityMainBinding
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.extensions.tag
-import de.felixnuesse.disky.model.StorageElementEntry
+import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageResult
 import de.felixnuesse.disky.scanner.ScanCompleteCallback
 import de.felixnuesse.disky.ui.ChangeFolderCallback
 import de.felixnuesse.disky.ui.RecyclerViewAdapter
 import de.felixnuesse.disky.utils.PermissionManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCallback {
@@ -41,11 +43,13 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     private lateinit var binding: ActivityMainBinding
     private var permissions = PermissionManager(this)
 
-    private var rootElement: StorageElementEntry? = null
-    private var currentElement: StorageElementEntry? = null
+    private var rootElement: StoragePrototype? = null
+    private var currentElement: StoragePrototype? = null
 
     private lateinit var storageManager: StorageManager
     private var selectedStorage = ""
+
+    private var lastScanStarted = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,17 +99,23 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
     fun triggerDataUpdate() {
+
         runOnUiThread {
             binding.folders.visibility = View.INVISIBLE
             binding.loading.visibility = View.VISIBLE
         }
 
+        lastScanStarted = System.currentTimeMillis()
         val reciever = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
-
-                Log.e(tag(), intent.getStringExtra(SCAN_RESULT).toString())
-
-                scanComplete(StorageResult.fromString(intent.getStringExtra(SCAN_RESULT)?:""))
+                CoroutineScope(Dispatchers.IO).launch{
+                    val data = intent.getStringExtra(SCAN_RESULT)?:""
+                    Log.e(tag(), "Reading data took: ${System.currentTimeMillis()-lastScanStarted}ms")
+                    val res = StorageResult.fromString(data)
+                    Log.e(tag(), "Generating res took: ${System.currentTimeMillis()-lastScanStarted}ms")
+                    scanComplete(res)
+                    Log.e(tag(), "Scanning and processing took: ${System.currentTimeMillis()-lastScanStarted}ms")
+                }
             }
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(reciever, IntentFilter(SCAN_COMPLETE))
@@ -122,7 +132,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         }
     }
 
-    fun updateStaticElements(currentRoot: StorageElementEntry?, rootTotal: Long, rootUnused: Long) {
+    fun updateStaticElements(currentRoot: StoragePrototype?, rootTotal: Long, rootUnused: Long) {
         val rootUsage = rootTotal-rootUnused
         val rootUsed = rootUsage.div(rootTotal.toDouble())
         val rootFree = rootUnused.div(rootTotal.toDouble())
@@ -150,23 +160,20 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             .start()
     }
 
-    fun showFolder(currentRoot: StorageElementEntry) {
+    fun showFolder(currentRoot: StoragePrototype) {
 
         currentElement = currentRoot
 
-
         //first, calculate percentages.
-        var max = currentRoot.getCalculatedSize()
+        val max = currentRoot.getCalculatedSize()
         currentRoot.getChildren().forEach {
             val percentage = (it.getCalculatedSize().toFloat()/max.toFloat())
             it.percent = (percentage*100).toInt()
         }
-
         //second, sort children
         val l = currentElement!!.getChildren().sortedWith(compareBy{ list -> list.getCalculatedSize()})
         currentElement!!.clearChildren()
         currentElement!!.getChildren().addAll(l.reversed())
-
 
         val recyclerView = binding.folders
 
@@ -178,7 +185,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
 
-    fun printDepthFirst(path: String, storageElementEntry: StorageElementEntry) {
+    fun printDepthFirst(path: String, storageElementEntry: StoragePrototype) {
 
         if(storageElementEntry.getChildren().size != 0) {
             storageElementEntry.getChildren().forEach {
@@ -189,19 +196,20 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         }
     }
 
-    override fun changeFolder(folder: StorageElementEntry) {
+    override fun changeFolder(folder: StoragePrototype) {
         showFolder(folder)
     }
 
     override fun scanComplete(result: StorageResult) {
 
-        rootElement = result.rootElement
-
-        if(rootElement != null) {
-            binding.folders.visibility = View.VISIBLE
-            binding.loading.visibility = View.INVISIBLE
-            showFolder(rootElement!!)
-            updateStaticElements(rootElement!!, result.total, result.free)
+        runOnUiThread{
+            rootElement = result.rootElement
+            if(rootElement != null) {
+                binding.folders.visibility = View.VISIBLE
+                binding.loading.visibility = View.INVISIBLE
+                showFolder(rootElement!!)
+                updateStaticElements(rootElement!!, result.total, result.free)
+            }
         }
     }
 

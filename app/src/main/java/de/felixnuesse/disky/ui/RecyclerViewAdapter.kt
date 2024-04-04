@@ -2,103 +2,80 @@ package de.felixnuesse.disky.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import de.felixnuesse.disky.R
-import de.felixnuesse.disky.databinding.ItemAppEntryBinding
-import de.felixnuesse.disky.databinding.ItemFileEntryBinding
 import de.felixnuesse.disky.databinding.ItemFolderEntryBinding
+import de.felixnuesse.disky.databinding.ItemLeafEntryBinding
 import de.felixnuesse.disky.extensions.readableFileSize
-import de.felixnuesse.disky.model.AppStorageElementEntry
-import de.felixnuesse.disky.model.AppdataStorageElementEntry
-import de.felixnuesse.disky.model.OSStorageElementEntry
-import de.felixnuesse.disky.model.StorageElementEntry
-import de.felixnuesse.disky.model.StorageElementType
+import de.felixnuesse.disky.extensions.tag
+import de.felixnuesse.disky.model.StoragePrototype
+import de.felixnuesse.disky.model.StorageType
+import de.felixnuesse.disky.model.StorageLeaf
 
 
-class RecyclerViewAdapter(private var mContext: Context, private val folders: List<StorageElementEntry>, var callback: ChangeFolderCallback?):
+class RecyclerViewAdapter(private var mContext: Context, private val folders: List<StoragePrototype>, var callback: ChangeFolderCallback?):
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType) {
-            StorageElementType.FILE.ordinal -> FileView(ItemFileEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            StorageElementType.APP.ordinal -> AppView(ItemAppEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            StorageElementType.APPDATA.ordinal -> AppView(ItemAppEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            StorageElementType.SPECIAL_SYSTEM.ordinal -> AppView(ItemAppEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return when(StorageType.fromInt(viewType)) {
+            StorageType.FILE,
+            StorageType.APP_APK,
+            StorageType.APP_DATA,
+            StorageType.APP_CACHE_EXTERNAL,
+            StorageType.APP_CACHE,
+            StorageType.OS ->
+                LeafView(ItemLeafEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+
             else -> FolderView(ItemFolderEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if(holder is FolderView) {
+            with(holder) {
+                with(folders[position]){
+                    binding.title.text = name
+                    binding.size.text = readableFileSize(getCalculatedSize())
+                    binding.progressBar.progress = percent
 
-        when(holder.itemViewType) {
-            StorageElementType.FILE.ordinal -> {
-                with(holder as FileView) {
-                    with(folders[position]){
-                        binding.title.text = name
-                        binding.size.text = readableFileSize(getCalculatedSize())
+                    if(storageType == StorageType.APP_COLLECTION) {
+                        setImage(R.drawable.icon_apps)
                     }
+
+                    setChangeFolderCallbackTarget(this)
                 }
             }
-            StorageElementType.APP.ordinal -> {
-                with(holder as AppView) {
-                    with(folders[position] as AppStorageElementEntry){
-                        binding.title.text = name
-                        binding.size.text = readableFileSize(getCalculatedSize())
+        } else {
+            with(holder as LeafView) {
+                with(folders[position] as StorageLeaf){
+                    binding.title.text = name
+                    binding.size.text = readableFileSize(getCalculatedSize())
 
-                        if(overrideIcon != null) {
-                            binding.imageView2.setImageDrawable(overrideIcon)
+                    when(StorageType.fromInt(holder.itemViewType)) {
+                        StorageType.OS,
+                        StorageType.APP_APK,
+                        StorageType.APP -> {
+                            setImage( R.drawable.icon_android)
                         }
-
-                        binding.linearLayout.setOnClickListener {
-                            callback?.changeFolder(this)
+                        StorageType.APP_CACHE_EXTERNAL -> {
+                            setImage( R.drawable.icon_sd)
                         }
-                    }
-                }
-            }
-            StorageElementType.APPDATA.ordinal -> {
-                with(holder as AppView) {
-                    with(folders[position] as AppdataStorageElementEntry){
-                        binding.title.text = name
-                        binding.size.text = readableFileSize(getCalculatedSize())
-                        if(overrideIcon != null) {
-                            binding.imageView2.setImageDrawable(overrideIcon)
+                        StorageType.APP_CACHE -> {
+                            setImage( R.drawable.icon_cache)
                         }
-                    }
-                }
-            }
-            StorageElementType.SPECIAL_SYSTEM.ordinal -> {
-                with(holder as AppView) {
-                    with(folders[position] as OSStorageElementEntry){
-                        binding.title.text = mContext.getText(R.string.system)
-                        binding.size.text = readableFileSize(getCalculatedSize())
-                        binding.imageView2.setImageDrawable(AppCompatResources.getDrawable(mContext, R.drawable.icon_android))
-                    }
-                }
-            }
-            else -> {
-                with(holder as FolderView) {
-                    with(folders[position]){
-                        binding.title.text = name
-                        binding.size.text = readableFileSize(getCalculatedSize())
-                        binding.progressBar.progress = percent
-
-                        if(storageType == StorageElementType.SPECIAL_APPFOLDER) {
-                            binding.imageView.setImageDrawable(AppCompatResources.getDrawable(mContext, R.drawable.icon_apps))
+                        StorageType.APP_DATA -> {
+                            setImage( R.drawable.icon_account)
                         }
-
-                        binding.linearLayout.setOnClickListener {
-                            callback?.changeFolder(this)
-                        }
+                        else -> {}
                     }
                 }
             }
         }
-
-
     }
 
 
@@ -111,8 +88,27 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
         return folders.size
     }
 
-    inner class FolderView(var binding: ItemFolderEntryBinding): RecyclerView.ViewHolder(binding.root)
-    inner class FileView(var binding: ItemFileEntryBinding): RecyclerView.ViewHolder(binding.root)
-    inner class AppView(var binding: ItemAppEntryBinding): RecyclerView.ViewHolder(binding.root)
+    inner class FolderView(var binding: ItemFolderEntryBinding): RecyclerView.ViewHolder(binding.root) {
+        fun setImage(resource: Int) {
+            binding.imageView.setImageDrawable(AppCompatResources.getDrawable(mContext, resource))
+        }
+
+        fun setChangeFolderCallbackTarget(folder: StoragePrototype) {
+            binding.linearLayout.setOnClickListener {
+                callback?.changeFolder(folder)
+            }
+        }
+    }
+    inner class LeafView(var binding: ItemLeafEntryBinding): RecyclerView.ViewHolder(binding.root) {
+        fun setImage(resource: Int) {
+            binding.leafImage.setImageDrawable(AppCompatResources.getDrawable(mContext, resource))
+        }
+
+        fun setChangeFolderCallbackTarget(folder: StoragePrototype) {
+            binding.linearLayout.setOnClickListener {
+                callback?.changeFolder(folder)
+            }
+        }
+    }
 
 }

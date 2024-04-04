@@ -1,8 +1,8 @@
 package de.felixnuesse.disky.ui
 
-import de.felixnuesse.disky.model.StorageElementEntry
+import de.felixnuesse.disky.model.StoragePrototype
 
 interface ChangeFolderCallback {
 
-    fun changeFolder(folder: StorageElementEntry)
+    fun changeFolder(folder: StoragePrototype)
 }
