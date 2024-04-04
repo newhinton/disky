@@ -6,17 +6,17 @@
     <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
         <item name="trackThickness">6dp</item>
         <item name="trackCornerRadius">4dp</item>
-        <item name="indicatorColor">?attr/colorOnPrimaryContainer</item>
+        <item name="indicatorColor">?attr/colorLinearIndicator</item>
     </style>
 
     <style name="BaseCircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
         <item name="trackThickness">4dp</item>
         <item name="trackCornerRadius">4dp</item>
-        <item name="indicatorColor">?attr/colorPrimary</item>
+        <item name="indicatorColor">?attr/colorCircularIndicator</item>
     </style>
 
     <style name="CircularProgressBackground" parent="BaseCircularProgressIndicator">
-        <item name="indicatorColor">?attr/colorOutline</item>
+        <item name="indicatorColor">?attr/colorCircularBackground</item>
     </style>
 
     <!-- Card Styles need to be applied to the card directly.-->

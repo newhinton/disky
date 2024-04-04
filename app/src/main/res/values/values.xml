@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr format="color" name="colorLinearIndicator"/>
+    <attr format="color" name="colorCircularIndicator"/>
+    <attr format="color" name="colorCircularBackground"/>
+</resources>
