@@ -102,7 +102,7 @@ class ScanService: Service(), ScannerCallback {
             .setOnlyAlertOnce(true)
             .setContentTitle(getString(R.string.foreground_service_notification_title))
             .setContentText(message)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.icon_servicelogo)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
     }
 
