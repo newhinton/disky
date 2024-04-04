@@ -89,4 +89,10 @@ class PermissionManager(private var mContext: Context) {
 
         activity.startActivityForResult(intent, REQ_USAGE_PERMISSION_ACCESS)
     }
+
+    fun requestNotificationPermission(activity: Activity) {
+        Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, activity.packageName)
+    }
 }

@@ -1,11 +1,13 @@
 package de.felixnuesse.disky
 
 import android.animation.ObjectAnimator
-import android.app.usage.StorageStatsManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.os.Parcelable
 import android.os.storage.StorageManager
-import android.os.storage.StorageVolume
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -16,26 +18,25 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import de.felixnuesse.disky.background.ScanService
+import de.felixnuesse.disky.background.ScanService.Companion.SCAN_COMPLETE
+import de.felixnuesse.disky.background.ScanService.Companion.SCAN_RESULT
+import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
 import de.felixnuesse.disky.databinding.ActivityMainBinding
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StorageElementEntry
-import de.felixnuesse.disky.scanner.AppScanner
-import de.felixnuesse.disky.scanner.FsScanner
-import de.felixnuesse.disky.scanner.ScannerCallback
-import de.felixnuesse.disky.scanner.SystemScanner
+import de.felixnuesse.disky.model.StorageResult
+import de.felixnuesse.disky.scanner.ScanCompleteCallback
 import de.felixnuesse.disky.ui.ChangeFolderCallback
 import de.felixnuesse.disky.ui.RecyclerViewAdapter
 import de.felixnuesse.disky.utils.PermissionManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.UUID
 
 
-class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback {
+class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCallback {
 
     private lateinit var binding: ActivityMainBinding
     private var permissions = PermissionManager(this)
@@ -44,9 +45,7 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
     private var currentElement: StorageElementEntry? = null
 
     private lateinit var storageManager: StorageManager
-    private lateinit var storageStatsManager: StorageStatsManager
-
-    private var selectedStorage: StorageVolume? = null
+    private var selectedStorage = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,10 +59,12 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         if(!permissions.grantedUsageStats()) {
             permissions.requestUsageStats(this)
         }
+        if(!permissions.grantedNotifications()) {
+            permissions.requestNotificationPermission(this)
+        }
 
 
         storageManager = getSystemService(Context.STORAGE_SERVICE) as StorageManager
-        storageStatsManager = getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -75,61 +76,42 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         storageManager.storageVolumes.forEach {
             storageList.add(it.mediaStoreVolumeName?: it.uuid.toString())
             if(it.isPrimary) {
-                selectedStorage = it
+                selectedStorage = it.mediaStoreVolumeName?: it.uuid.toString()
             }
         }
 
         val dropdown = (binding.dropdown as MaterialAutoCompleteTextView)
         dropdown.setAdapter(ArrayAdapter(this, android.R.layout.simple_list_item_1, storageList))
-        dropdown.setText(selectedStorage?.mediaStoreVolumeName?: selectedStorage?.uuid.toString(), false)
+        dropdown.setText(selectedStorage, false)
         binding.dropdown.onItemClickListener = OnItemClickListener { parent, view, position, id ->
-            selectedStorage = findStorageByNameOrUUID(storageList[position])
-            CoroutineScope(Dispatchers.IO).launch{
-                updateData()
-            }
+            selectedStorage = storageList[position]
+            triggerDataUpdate()
         }
         if(storageManager.storageVolumes.size==1){
             binding.storageSelector.visibility = View.GONE
         }
 
-
-        updateStaticElements(null)
-        CoroutineScope(Dispatchers.IO).launch{
-            updateData()
-        }
+        triggerDataUpdate()
     }
 
-    fun findStorageByNameOrUUID(name: String): StorageVolume? {
-        storageManager.storageVolumes.forEach {
-            if((name == it.mediaStoreVolumeName) or (name == it.uuid.toString())){
-                return it
-            }
-        }
-        return null
-    }
-
-    fun updateData() {
+    fun triggerDataUpdate() {
         runOnUiThread {
             binding.folders.visibility = View.INVISIBLE
             binding.loading.visibility = View.VISIBLE
         }
-        val scanner = FsScanner(applicationContext, this)
-        if(selectedStorage?.directory == null) {
-            Log.e(tag(), "There was an error loading data!")
-            return
-        }
-        rootElement = scanner.scan(selectedStorage!!.directory!!)
-        AppScanner(this).scanApps(rootElement!!)
-        SystemScanner().scanApps(rootElement!!, getTotalSpace(), getFreeSpace())
 
-        if(rootElement != null) {
-            runOnUiThread {
-                binding.folders.visibility = View.VISIBLE
-                binding.loading.visibility = View.INVISIBLE
-                showFolder(rootElement!!)
-                updateStaticElements(rootElement!!)
+        val reciever = object: BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent) {
+
+                Log.e(tag(), intent.getStringExtra(SCAN_RESULT).toString())
+
+                scanComplete(StorageResult.fromString(intent.getStringExtra(SCAN_RESULT)?:""))
             }
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(reciever, IntentFilter(SCAN_COMPLETE))
+        val service = Intent(this, ScanService::class.java)
+        service.putExtra(SCAN_STORAGE, selectedStorage)
+        startForegroundService(service)
     }
 
     override fun onBackPressed() {
@@ -140,39 +122,7 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         }
     }
 
-
-    fun getTotalSpace(): Long {
-        if(selectedStorage == null)  {
-            return 0
-        }
-        // Assume Default storage if uuid invalid
-        val uuid = if(selectedStorage!!.uuid != null) {
-            UUID.fromString(selectedStorage!!.uuid)
-        } else {
-            StorageManager.UUID_DEFAULT
-        }
-
-        return storageStatsManager.getTotalBytes(uuid)
-    }
-
-    fun getFreeSpace(): Long {
-        if(selectedStorage == null)  {
-            return 0
-        }
-        // Assume Default storage if uuid invalid
-        val uuid = if(selectedStorage!!.uuid != null) {
-            UUID.fromString(selectedStorage!!.uuid)
-        } else {
-            StorageManager.UUID_DEFAULT
-        }
-
-        return storageStatsManager.getFreeBytes(uuid)
-    }
-
-    fun updateStaticElements(currentRoot: StorageElementEntry?) {
-
-        val rootTotal = getTotalSpace()
-        val rootUnused = getFreeSpace()
+    fun updateStaticElements(currentRoot: StorageElementEntry?, rootTotal: Long, rootUnused: Long) {
         val rootUsage = rootTotal-rootUnused
         val rootUsed = rootUsage.div(rootTotal.toDouble())
         val rootFree = rootUnused.div(rootTotal.toDouble())
@@ -239,11 +189,20 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         }
     }
 
-    override fun currentlyScanning(item: String) {
-       // Log.e(tag(), "Current scan: $item")
-    }
-
     override fun changeFolder(folder: StorageElementEntry) {
         showFolder(folder)
     }
+
+    override fun scanComplete(result: StorageResult) {
+
+        rootElement = result.rootElement
+
+        if(rootElement != null) {
+            binding.folders.visibility = View.VISIBLE
+            binding.loading.visibility = View.INVISIBLE
+            showFolder(rootElement!!)
+            updateStaticElements(rootElement!!, result.total, result.free)
+        }
+    }
+
 }
