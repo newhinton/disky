@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Disky" parent="Base.Theme.Disky" />
+
+    <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
+        <item name="trackThickness">6dp</item>
+        <item name="trackCornerRadius">4dp</item>
+        <item name="indicatorColor">?attr/colorOnPrimaryContainer</item>
+    </style>
+
+    <style name="BaseCircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
+        <item name="trackThickness">4dp</item>
+        <item name="trackCornerRadius">4dp</item>
+        <item name="indicatorColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="CircularProgressBackground" parent="BaseCircularProgressIndicator">
+        <item name="indicatorColor">?attr/colorOutline</item>
+    </style>
+
+    <!-- Card Styles need to be applied to the card directly.-->
+    <style name="PrimaryCardStyle">
+        <item name="cardBackgroundColor">?attr/colorPrimaryContainer</item>
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
+        <item name="android:tint">?attr/colorOnPrimaryContainer</item>
+    </style>
+</resources>
