@@ -105,7 +105,7 @@ class ScanService: Service(), ScannerCallback {
         }
         rootElement = scanner.scan(selectedStorage.directory!!)
         AppScanner(this).scanApps(rootElement)
-        SystemScanner().scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
+        SystemScanner(this).scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
 
         val result = StorageResult()
         result.rootElement = rootElement
