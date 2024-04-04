@@ -25,6 +25,7 @@ import de.felixnuesse.disky.model.StorageElementEntry
 import de.felixnuesse.disky.scanner.AppScanner
 import de.felixnuesse.disky.scanner.FsScanner
 import de.felixnuesse.disky.scanner.ScannerCallback
+import de.felixnuesse.disky.scanner.SystemScanner
 import de.felixnuesse.disky.ui.ChangeFolderCallback
 import de.felixnuesse.disky.ui.RecyclerViewAdapter
 import de.felixnuesse.disky.utils.PermissionManager
@@ -119,6 +120,7 @@ class MainActivity : AppCompatActivity(), ScannerCallback, ChangeFolderCallback 
         }
         rootElement = scanner.scan(selectedStorage!!.directory!!)
         AppScanner(this).scanApps(rootElement!!)
+        SystemScanner().scanApps(rootElement!!, getTotalSpace(), getFreeSpace())
 
         if(rootElement != null) {
             runOnUiThread {

@@ -23,13 +23,10 @@ open class StorageElementEntry(var name: String) {
 
 
     open fun getCalculatedSize(): Long {
-        if(calculatedSize == null) {
-            calculatedSize = 0
-            children.forEach {
-                calculatedSize = calculatedSize!! + it.getCalculatedSize()
-            }
+        calculatedSize = 0
+        children.forEach {
+            calculatedSize = calculatedSize!! + it.getCalculatedSize()
         }
-
         return calculatedSize!!
     }
 

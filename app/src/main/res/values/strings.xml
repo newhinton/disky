@@ -5,4 +5,5 @@
     <string name="apppackage_size_externalcache">External Cache</string>
     <string name="apppackage_size_cache">Cache</string>
     <string name="apps">Apps</string>
+    <string name="system">Android OS</string>
 </resources>

@@ -13,6 +13,7 @@ import de.felixnuesse.disky.databinding.ItemFolderEntryBinding
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.model.AppStorageElementEntry
 import de.felixnuesse.disky.model.AppdataStorageElementEntry
+import de.felixnuesse.disky.model.OSStorageElementEntry
 import de.felixnuesse.disky.model.StorageElementEntry
 import de.felixnuesse.disky.model.StorageElementType
 
@@ -25,6 +26,7 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
             StorageElementType.FILE.ordinal -> FileView(ItemFileEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             StorageElementType.APP.ordinal -> AppView(ItemAppEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             StorageElementType.APPDATA.ordinal -> AppView(ItemAppEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            StorageElementType.SPECIAL_SYSTEM.ordinal -> AppView(ItemAppEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> FolderView(ItemFolderEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
@@ -65,6 +67,15 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                         if(overrideIcon != null) {
                             binding.imageView2.setImageDrawable(overrideIcon)
                         }
+                    }
+                }
+            }
+            StorageElementType.SPECIAL_SYSTEM.ordinal -> {
+                with(holder as AppView) {
+                    with(folders[position] as OSStorageElementEntry){
+                        binding.title.text = mContext.getText(R.string.system)
+                        binding.size.text = readableFileSize(getCalculatedSize())
+                        binding.imageView2.setImageDrawable(AppCompatResources.getDrawable(mContext, R.drawable.icon_android))
                     }
                 }
             }
