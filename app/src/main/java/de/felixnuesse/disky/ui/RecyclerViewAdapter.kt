@@ -18,6 +18,7 @@ import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageType
+import java.io.File
 
 
 class RecyclerViewAdapter(private var mContext: Context, private val folders: List<StoragePrototype>, var callback: ChangeFolderCallback?):
@@ -168,6 +169,11 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
             return when (item.itemId) {
                 R.id.action_file_open -> {
                     val uri = Uri.parse(leafItem!!.getParentPath())
+                    binding.root.context.startActivity(Intent(Intent.ACTION_VIEW).setDataAndType(uri, "*/*"))
+                    true
+                }
+                R.id.action_file_openfolder -> {
+                    val uri = Uri.parse(File(leafItem!!.getParentPath()).parent)
                     binding.root.context.startActivity(Intent(Intent.ACTION_VIEW).setDataAndType(uri, "*/*"))
                     true
                 }

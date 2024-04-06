@@ -8,4 +8,12 @@
         android:layout_height="wrap_content"
         android:icon="@drawable/icon_file"
         android:title="@string/contextmenu_file_open" />
+
+
+    <item
+        android:id="@+id/action_file_openfolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/icon_folder"
+        android:title="@string/contextmenu_file_openfolder" />
 </menu>

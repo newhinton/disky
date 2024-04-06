@@ -4,6 +4,8 @@
     <style name="Theme.Disky" parent="Base.Theme.Disky" >
         <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@drawable/icon_logo</item>
         <item name="android:windowSplashScreenBackground" tools:targetApi="31">?attr/colorSurface</item>
+
+        <item name="popupMenuBackground">@drawable/shape_popup_background</item>
     </style>
 
     <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">

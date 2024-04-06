@@ -31,5 +31,7 @@
         <item name="colorLinearIndicator">?attr/colorPrimaryContainer</item>
         <item name="colorCircularIndicator">?attr/colorPrimary</item>
         <item name="colorCircularBackground">?attr/colorOutline</item>
+
+        <item name="iconTint">?attr/colorPrimary</item>
     </style>
 </resources>
