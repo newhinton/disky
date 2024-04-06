@@ -11,8 +11,14 @@ import android.os.Build
 import android.os.Environment
 import android.os.Process
 import android.provider.Settings
+import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
+import de.felixnuesse.disky.extensions.tag
 
 
 class PermissionManager(private var mContext: Context) {
@@ -20,6 +26,7 @@ class PermissionManager(private var mContext: Context) {
     companion object {
         private const val REQ_ALL_FILES_ACCESS = 3101
         private const val REQ_USAGE_PERMISSION_ACCESS = 3102
+        private const val REQ_NOTIFICATION_ACCESS = 3102
 
         fun getNotificationSettingsIntent(context: Context): Intent {
             return Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
@@ -90,9 +97,21 @@ class PermissionManager(private var mContext: Context) {
         activity.startActivityForResult(intent, REQ_USAGE_PERMISSION_ACCESS)
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun registerInitialRequestNotificationPermission(activity: AppCompatActivity): ActivityResultLauncher<String> {
+        return activity.registerForActivityResult(
+            ActivityResultContracts.RequestPermission()) { granted ->
+            Log.e(tag(), "granted")
+        }
+    }
+
+
     fun requestNotificationPermission(activity: Activity) {
-        Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+
+
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             .putExtra(Settings.EXTRA_APP_PACKAGE, activity.packageName)
+        activity.startActivityForResult(intent, REQ_USAGE_PERMISSION_ACCESS)
     }
 }

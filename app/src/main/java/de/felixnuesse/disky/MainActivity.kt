@@ -20,6 +20,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import de.felixnuesse.disky.IntroActivity.Companion.INTRO_PREFERENCES
+import de.felixnuesse.disky.IntroActivity.Companion.intro_v1_0_0_completed
 import de.felixnuesse.disky.background.ScanService
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_COMPLETE
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
@@ -40,7 +42,6 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCallback {
 
     private lateinit var binding: ActivityMainBinding
-    private var permissions = PermissionManager(this)
 
     private var rootElement: StoragePrototype? = null
     private var currentElement: StoragePrototype? = null
@@ -56,16 +57,16 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if(!permissions.grantedStorage()) {
-            permissions.requestStorage(this)
-        }
-        if(!permissions.grantedUsageStats()) {
-            permissions.requestUsageStats(this)
-        }
-        if(!permissions.grantedNotifications()) {
-            permissions.requestNotificationPermission(this)
+        val sharedPref = applicationContext.getSharedPreferences(INTRO_PREFERENCES, Context.MODE_PRIVATE)
+        if (!sharedPref.getBoolean(intro_v1_0_0_completed, false)) {
+            startActivity(Intent(this, IntroActivity::class.java))
+            finish()
         }
 
+        if(!PermissionManager(this).hasAllRequiredPermissions()) {
+            //startActivity(Intent(this, IntroActivity::class.java))
+            //finish()
+        }
 
         storageManager = getSystemService(Context.STORAGE_SERVICE) as StorageManager
 

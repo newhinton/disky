@@ -10,9 +10,8 @@ kotlinxSerializationJson = "1.6.2"
 material = "1.11.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
-mpandroidchart = "v3.1.0"
-pieChart = "0.7.0"
 workRuntimeKtx = "2.9.0"
+appIntro = "6.3.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -25,6 +24,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
+appintro = { group = "com.github.AppIntro", name = "AppIntro", version.ref = "appIntro" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
