@@ -5,7 +5,8 @@
         <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="31">@drawable/icon_logo</item>
         <item name="android:windowSplashScreenBackground" tools:targetApi="31">?attr/colorSurface</item>
 
-        <item name="popupMenuBackground">@drawable/shape_popup_background</item>
+        <item name="popupMenuStyle">@style/PopupMenu</item>
+        <item name="materialCardViewStyle">@style/PrimaryCardView</item>
     </style>
 
     <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
@@ -25,9 +26,14 @@
     </style>
 
     <!-- Card Styles need to be applied to the card directly.-->
-    <style name="PrimaryCardStyle">
-        <item name="cardBackgroundColor">?attr/colorPrimaryContainer</item>
-        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
-        <item name="android:tint">?attr/colorOnPrimaryContainer</item>
+    <style name="PrimaryCardView" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">?attr/colorSecondaryContainer</item>
+        <item name="cardCornerRadius">@dimen/cardCornerRadius</item>
+        <item name="contentPadding">@dimen/cardPadding</item>
+    </style>
+
+    <style name="PopupMenu" parent="android:Widget.Material.PopupMenu">
+        <item name="android:popupBackground">@drawable/shape_popup_background</item>
+        <item name="android:popupElevation">0dp</item>
     </style>
 </resources>

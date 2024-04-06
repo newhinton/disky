@@ -24,5 +24,7 @@
     <string name="intro_slide_usage_description">We use usage statistics to calculate the diskusage by your apps.</string>
     <string name="contextmenu_file_open">Open</string>
     <string name="contextmenu_file_openfolder">Open in folder</string>
+    <string name="mainmenu_reload">Reload</string>
+    <string name="mainmenu_settings">Settings\n</string>
 
 </resources>

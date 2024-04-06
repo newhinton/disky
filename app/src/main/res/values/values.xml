@@ -4,4 +4,5 @@
     <attr format="color" name="colorCircularIndicator"/>
     <attr format="color" name="colorCircularBackground"/>
     <attr format="color" name="iconTint"/>
+    <attr format="color" name="popupMenuBackgroundColor"/>
 </resources>

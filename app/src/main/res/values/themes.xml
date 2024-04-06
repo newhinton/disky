@@ -33,6 +33,8 @@
         <item name="colorCircularBackground">?attr/colorOutline</item>
 
         <item name="iconTint">?attr/colorPrimary</item>
+
+        <item name="popupMenuBackgroundColor">?attr/colorSurface</item>
     </style>
 
 </resources>
