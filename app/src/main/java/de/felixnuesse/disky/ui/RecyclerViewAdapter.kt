@@ -2,9 +2,8 @@ package de.felixnuesse.disky.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
-import android.os.storage.StorageManager
-import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import de.felixnuesse.disky.R
 import de.felixnuesse.disky.databinding.ItemFolderEntryBinding
 import de.felixnuesse.disky.databinding.ItemLeafEntryBinding
 import de.felixnuesse.disky.extensions.readableFileSize
+import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageType
@@ -51,7 +51,7 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                     }
 
                     if(storageType == StorageType.FOLDER) {
-
+                        holder.leafFolder = folders[position] as StorageBranch
                     }
                     setChangeFolderCallbackTarget(this)
                 }
@@ -66,16 +66,19 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                         StorageType.OS,
                         StorageType.APP_APK,
                         StorageType.APP -> {
-                            setImage( R.drawable.icon_android)
+                            setImage(R.drawable.icon_android)
                         }
                         StorageType.APP_CACHE_EXTERNAL -> {
-                            setImage( R.drawable.icon_sd)
+                            setImage(R.drawable.icon_sd)
                         }
                         StorageType.APP_CACHE -> {
-                            setImage( R.drawable.icon_cache)
+                            setImage(R.drawable.icon_cache)
                         }
                         StorageType.APP_DATA -> {
-                            setImage( R.drawable.icon_account)
+                            setImage(R.drawable.icon_account)
+                        }
+                        StorageType.FILE -> {
+                            leafItem = folders[position] as StorageLeaf
                         }
                         else -> {}
                     }
@@ -96,12 +99,14 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
 
     inner class FolderView(var binding: ItemFolderEntryBinding): RecyclerView.ViewHolder(binding.root), PopupMenu.OnMenuItemClickListener {
 
+        var leafFolder: StorageBranch? = null
+
         init {
             binding.root.setOnLongClickListener {
                 val context = binding.root.context
                 val popup = PopupMenu(context, it)
                 popup.setOnMenuItemClickListener(this)
-                popup.menuInflater.inflate(R.menu.context_menu, popup.menu)
+                popup.menuInflater.inflate(R.menu.context_folder_menu, popup.menu)
                 popup.setForceShowIcon(true)
                 popup.show()
                 true
@@ -111,20 +116,12 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
         override fun onMenuItemClick(item: MenuItem): Boolean {
             return when (item.itemId) {
                 R.id.action_folder_open -> {
-
-                    val i = (mContext.getSystemService(Context.STORAGE_SERVICE) as StorageManager).primaryStorageVolume.createOpenDocumentTreeIntent()
-                    val startDir = "DCIM%2FCamera"
-                    var uri: Uri? = i.getParcelableExtra("android.provider.extra.INITIAL_URI")
-                    var scheme = uri.toString()
-                    scheme = scheme.replace("/root/", "/document/")
-                    scheme += "%3A$startDir"
-
-                    uri = Uri.parse(scheme)
-                    i.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri)
-
-                    //val intent = Intent(Intent.ACTION_VIEW)
-                    //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI)
+                    val path = leafFolder!!.getParentPath()
+                    val uri = Uri.parse(path)
+                    val i = Intent(Intent.ACTION_VIEW)
+                    i.setDataAndType(uri, "*/*")
                     binding.root.context.startActivity(i)
+
                     true
                 }
                 else -> false
@@ -142,14 +139,56 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
             }
         }
     }
-    inner class LeafView(var binding: ItemLeafEntryBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class LeafView(var binding: ItemLeafEntryBinding): RecyclerView.ViewHolder(binding.root), PopupMenu.OnMenuItemClickListener {
         fun setImage(resource: Int) {
             binding.leafImage.setImageDrawable(AppCompatResources.getDrawable(mContext, resource))
         }
 
+        var leafItem: StorageLeaf? = null
+
         fun setChangeFolderCallbackTarget(folder: StoragePrototype) {
             binding.linearLayout.setOnClickListener {
                 callback?.changeFolder(folder)
+            }
+        }
+
+        init {
+            binding.root.setOnLongClickListener {
+                val context = binding.root.context
+                val popup = PopupMenu(context, it)
+                popup.setOnMenuItemClickListener(this)
+                popup.menuInflater.inflate(R.menu.context_file_menu, popup.menu)
+                popup.setForceShowIcon(true)
+                popup.show()
+                true
+            }
+        }
+
+        override fun onMenuItemClick(item: MenuItem): Boolean {
+            if(leafItem == null) {
+                return false
+            }
+
+            return when (item.itemId) {
+                R.id.action_file_open -> {
+
+                    val path = leafItem!!.getParentPath()
+                    val uri = Uri.parse(path)
+                    val i = Intent(Intent.ACTION_VIEW)
+                    i.setDataAndType(uri, "*/*")
+                    binding.root.context.startActivity(i)
+
+
+                    /*val file = File(leafItem!!.getParentPath()+"/"+ leafItem!!.name)
+                    val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
+
+                    val intent = Intent()
+                    intent.setAction(Intent.ACTION_VIEW)
+                    intent.setDataAndType(Uri.fromFile(file), mime)
+                    binding.root.context.startActivity(intent)*/
+                    true
+                }
+                else -> false
             }
         }
     }

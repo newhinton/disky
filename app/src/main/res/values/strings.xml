@@ -22,5 +22,6 @@
     <string name="intro_storage_description">Round Sync relies on rclone and needs your permission to access all files. Please grant storage access when prompted, otherwise the application will not work properly.</string>
     <string name="intro_slide_usage_title">Usage Statistics</string>
     <string name="intro_slide_usage_description">We use usage statistics to calculate the diskusage by your apps.</string>
+    <string name="contextmenu_file_open">Open</string>
 
 </resources>
