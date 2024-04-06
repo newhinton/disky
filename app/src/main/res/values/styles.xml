@@ -7,6 +7,7 @@
 
         <item name="popupMenuStyle">@style/PopupMenu</item>
         <item name="materialCardViewStyle">@style/PrimaryCardView</item>
+        <item name="bottomSheetDialogTheme">@style/ModalBottomSheetDialog</item>
     </style>
 
     <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
@@ -36,4 +37,21 @@
         <item name="android:popupBackground">@drawable/shape_popup_background</item>
         <item name="android:popupElevation">0dp</item>
     </style>
+
+    <style name="MainMenu" parent="android:Widget.Material.PopupMenu">
+        <item name="android:textColorPrimary">#fa0</item>
+        <item name="android:iconTint">@color/intro_color2</item>
+        <item name="android:popupBackground">@drawable/shape_popup_background</item>
+        <item name="android:popupElevation">0dp</item>
+    </style>
+
+
+    <style name="ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="behavior_fitToContents">true</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheet</item>
+    </style>
+
 </resources>

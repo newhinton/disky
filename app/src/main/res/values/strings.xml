@@ -25,6 +25,9 @@
     <string name="contextmenu_file_open">Open</string>
     <string name="contextmenu_file_openfolder">Open in folder</string>
     <string name="mainmenu_reload">Reload</string>
-    <string name="mainmenu_settings">Settings\n</string>
+    <string name="mainmenu_settings">Settings</string>
+    <string name="reload">Re-Scanning Files…</string>
+    <string name="donate_message">Do you want to support the developer? Your contribution is greatly appreciated!</string>
+    <string name="donate_button">Donate!</string>
 
 </resources>

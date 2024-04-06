@@ -8,17 +8,21 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.storage.StorageManager
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import de.felixnuesse.disky.IntroActivity.Companion.INTRO_PREFERENCES
 import de.felixnuesse.disky.IntroActivity.Companion.intro_v1_0_0_completed
@@ -31,6 +35,7 @@ import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageResult
 import de.felixnuesse.disky.scanner.ScanCompleteCallback
+import de.felixnuesse.disky.ui.BottomSheet
 import de.felixnuesse.disky.ui.ChangeFolderCallback
 import de.felixnuesse.disky.ui.RecyclerViewAdapter
 import de.felixnuesse.disky.utils.PermissionManager
@@ -56,6 +61,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
 
         val sharedPref = applicationContext.getSharedPreferences(INTRO_PREFERENCES, Context.MODE_PRIVATE)
         if (!sharedPref.getBoolean(intro_v1_0_0_completed, false)) {
@@ -64,6 +70,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         }
 
         if(!PermissionManager(this).hasAllRequiredPermissions()) {
+            // todo: implement runtime intro for removed permissions
             //startActivity(Intent(this, IntroActivity::class.java))
             //finish()
         }
@@ -168,25 +175,11 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
         registerForContextMenu(recyclerView)
 
-
-
         val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(this, R.anim.recyclerview_animation)
         recyclerView.layoutAnimation = animation
         recyclerView.layoutManager = LinearLayoutManager(this)
         val recyclerViewAdapter = RecyclerViewAdapter(this, currentRoot.getChildren(), this)
         recyclerView.adapter = recyclerViewAdapter
-    }
-
-
-    fun printDepthFirst(path: String, storageElementEntry: StoragePrototype) {
-
-        if(storageElementEntry.getChildren().size != 0) {
-            storageElementEntry.getChildren().forEach {
-                printDepthFirst(path+"/"+it.name, it)
-            }
-        } else {
-            Log.e(tag(), path+" - "+ readableFileSize(storageElementEntry.getCalculatedSize()))
-        }
     }
 
     override fun changeFolder(folder: StoragePrototype) {
@@ -204,6 +197,26 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 updateStaticElements(rootElement!!, result.total, result.free)
             }
         }
+    }
+
+    //Options Menu
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        if (id == R.id.action_settings) {
+            val bl = BottomSheet()
+            bl.show(supportFragmentManager, BottomSheet.TAG)
+            return true
+        }
+        if (id == R.id.action_reload) {
+            Toast.makeText(this, R.string.reload, Toast.LENGTH_LONG).show()
+            triggerDataUpdate()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }
