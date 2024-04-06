@@ -116,12 +116,8 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
         override fun onMenuItemClick(item: MenuItem): Boolean {
             return when (item.itemId) {
                 R.id.action_folder_open -> {
-                    val path = leafFolder!!.getParentPath()
-                    val uri = Uri.parse(path)
-                    val i = Intent(Intent.ACTION_VIEW)
-                    i.setDataAndType(uri, "*/*")
-                    binding.root.context.startActivity(i)
-
+                    val uri = Uri.parse(leafFolder!!.getParentPath())
+                    binding.root.context.startActivity(Intent(Intent.ACTION_VIEW).setDataAndType(uri, "*/*"))
                     true
                 }
                 else -> false
@@ -171,21 +167,8 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
 
             return when (item.itemId) {
                 R.id.action_file_open -> {
-
-                    val path = leafItem!!.getParentPath()
-                    val uri = Uri.parse(path)
-                    val i = Intent(Intent.ACTION_VIEW)
-                    i.setDataAndType(uri, "*/*")
-                    binding.root.context.startActivity(i)
-
-
-                    /*val file = File(leafItem!!.getParentPath()+"/"+ leafItem!!.name)
-                    val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(file.extension)
-
-                    val intent = Intent()
-                    intent.setAction(Intent.ACTION_VIEW)
-                    intent.setDataAndType(Uri.fromFile(file), mime)
-                    binding.root.context.startActivity(intent)*/
+                    val uri = Uri.parse(leafItem!!.getParentPath())
+                    binding.root.context.startActivity(Intent(Intent.ACTION_VIEW).setDataAndType(uri, "*/*"))
                     true
                 }
                 else -> false
