@@ -10,4 +10,5 @@
     <string name="foreground_service_notification_channel_name">Disky Scan Service</string>
     <string name="foreground_service_notification_title">Disky Scan Service</string>
     <string name="foreground_service_notification_description">This channel shows scan progress. You may safely hide this notification.</string>
+    <string name="contextmenu_folder_open">Open Folder</string>
 </resources>

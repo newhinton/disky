@@ -165,11 +165,15 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
         val recyclerView = binding.folders
 
+        registerForContextMenu(recyclerView)
+
+
+
         val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(this, R.anim.recyclerview_animation)
-        recyclerView.setLayoutAnimation(animation)
-        recyclerView.setLayoutManager(LinearLayoutManager(this))
+        recyclerView.layoutAnimation = animation
+        recyclerView.layoutManager = LinearLayoutManager(this)
         val recyclerViewAdapter = RecyclerViewAdapter(this, currentRoot.getChildren(), this)
-        recyclerView.setAdapter(recyclerViewAdapter)
+        recyclerView.adapter = recyclerViewAdapter
     }
 
 

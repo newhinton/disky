@@ -2,23 +2,26 @@ package de.felixnuesse.disky.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
+import android.net.Uri
+import android.os.storage.StorageManager
+import android.provider.DocumentsContract
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import de.felixnuesse.disky.R
 import de.felixnuesse.disky.databinding.ItemFolderEntryBinding
 import de.felixnuesse.disky.databinding.ItemLeafEntryBinding
 import de.felixnuesse.disky.extensions.readableFileSize
-import de.felixnuesse.disky.extensions.tag
+import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageType
-import de.felixnuesse.disky.model.StorageLeaf
 
 
 class RecyclerViewAdapter(private var mContext: Context, private val folders: List<StoragePrototype>, var callback: ChangeFolderCallback?):
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(StorageType.fromInt(viewType)) {
@@ -47,6 +50,9 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                         setImage(R.drawable.icon_apps)
                     }
 
+                    if(storageType == StorageType.FOLDER) {
+
+                    }
                     setChangeFolderCallbackTarget(this)
                 }
             }
@@ -88,7 +94,44 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
         return folders.size
     }
 
-    inner class FolderView(var binding: ItemFolderEntryBinding): RecyclerView.ViewHolder(binding.root) {
+    inner class FolderView(var binding: ItemFolderEntryBinding): RecyclerView.ViewHolder(binding.root), PopupMenu.OnMenuItemClickListener {
+
+        init {
+            binding.root.setOnLongClickListener {
+                val context = binding.root.context
+                val popup = PopupMenu(context, it)
+                popup.setOnMenuItemClickListener(this)
+                popup.menuInflater.inflate(R.menu.context_menu, popup.menu)
+                popup.setForceShowIcon(true)
+                popup.show()
+                true
+            }
+        }
+
+        override fun onMenuItemClick(item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.action_folder_open -> {
+
+                    val i = (mContext.getSystemService(Context.STORAGE_SERVICE) as StorageManager).primaryStorageVolume.createOpenDocumentTreeIntent()
+                    val startDir = "DCIM%2FCamera"
+                    var uri: Uri? = i.getParcelableExtra("android.provider.extra.INITIAL_URI")
+                    var scheme = uri.toString()
+                    scheme = scheme.replace("/root/", "/document/")
+                    scheme += "%3A$startDir"
+
+                    uri = Uri.parse(scheme)
+                    i.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri)
+
+                    //val intent = Intent(Intent.ACTION_VIEW)
+                    //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI)
+                    binding.root.context.startActivity(i)
+                    true
+                }
+                else -> false
+            }
+        }
+
+
         fun setImage(resource: Int) {
             binding.imageView.setImageDrawable(AppCompatResources.getDrawable(mContext, resource))
         }
