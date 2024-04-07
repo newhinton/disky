@@ -29,6 +29,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
+        android:animateLayoutChanges="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
@@ -36,6 +37,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
             android:padding="8dp">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -43,9 +45,11 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:hint="Select Storage"
+                android:hint="@string/select_storage"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -63,11 +67,9 @@
                 style="@style/CircularProgressBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:progress="100"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
+                app:layout_constraintStart_toStartOf="@+id/dataUsage"
+                app:layout_constraintTop_toTopOf="@+id/dataUsage" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/dataUsage"
@@ -75,17 +77,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:progress="10"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
 
             <TextView
                 android:id="@+id/titleUsed"
-                android:layout_width="wrap_content"
+                android:layout_width="72dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Overall Usage:"
+                android:layout_marginTop="2dp"
+                android:text="@string/used"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/dataUsage"
                 app:layout_constraintTop_toTopOf="@+id/dataUsage" />
@@ -95,52 +97,43 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="TextView"
+                android:text="@string/calculating"
                 app:layout_constraintStart_toStartOf="@+id/titleUsed"
                 app:layout_constraintTop_toBottomOf="@+id/titleUsed" />
 
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/freeUsageBackground"
-                style="@style/CircularProgressBackground"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:progress="100"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/titleUsed"
-                app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/freeUsage"
-                style="@style/BaseCircularProgressIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:progress="10"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/titleUsed"
-                app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
-
             <TextView
                 android:id="@+id/titleFree"
-                android:layout_width="wrap_content"
+                android:layout_width="72dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Free:"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/free"
+                android:textAlignment="textEnd"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/freeUsage"
-                app:layout_constraintTop_toTopOf="@+id/freeUsage" />
+                app:layout_constraintEnd_toStartOf="@+id/dataUsageBackground"
+                app:layout_constraintTop_toTopOf="@+id/dataUsageBackground" />
 
             <TextView
                 android:id="@+id/freeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="TextView"
-                app:layout_constraintStart_toStartOf="@+id/titleFree"
+                android:text="@string/calculating"
+                android:textAlignment="textEnd"
+                app:layout_constraintEnd_toEndOf="@+id/titleFree"
                 app:layout_constraintTop_toBottomOf="@+id/titleFree" />
+
+            <TextView
+                android:id="@+id/infoText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dataUsageBackground" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

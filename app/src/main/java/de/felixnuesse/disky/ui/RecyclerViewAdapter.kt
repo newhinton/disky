@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import de.felixnuesse.disky.R
 import de.felixnuesse.disky.databinding.ItemFolderEntryBinding
 import de.felixnuesse.disky.databinding.ItemLeafEntryBinding
+import de.felixnuesse.disky.extensions.getAppIcon
+import de.felixnuesse.disky.extensions.getAppname
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StorageLeaf
@@ -49,6 +51,12 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
 
                     if(storageType == StorageType.APP_COLLECTION) {
                         setImage(R.drawable.icon_apps)
+                    }
+
+                    if(StorageType.fromInt(holder.itemViewType) == StorageType.APP) {
+                        binding.title.text = getAppname(name, mContext)
+                        binding.imageView.imageTintList = null
+                        binding.imageView.setImageDrawable(getAppIcon(name, mContext))
                     }
 
                     if(storageType == StorageType.FOLDER) {

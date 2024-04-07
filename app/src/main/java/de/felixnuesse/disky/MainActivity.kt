@@ -11,10 +11,14 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +26,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import de.felixnuesse.disky.IntroActivity.Companion.INTRO_PREFERENCES
 import de.felixnuesse.disky.IntroActivity.Companion.intro_v1_0_0_completed
@@ -30,10 +33,12 @@ import de.felixnuesse.disky.background.ScanService
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_COMPLETE
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
 import de.felixnuesse.disky.databinding.ActivityMainBinding
+import de.felixnuesse.disky.extensions.getAppname
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageResult
+import de.felixnuesse.disky.model.StorageType
 import de.felixnuesse.disky.scanner.ScanCompleteCallback
 import de.felixnuesse.disky.ui.BottomSheet
 import de.felixnuesse.disky.ui.ChangeFolderCallback
@@ -140,7 +145,10 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
         if(currentRoot != null) {
             val currentlyUsed = currentRoot.getCalculatedSize().div(rootTotal.toDouble())
-            binding.usedText.text = readableFileSize(currentRoot.getCalculatedSize())
+            fadeTextview(
+                readableFileSize(currentRoot.getCalculatedSize()),
+                binding.usedText
+            )
             ObjectAnimator
                 .ofInt(binding.dataUsage, "progress", (currentlyUsed*100).toInt())
                 .setDuration(300)
@@ -149,16 +157,55 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             binding.dataUsage.progress = 0
         }
 
-        binding.freeText.text = readableFileSize(rootUnused)
-        ObjectAnimator
-            .ofInt(binding.freeUsage, "progress", (rootFree*100).toInt())
-            .setDuration(300)
-            .start()
+        fadeTextview(
+            readableFileSize(rootUnused),
+            binding.freeText
+        )
     }
 
     fun showFolder(currentRoot: StoragePrototype) {
 
         currentElement = currentRoot
+
+        if(currentRoot.parent==null) {
+            fadeTextview(
+                getString(R.string.uicontext_folder_rootdir),
+                binding.infoText
+            )
+        }
+
+        if(currentRoot.storageType == StorageType.APP) {
+            fadeTextview(
+                getString(
+                    R.string.uicontext_folder_app,
+                    getAppname(currentRoot.name, this),
+                    readableFileSize(currentRoot.getCalculatedSize())
+                ),
+                binding.infoText
+            )
+        }
+
+        if(currentRoot.storageType == StorageType.APP_COLLECTION) {
+            fadeTextview(
+                getString(
+                    R.string.uicontext_folder_appcollection,
+                    currentRoot.getChildren().size,
+                    readableFileSize(currentRoot.getCalculatedSize())
+                ),
+                binding.infoText
+            )
+        }
+
+        if(currentRoot.storageType == StorageType.FOLDER) {
+            fadeTextview(
+                getString(
+                    R.string.uicontext_folder_folder,
+                    currentRoot.name,
+                    readableFileSize(currentRoot.getCalculatedSize())
+                ),
+                binding.infoText
+            )
+        }
 
         //first, calculate percentages.
         val max = currentRoot.getCalculatedSize()
@@ -217,6 +264,29 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun fadeTextview(text: String, view: TextView) {
+        if(view.text == text) {
+            return
+        }
+        view.visibility = View.VISIBLE
+
+        val fadeIn = AlphaAnimation(0.0f, 1.0f)
+        val fadeOut = AlphaAnimation(1.0f, 0.0f)
+        fadeIn.duration = 300
+        fadeOut.duration = 300
+
+        fadeOut.setAnimationListener(object : AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+            override fun onAnimationRepeat(animation: Animation?) {}
+            override fun onAnimationEnd(animation: Animation) {
+                view.text = text
+                view.startAnimation(fadeIn)
+            }
+
+        })
+        view.startAnimation(fadeOut)
     }
 
 }
