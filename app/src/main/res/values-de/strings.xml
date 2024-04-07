@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">disky</string>
+    <string name="apppackage_size_data">Nutzerdaten</string>
+    <string name="apppackage_size_externalcache">Externer Cache</string>
+    <string name="apppackage_size_cache">Cache</string>
+    <string name="apps">Apps</string>
+    <string name="system">Android OS</string>
+    <string name="foreground_service_notification_channel_name">Disky Scan Service</string>
+    <string name="foreground_service_notification_title">Disky Scan Service</string>
+    <string name="foreground_service_notification_description">Dieser Kanal zeigt den Scanfortschritt an</string>
+    <string name="contextmenu_folder_open">Ordner öffnen</string>
+    <string name="intro_slide_welcome_title">Willkommen!</string>
+    <string name="intro_slide_welcome_description">Wir helfen dir große Platzfresser zu finden. Aber erst, lass uns die App einrichten!</string>
+    <string name="intro_slide_notification_title">Sieh Fortschritt!</string>
+    <string name="intro_slide_notification_description">Wir wollen dir den Scanfortschritt anzeigen. WIr werden dich nicht nerven!</string>
+    <string name="intro_slide_done_title">Fertig!</string>
+    <string name="intro_slide_done_description">Du bist bereit loszulegen!</string>
+    <string name="intro_storage_title">Speicherzugriff</string>
+    <string name="intro_slide_usage_title">Nutzungsstatistiken</string>
+    <string name="intro_slide_usage_description">Wir benötigen die Nutzungsstatistiken um die App-Größen zu finden.</string>
+    <string name="contextmenu_file_open">Öffnen</string>
+    <string name="contextmenu_file_openfolder">Öffne in Ordner</string>
+    <string name="mainmenu_reload">Neu Scannen</string>
+    <string name="mainmenu_settings">Einstellungen</string>
+    <string name="reload">Re-Scanne Dateien...</string>
+    <string name="donate_message">Möchtest du den Entwickler unterstützen? Dein Einsatz wird wertgeschätzt!</string>
+    <string name="donate_button">Spenden!</string>
+    <string name="uicontext_folder_rootdir">Du bist im Hauptverzeichnis.</string>
+    <string name="uicontext_folder_app">Aktuell betrachtest du %1$s. IEs nutzt %2$s!</string>
+    <string name="uicontext_folder_appcollection">Dies zeigt dir alle Apps, insgesamt %1$d. Sie brauchen %2$s!</string>
+    <string name="uicontext_folder_folder">Du hast den %1$d-Ordner gewählt. Er belegt %2$s deines Speichers!</string>
+    <string name="select_storage">Speicherort wählen</string>
+    <string name="used">Benutzt:</string>
+    <string name="calculating">Berechne…</string>
+    <string name="free">Frei:</string>
+</resources>

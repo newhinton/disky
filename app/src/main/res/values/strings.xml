@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">disky</string>
-    <string name="apppackage_size_app">Apk</string>
+    <string name="apppackage_size_app" translatable="false">Apk</string>
     <string name="apppackage_size_data">Userdata</string>
     <string name="apppackage_size_externalcache">External Cache</string>
     <string name="apppackage_size_cache">Cache</string>
@@ -13,13 +13,13 @@
     <string name="contextmenu_folder_open">Open Folder</string>
 
     <string name="intro_slide_welcome_title">Welcome!</string>
-    <string name="intro_slide_welcome_description">We will help you stay focused on your tasks, and not get distracted! But first, let us set this app up!</string>
+    <string name="intro_slide_welcome_description">We will help you find your disk-hogs. But first, let us set this app up!</string>
     <string name="intro_slide_notification_title">Get Notified!</string>
     <string name="intro_slide_notification_description">We want to show you notifications when we are scanning your files. We wont spam you!</string>
     <string name="intro_slide_done_title">Done!</string>
-    <string name="intro_slide_done_description">You are now ready to start! Enjoy your interruption free time! We have already created a few settings for you.</string>
+    <string name="intro_slide_done_description">You are now ready to start!</string>
     <string name="intro_storage_title">Storage access</string>
-    <string name="intro_storage_description">Round Sync relies on rclone and needs your permission to access all files. Please grant storage access when prompted, otherwise the application will not work properly.</string>
+    <string name="intro_storage_description">Disky relies on the permission to access all files. Please grant storage access when prompted, otherwise the application will not work properly.</string>
     <string name="intro_slide_usage_title">Usage Statistics</string>
     <string name="intro_slide_usage_description">We use usage statistics to calculate the diskusage by your apps.</string>
     <string name="contextmenu_file_open">Open</string>
