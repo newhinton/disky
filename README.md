@@ -53,6 +53,7 @@ You should first make sure you have cloned this repository:
 ```sh
 git clone https://github.com/newhinton/disky
 
+```
 
 
 You can then build the app normally from Android Studio or from CLI by running:
