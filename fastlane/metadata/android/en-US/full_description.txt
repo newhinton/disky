@@ -3,7 +3,7 @@ disky can analyze your device and show your data split by directory. Apps are al
 <b>Fast</b>
 Even larger devices can be scanned in mere seconds!
 
-<b>Multi Storage</>
+<b>Multi Storage</b>
 All your local filesystems are supported!
 
 
