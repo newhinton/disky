@@ -23,9 +23,6 @@ Screenshots
     <td style="border:none">
       <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="180vh" />
     </td>
-    <td style="border:none">
-      <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="180vh" />
-    </td>
   </tr>
 </table>
 
