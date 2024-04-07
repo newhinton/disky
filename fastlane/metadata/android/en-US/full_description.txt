@@ -1,0 +1,11 @@
+disky can analyze your device and show your data split by directory. Apps are also included, so you get the full picture of what uses your storage.
+
+<b>Fast</b>
+Even larger devices can be scanned in mere seconds!
+
+<b>Multi Storage</>
+All your local filesystems are supported!
+
+
+<b>Material You</b>
+Integrates nicely in your android experience!
