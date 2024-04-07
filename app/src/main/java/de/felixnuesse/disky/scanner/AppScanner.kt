@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Process
-import android.os.storage.StorageManager
+import android.os.storage.StorageVolume
+import android.util.Log
 import de.felixnuesse.disky.R
+import de.felixnuesse.disky.extensions.getStorageUUID
+import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageType
@@ -16,10 +19,9 @@ import de.felixnuesse.disky.utils.PermissionManager
 class AppScanner(var mContext: Context) {
 
 
-    fun scanApps(root: StoragePrototype) {
+    fun scanApps(root: StoragePrototype, selectedStorageVolume: StorageVolume) {
 
         val appfolder = StorageBranch(mContext.getString(R.string.apps), StorageType.APP_COLLECTION)
-
 
         if (!PermissionManager(mContext).grantedUsageStats()) {
             return
@@ -29,11 +31,15 @@ class AppScanner(var mContext: Context) {
 
         val packageManager = mContext.packageManager
         val packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+        val uuid = getStorageUUID(selectedStorageVolume)
+        if (uuid == null) {
+            Log.e(tag(), "The provided storage volume was invalid!")
+            return
+        }
         for (packageInfo in packages) {
 
-            //Todo: Check for proper UUID
-            var stats = storageStatManager.queryStatsForPackage(
-                StorageManager.UUID_DEFAULT, packageInfo.packageName, Process.myUserHandle()
+            val stats = storageStatManager.queryStatsForPackage(
+                uuid, packageInfo.packageName, Process.myUserHandle()
             )
 
             val app = StorageBranch(packageInfo.packageName, StorageType.APP)

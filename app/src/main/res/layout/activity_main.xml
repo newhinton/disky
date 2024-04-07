@@ -63,6 +63,33 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <LinearLayout
+                android:id="@+id/removableStorageWarning"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/storageSelector"
+                app:layout_constraintStart_toStartOf="@+id/storageSelector"
+                app:layout_constraintTop_toBottomOf="@+id/storageSelector">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:tint="?attr/colorError"
+                    app:srcCompat="@drawable/icon_error" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:text="Warning! Removable Storage will be unreliable!"
+                    android:textColor="?attr/colorError"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/dataUsageBackground"
                 style="@style/CircularProgressBackground"
@@ -77,10 +104,9 @@
                 style="@style/BaseCircularProgressIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/storageSelector" />
+                app:layout_constraintTop_toBottomOf="@+id/removableStorageWarning" />
 
             <TextView
                 android:id="@+id/titleUsed"

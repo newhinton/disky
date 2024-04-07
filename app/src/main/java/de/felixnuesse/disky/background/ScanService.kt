@@ -15,6 +15,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import de.felixnuesse.disky.R
+import de.felixnuesse.disky.extensions.getStorageUUID
 import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageResult
@@ -25,7 +26,7 @@ import de.felixnuesse.disky.scanner.SystemScanner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.io.IOException
 
 
 class ScanService: Service(), ScannerCallback {
@@ -76,7 +77,12 @@ class ScanService: Service(), ScannerCallback {
         val context = this
         CoroutineScope(Dispatchers.IO).launch{
             val now = System.currentTimeMillis()
-            val result = scan(intent?.getStringExtra(SCAN_STORAGE))
+            val storageToScan = intent?.getStringExtra(SCAN_STORAGE)
+            if(storageToScan.isNullOrBlank()) {
+                Log.e(tag(), "No valid storage name was provided!")
+                return@launch
+            }
+            val result = scan(storageToScan)
             Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-now}ms")
             storageResult = result
             val resultIntent = Intent(SCAN_COMPLETE)
@@ -106,9 +112,11 @@ class ScanService: Service(), ScannerCallback {
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
     }
 
-    private fun scan(storage: String?): StorageResult? {
+    private fun scan(storage: String): StorageResult? {
         val selectedStorage = findStorageByNameOrUUID(storage)
         val rootElement: StoragePrototype
+
+        Log.e(tag(), "scan storage: ${selectedStorage?.getDescription(this)}")
 
         val scanner = FsScanner(this, this)
         if(selectedStorage?.directory == null) {
@@ -116,10 +124,15 @@ class ScanService: Service(), ScannerCallback {
             return null
         }
         rootElement = scanner.scan(selectedStorage.directory!!)
-        AppScanner(this).scanApps(rootElement)
-        SystemScanner(this).scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
+
+        // Dont scan for system and apps on external sd card
+        if(selectedStorage.isPrimary) {
+            AppScanner(this).scanApps(rootElement, selectedStorage)
+            SystemScanner(this).scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
+        }
 
         val result = StorageResult()
+        result.scannedVolume = selectedStorage
         result.rootElement = rootElement
         result.free = getFreeSpace(selectedStorage)
         result.used = rootElement.getCalculatedSize()
@@ -128,33 +141,25 @@ class ScanService: Service(), ScannerCallback {
     }
 
     private fun getTotalSpace(selectedStorage: StorageVolume): Long {
-        // Assume Default storage if uuid invalid
-        val uuid = if(selectedStorage.uuid != null) {
-            UUID.fromString(selectedStorage.uuid)
-        } else {
-            StorageManager.UUID_DEFAULT
+        return try {
+            val uuid = getStorageUUID(selectedStorage)
+            uuid?.let { storageStatsManager.getTotalBytes(it) }?: 0
+        } catch (e: IOException) {
+            0
         }
-
-        return storageStatsManager.getTotalBytes(uuid)
     }
 
     private fun getFreeSpace(selectedStorage: StorageVolume): Long {
-        // Assume Default storage if uuid invalid
-        val uuid = if(selectedStorage.uuid != null) {
-            UUID.fromString(selectedStorage.uuid)
-        } else {
-            StorageManager.UUID_DEFAULT
+        return try {
+            val uuid = getStorageUUID(selectedStorage)
+            uuid?.let { storageStatsManager.getFreeBytes(it) }?: 0
+        } catch (e: IOException) {
+            0
         }
-
-        return storageStatsManager.getFreeBytes(uuid)
     }
 
-    private fun findStorageByNameOrUUID(name: String?): StorageVolume? {
+    private fun findStorageByNameOrUUID(name: String): StorageVolume? {
         storageManager.storageVolumes.forEach {
-            if(name.isNullOrBlank() and it.isPrimary) {
-                return it
-            }
-
             if((name == it.getDescription(this)) or (name == it.uuid.toString())){
                 return it
             }

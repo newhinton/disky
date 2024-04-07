@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.os.Environment.MEDIA_UNMOUNTED
 import android.os.storage.StorageManager
 import android.util.Log
 import android.view.Menu
@@ -91,6 +92,10 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         var storageList = arrayListOf<String>()
         storageManager.storageVolumes.forEach {
 
+            if(it.state == MEDIA_UNMOUNTED) {
+                return@forEach
+            }
+
             storageList.add(it.getDescription(this))
             if(it.isPrimary) {
                 selectedStorage = it.getDescription(this)
@@ -102,9 +107,10 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         dropdown.setText(selectedStorage, false)
         binding.dropdown.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             selectedStorage = storageList[position]
+            binding.removableStorageWarning.visibility = View.GONE
             triggerDataUpdate()
         }
-        if(storageManager.storageVolumes.size==1){
+        if(storageList.size==1){
             binding.storageSelector.visibility = View.GONE
         }
 
@@ -116,6 +122,8 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         runOnUiThread {
             binding.folders.visibility = View.INVISIBLE
             binding.loading.visibility = View.VISIBLE
+            fadeTextview(getString(R.string.calculating), binding.freeText)
+            fadeTextview(getString(R.string.calculating), binding.usedText)
         }
 
         lastScanStarted = System.currentTimeMillis()
@@ -142,8 +150,6 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
     fun updateStaticElements(currentRoot: StoragePrototype?, rootTotal: Long, rootUnused: Long) {
-        val rootFree = rootUnused.div(rootTotal.toDouble())
-
         if(currentRoot != null) {
             val currentlyUsed = currentRoot.getCalculatedSize().div(rootTotal.toDouble())
             fadeTextview(
@@ -165,7 +171,6 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
     fun showFolder(currentRoot: StoragePrototype) {
-
         currentElement = currentRoot
 
         if(currentRoot.parent==null) {
@@ -235,12 +240,20 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
     override fun scanComplete(result: StorageResult) {
-
         runOnUiThread{
             rootElement = result.rootElement
             if(rootElement != null) {
                 binding.folders.visibility = View.VISIBLE
                 binding.loading.visibility = View.INVISIBLE
+
+
+                binding.removableStorageWarning.visibility = if(result.scannedVolume?.isRemovable?:false) {View.VISIBLE
+                } else {
+                    View.GONE
+                }
+
+                (binding.dropdown as MaterialAutoCompleteTextView)
+                    .setText(result.scannedVolume?.getDescription(this), false)
                 showFolder(rootElement!!)
                 updateStaticElements(rootElement!!, result.total, result.free)
             }

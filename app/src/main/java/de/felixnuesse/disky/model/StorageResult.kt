@@ -1,12 +1,15 @@
 package de.felixnuesse.disky.model
 
+import android.os.storage.StorageVolume
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable
 class StorageResult {
 
+    @Transient var scannedVolume: StorageVolume? = null
     var rootElement: StoragePrototype? = null
 
     var free = 0L
