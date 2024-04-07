@@ -90,9 +90,10 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
         var storageList = arrayListOf<String>()
         storageManager.storageVolumes.forEach {
-            storageList.add(it.mediaStoreVolumeName?: it.uuid.toString())
+
+            storageList.add(it.getDescription(this))
             if(it.isPrimary) {
-                selectedStorage = it.mediaStoreVolumeName?: it.uuid.toString()
+                selectedStorage = it.getDescription(this)
             }
         }
 

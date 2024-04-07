@@ -155,7 +155,7 @@ class ScanService: Service(), ScannerCallback {
                 return it
             }
 
-            if((name == it.mediaStoreVolumeName) or (name == it.uuid.toString())){
+            if((name == it.getDescription(this)) or (name == it.uuid.toString())){
                 return it
             }
         }
