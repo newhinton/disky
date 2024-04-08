@@ -16,6 +16,7 @@ android {
         versionName = "1.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        setProperty("archivesBaseName",  "disky-release-v"+versionName)
     }
 
     buildFeatures {
