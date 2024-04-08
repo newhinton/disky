@@ -70,7 +70,8 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         setSupportActionBar(binding.toolbar)
 
         val sharedPref = applicationContext.getSharedPreferences(INTRO_PREFERENCES, Context.MODE_PRIVATE)
-        if (!sharedPref.getBoolean(intro_v1_0_0_completed, false)) {
+        val isIntroComplete = sharedPref.getBoolean(intro_v1_0_0_completed, false)
+        if (!isIntroComplete) {
             startActivity(Intent(this, IntroActivity::class.java))
             finish()
         }
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             insets
         }
 
-        var storageList = arrayListOf<String>()
+        val storageList = arrayListOf<String>()
         storageManager.storageVolumes.forEach {
 
             if(it.state == MEDIA_UNMOUNTED) {
@@ -114,11 +115,14 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             binding.storageSelector.visibility = View.GONE
         }
 
-        triggerDataUpdate()
+        if(isIntroComplete) {
+            triggerDataUpdate()
+        }
+
     }
 
     fun triggerDataUpdate() {
-
+        Log.e(tag(), "trigger update!")
         runOnUiThread {
             binding.folders.visibility = View.INVISIBLE
             binding.loading.visibility = View.VISIBLE
