@@ -10,7 +10,7 @@ import java.io.File
 
 class FsScanner(var mContext: Context, var callback: ScannerCallback?) {
 
-
+    var stopped = false
 
     fun scan(file: File): StoragePrototype {
         val root = StorageBranch(file.absolutePath+"/")
@@ -22,6 +22,9 @@ class FsScanner(var mContext: Context, var callback: ScannerCallback?) {
         val directory = File(folder.getParentPath())
         callback?.currentlyScanning(directory.absolutePath)
         directory.listFiles()?.forEach {
+            if(stopped){
+                return folder
+            }
             if(it.isFile){
                 val fe = StorageLeaf(it.name, StorageType.FILE, it.length())
                 fe.parent=folder

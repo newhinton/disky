@@ -31,6 +31,7 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import de.felixnuesse.disky.IntroActivity.Companion.INTRO_PREFERENCES
 import de.felixnuesse.disky.IntroActivity.Companion.intro_v1_0_0_completed
 import de.felixnuesse.disky.background.ScanService
+import de.felixnuesse.disky.background.ScanService.Companion.SCAN_ABORTED
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_COMPLETE
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
 import de.felixnuesse.disky.databinding.ActivityMainBinding
@@ -133,13 +134,18 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         lastScanStarted = System.currentTimeMillis()
         val reciever = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
-                CoroutineScope(Dispatchers.IO).launch{
-                    ScanService.getResult()?.let { scanComplete(it) }
-                    Log.e(tag(), "Scanning and processing took: ${System.currentTimeMillis()-lastScanStarted}ms")
+                if(intent.action == SCAN_ABORTED) {
+                    return
+                }
+                if(intent.action == SCAN_COMPLETE) {
+                    CoroutineScope(Dispatchers.IO).launch{
+                        ScanService.getResult()?.let { scanComplete(it) }
+                        Log.e(tag(), "Scanning and processing took: ${System.currentTimeMillis()-lastScanStarted}ms")
+                    }
                 }
             }
         }
-        LocalBroadcastManager.getInstance(this).registerReceiver(reciever, IntentFilter(SCAN_COMPLETE))
+        LocalBroadcastManager.getInstance(this).registerReceiver(reciever, IntentFilter(SCAN_COMPLETE).also { SCAN_ABORTED })
         val service = Intent(this, ScanService::class.java)
         service.putExtra(SCAN_STORAGE, selectedStorage)
         startForegroundService(service)
