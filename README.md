@@ -1,9 +1,18 @@
-# disky - Find your biggest diskspace thiefes!
+<div align="center">
+<p><img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" width="100"></p>
+
+---
+# disky
+### Find your biggest diskspace thiefes!
+
+---
+
 [![license: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/newhinton/disky/blob/master/LICENSE) [![Latest Downloads](https://img.shields.io/github/downloads/newhinton/disky/latest/total
 )](https://github.com/newhinton/disky/releases) [![GitHub release](https://img.shields.io/github/v/release/newhinton/disky?include_prereleases)](https://github.com/newhinton/disky/releases/latest)
-[![supportive flags](https://img.shields.io/badge/support-🇺🇦_🏳️‍⚧_🏳️‍🌈-4aad4e)](https://felixnuesse.de/disky)
+[![supportive flags](https://img.shields.io/badge/support-🇺🇦_🏳️‍⚧_🏳️‍🌈-4aad4e)](https://felixnuesse.de/disky) [![Android Lint](https://github.com/newhinton/timed-silence/actions/workflows/lint.yml/badge.svg)](https://github.com/newhinton/disky/actions/workflows/lint.yml)
 
-[![Android Lint](https://github.com/newhinton/timed-silence/actions/workflows/lint.yml/badge.svg)](https://github.com/newhinton/disky/actions/workflows/lint.yml)
+</div>
+
 -----------
 A filesystem analyzer that can show you the usage of your storage!
 <br/>
