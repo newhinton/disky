@@ -17,6 +17,7 @@
     <string name="intro_slide_done_title">Fertig!</string>
     <string name="intro_slide_done_description">Du bist bereit loszulegen!</string>
     <string name="intro_storage_title">Speicherzugriff</string>
+    <string name="intro_storage_description">Disky benötigt die Erlaubnis auf alle deine Dateien zuzugreifen. Bitte erlaube dies wenn gefragt, ansonsten wird diese Anwendung nicht richtig funktionieren.</string>
     <string name="intro_slide_usage_title">Nutzungsstatistiken</string>
     <string name="intro_slide_usage_description">Wir benötigen die Nutzungsstatistiken um die App-Größen zu finden.</string>
     <string name="contextmenu_file_open">Öffnen</string>
