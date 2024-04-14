@@ -11,6 +11,10 @@
 )](https://github.com/newhinton/disky/releases) [![GitHub release](https://img.shields.io/github/v/release/newhinton/disky?include_prereleases)](https://github.com/newhinton/disky/releases/latest)
 [![supportive flags](https://img.shields.io/badge/support-🇺🇦_🏳️‍⚧_🏳️‍🌈-4aad4e)](https://felixnuesse.de/disky) [![Android Lint](https://github.com/newhinton/timed-silence/actions/workflows/lint.yml/badge.svg)](https://github.com/newhinton/disky/actions/workflows/lint.yml)
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+alt="Get it on F-Droid"
+height="80">](de.felixnuesse.disky)
+
 </div>
 
 -----------
@@ -21,7 +25,7 @@ A filesystem analyzer that can show you the usage of your storage!
 Screenshots
 -----------
 
-<table>
+<table align="center">
   <tr style="border:none">
     <td style="border:none">
       <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="180vh" />
