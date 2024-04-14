@@ -39,6 +39,7 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
     override fun onResume() {
         enableEdgeToEdge()
         super.onResume()
+        setImmersiveMode()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

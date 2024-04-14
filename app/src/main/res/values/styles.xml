@@ -38,6 +38,7 @@
         <item name="android:popupElevation">0dp</item>
     </style>
 
+    <!-- Todo: Check if this is actually used -->
     <style name="MainMenu" parent="android:Widget.Material.PopupMenu">
         <item name="android:textColorPrimary">#fa0</item>
         <item name="android:iconTint">@color/intro_color2</item>
