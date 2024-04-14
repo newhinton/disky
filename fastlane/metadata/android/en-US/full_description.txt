@@ -6,6 +6,5 @@ Even larger devices can be scanned in mere seconds!
 <b>Multi Storage</b>
 All your local filesystems are supported!
 
-
 <b>Material You</b>
 Integrates nicely in your android experience!
