@@ -28,9 +28,9 @@
     <string name="donate_message">Möchtest du den Entwickler unterstützen? Dein Einsatz wird wertgeschätzt!</string>
     <string name="donate_button">Spenden!</string>
     <string name="uicontext_folder_rootdir">Du bist im Hauptverzeichnis.</string>
-    <string name="uicontext_folder_app">Aktuell betrachtest du %1$s. IEs nutzt %2$s!</string>
-    <string name="uicontext_folder_appcollection">Dies zeigt dir alle Apps, insgesamt %1$d. Sie brauchen %2$s!</string>
-    <string name="uicontext_folder_folder">Du hast den %1$s-Ordner gewählt. Er belegt %2$s deines Speichers!</string>
+    <string name="uicontext_folder_app">Aktuell betrachtest du %1$s. Es nutzt %2$s.</string>
+    <string name="uicontext_folder_appcollection">Dies zeigt dir alle Apps, insgesamt %1$d. Sie brauchen %2$s.</string>
+    <string name="uicontext_folder_folder">Du hast den %1$s-Ordner gewählt. Er belegt %2$s deines Speichers.</string>
     <string name="select_storage">Speicherort wählen</string>
     <string name="used">Benutzt:</string>
     <string name="calculating">Berechne…</string>
