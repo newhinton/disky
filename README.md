@@ -13,7 +13,7 @@
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
 alt="Get it on F-Droid"
-height="80">](de.felixnuesse.disky)
+height="80">](https://f-droid.org/packages/de.felixnuesse.disky)
 
 </div>
 
