@@ -151,7 +151,6 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
     override fun allowSlideLeave(id: String): Boolean {
         return when(id) {
             SLIDE_ID_STORAGE -> mPermissions.grantedStorage()
-            SLIDE_ID_NOTIFICATIONS -> mPermissions.grantedNotifications()
             SLIDE_ID_USAGEACCESS -> mPermissions.grantedUsageStats()
             else -> true
         }
