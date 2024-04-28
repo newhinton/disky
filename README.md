@@ -3,7 +3,7 @@
 
 ---
 # disky
-### Find your biggest diskspace thiefes!
+### Find your biggest disk space thieves!
 
 ---
 
