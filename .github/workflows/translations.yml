@@ -36,7 +36,7 @@ jobs:
         run: |
           FILES="${{ steps.changed-files.outputs.all_changed_files }}"
           echo "»$FILES<"
-          ./preprocessMetadata.sh $FILES
+          ./preprocessMetadata.sh "$FILES"
           TRANSLATION_FILE=$(./getChangedTranslationFile.sh $FILES)
           ./generateTranslationList.sh ${{ github.event.pull_request.commits }} $TRANSLATION_FILE
           TRANSLATIONS=$(cat generatedContent.txt)
