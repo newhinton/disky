@@ -1,0 +1,61 @@
+name: Translations
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '**/values-*/strings.xml'
+      - 'fastlane/metadata/android/**/*.txt'
+      - '!fastlane/metadata/android/en/*'
+
+jobs:
+  checkTranslations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare Check-Scripts
+        shell: sh
+        run: |
+          sudo apt-get install -y xmlstarlet
+          pip3 install alt-profanity-check
+          wget https://raw.githubusercontent.com/newhinton/ci-translation-scripts/main/convertCommitsToTranslations.sh
+          wget https://raw.githubusercontent.com/newhinton/ci-translation-scripts/main/checkProfanity.py
+          chmod +x ./convertCommitsToTranslations.sh
+          chmod +x ./checkProfanity.py
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+      - name: Verify build.gradle changed
+        id: changeDetection
+        run: |
+          FILES="${{ steps.changed-files.outputs.all_changed_files }}"
+          touch generatedContent.txt
+          ./convertCommitsToTranslations.sh ${{ github.event.pull_request.commits }} $FILES
+        shell: sh
+      - uses: fabasoad/translation-action@main
+        id: google-translate
+        with:
+          provider: google
+          lang: auto-en
+          source: ./generatedContent.txt
+      - name: Print the result
+        run: |
+          echo "Translations are: '${{ steps.google-translate.outputs.text }}'"
+          echo "${{ steps.google-translate.outputs.text }}" | sed 's/ ; /\n/g' > translated_texts.txt
+          ./checkProfanity.py translated_texts.txt
+        shell: sh
+      - name: Upload Raw Translations
+        uses: actions/upload-artifact@v4
+        with:
+          name: Translations
+          path: |
+            changed_texts.txt
+            translated_texts.txt
+            suspicious_texts.txt
+      - name: Fail if there are suspected profanities
+        run: |
+          if [ -s "suspicious_texts.txt" ]; then
+            echo "We found suspicious translations. Please check!"
+            exit 1
+          fi
+        shell: sh
