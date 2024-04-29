@@ -24,7 +24,7 @@
     <string name="contextmenu_file_openfolder">Öffne in Ordner</string>
     <string name="mainmenu_reload">Neu Scannen</string>
     <string name="mainmenu_settings">Einstellungen</string>
-    <string name="reload">Re-Scanne Dateien...</string>
+    <string name="reload">Re-Scanne Dateien…</string>
     <string name="donate_message">Möchtest du den Entwickler unterstützen? Dein Einsatz wird wertgeschätzt!</string>
     <string name="donate_button">Spenden!</string>
     <string name="uicontext_folder_rootdir">Du bist im Hauptverzeichnis.</string>
@@ -35,4 +35,5 @@
     <string name="used">Benutzt:</string>
     <string name="calculating">Berechne…</string>
     <string name="free">Frei:</string>
+    <string name="warning_removable_storage">Warnung! Entfernbarer Speicher ist unzuverlässig!</string>
 </resources>

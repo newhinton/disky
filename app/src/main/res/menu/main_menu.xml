@@ -9,14 +9,14 @@
         android:icon="@drawable/icon_cache"
         android:title="@string/mainmenu_reload"
         app:iconTint="?attr/colorOnSurface"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/icon_settings"
-        app:iconTint="?attr/colorOnSurface"
         android:title="@string/mainmenu_settings"
-        app:showAsAction="always" />
+        app:iconTint="?attr/colorOnSurface"
+        app:showAsAction="ifRoom" />
 </menu>

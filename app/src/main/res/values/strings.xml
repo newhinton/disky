@@ -37,5 +37,6 @@
     <string name="used">Used:</string>
     <string name="calculating">Calculating…</string>
     <string name="free">Free:</string>
+    <string name="warning_removable_storage">Warning! Removable Storage will be unreliable!</string>
 
 </resources>
