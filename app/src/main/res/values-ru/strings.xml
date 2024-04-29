@@ -34,5 +34,6 @@
     <string name="used">Использовано:</string>
     <string name="calculating">Подсчёт…</string>
     <string name="free">Свободно:</string>
+    <string name="warning_removable_storage">Предупреждение! Съемное хранилище будет ненадежным!</string>
 
 </resources>
