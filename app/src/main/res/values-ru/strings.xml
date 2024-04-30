@@ -1,0 +1,39 @@
+<resources>
+    <string name="apppackage_size_data">Пользовательские данные</string>
+    <string name="apppackage_size_externalcache">Внешний кеш</string>
+    <string name="apppackage_size_cache">Кеш</string>
+    <string name="apps">Приложения</string>
+
+    <string name="foreground_service_notification_channel_name">Сервис сканирования Disky</string>
+    <string name="foreground_service_notification_title">Сервис сканирования Disky</string>
+    <string name="foreground_service_notification_description">Этот канал показывает прогресс сканирования. Вы можете безопасно скрыть это уведомление.</string>
+    <string name="contextmenu_folder_open">Открыть Папку</string>
+
+    <string name="intro_slide_welcome_title">Добро пожаловать!</string>
+    <string name="intro_slide_welcome_description">Мы поможем вам найти ваши завалы на диске. Но сначала позвольте нам настроить это приложение!</string>
+    <string name="intro_slide_notification_title">Получать оповещения!</string>
+    <string name="intro_slide_notification_description">Мы хотим показать вам уведомления когда мы сканируем ваши файлы. Мы не будем докучать вам!</string>
+    <string name="intro_slide_done_title">Сделано!</string>
+    <string name="intro_slide_done_description">Теперь вы готовы начать!</string>
+    <string name="intro_storage_title">Доступ к хранилищу</string>
+    <string name="intro_storage_description">Disky полагается на разрешение на доступ ко всем файлам. Пожалуйста, предоставьте доступ к хранилищу при запросе, иначе приложение не будет работать правильно.</string>
+    <string name="intro_slide_usage_title">Статистика использования</string>
+    <string name="intro_slide_usage_description">Мы используем статистику использования для вычисления использования диска по вашим приложениям.</string>
+    <string name="contextmenu_file_open">Открыть</string>
+    <string name="contextmenu_file_openfolder">Открыть в папке</string>
+    <string name="mainmenu_reload">Перегрузить</string>
+    <string name="mainmenu_settings">Настройки</string>
+    <string name="reload">Пересканирую файлы…</string>
+    <string name="donate_message">Вы хотите поддержать разработчика? Буду очень благодарен за ваше пожертвование!</string>
+    <string name="donate_button">Пожертвовать!</string>
+    <string name="uicontext_folder_rootdir">Вы находитесь в корневой папке.</string>
+    <string name="uicontext_folder_app">В настоящее время вы смотрите на %1$s. Она использует %2$s.</string>
+    <string name="uicontext_folder_appcollection">Тут перечислены все ваши установленные приложения, всего их %1$d. Вместе они используют %2$s.</string>
+    <string name="uicontext_folder_folder">Вы выбирали папку %1$s. Её содержимое использует %2$s вашего хранилища.</string>
+    <string name="select_storage">Выберете хранилище</string>
+    <string name="used">Использовано:</string>
+    <string name="calculating">Подсчёт…</string>
+    <string name="free">Свободно:</string>
+    <string name="warning_removable_storage">Предупреждение! Съемное хранилище будет ненадежным!</string>
+
+</resources>
