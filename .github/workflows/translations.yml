@@ -40,9 +40,12 @@ jobs:
           source: ./generatedContent.txt
       - name: Print the result
         run: |
+          echo "#######"
+          cat generatedContent.txt
           echo "Translations are: '${{ steps.google-translate.outputs.text }}'"
           echo "${{ steps.google-translate.outputs.text }}" | sed 's/ ; /\n/g' > translated_texts.txt
           ./checkProfanity.py translated_texts.txt
+          cat suspicious_texts.txt
         shell: sh
       - name: Upload Raw Translations
         uses: actions/upload-artifact@v4
