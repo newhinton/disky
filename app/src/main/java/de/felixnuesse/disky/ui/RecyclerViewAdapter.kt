@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
@@ -126,7 +128,9 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
             return when (item.itemId) {
                 R.id.action_folder_open -> {
                     val uri = Uri.parse(leafFolder!!.getParentPath())
-                    binding.root.context.startActivity(Intent(Intent.ACTION_VIEW).setDataAndType(uri, "*/*"))
+                    val explorerIntent = Intent(Intent.ACTION_VIEW)
+                    explorerIntent.setDataAndType(uri, DocumentsContract.Document.MIME_TYPE_DIR)
+                    binding.root.context.startActivity(explorerIntent)
                     true
                 }
                 else -> false
@@ -177,15 +181,20 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
             return when (item.itemId) {
                 R.id.action_file_open -> {
                     val uri = Uri.parse(leafItem!!.getParentPath())
-                    binding.root.context.startActivity(Intent(Intent.ACTION_VIEW).setDataAndType(uri, "*/*"))
+                    val type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(leafItem!!.name.split('.')[1])?: "*/*"
+                    binding.root.context.startActivity(Intent(Intent.ACTION_VIEW).setDataAndType(uri, type))
                     true
                 }
                 R.id.action_file_openfolder -> {
                     val uri = Uri.parse(File(leafItem!!.getParentPath()).parent)
-                    binding.root.context.startActivity(Intent(Intent.ACTION_VIEW).setDataAndType(uri, "*/*"))
+                    val explorerIntent = Intent(Intent.ACTION_VIEW)
+                    explorerIntent.setDataAndType(uri, DocumentsContract.Document.MIME_TYPE_DIR)
+                    binding.root.context.startActivity(explorerIntent)
                     true
                 }
-                else -> false
+                else -> {
+                    false
+                }
             }
         }
     }
