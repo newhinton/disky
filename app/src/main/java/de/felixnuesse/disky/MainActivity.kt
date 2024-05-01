@@ -34,6 +34,7 @@ import de.felixnuesse.disky.background.ScanService
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_ABORTED
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_COMPLETE
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
+import de.felixnuesse.disky.background.ScanService.Companion.SCAN_SUBDIR
 import de.felixnuesse.disky.databinding.ActivityMainBinding
 import de.felixnuesse.disky.extensions.getAppname
 import de.felixnuesse.disky.extensions.readableFileSize
@@ -119,7 +120,6 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         if(isIntroComplete) {
             triggerDataUpdate()
         }
-
     }
 
     fun triggerDataUpdate() {
@@ -148,6 +148,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         LocalBroadcastManager.getInstance(this).registerReceiver(reciever, IntentFilter(SCAN_COMPLETE).also { SCAN_ABORTED })
         val service = Intent(this, ScanService::class.java)
         service.putExtra(SCAN_STORAGE, selectedStorage)
+        service.putExtra(SCAN_SUBDIR, currentElement?.getParentPath())
         startForegroundService(service)
     }
 
@@ -251,21 +252,28 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
     override fun scanComplete(result: StorageResult) {
         runOnUiThread{
-            rootElement = result.rootElement
-            if(rootElement != null) {
+            var internalRootElement = result.rootElement
+            if(internalRootElement != null) {
                 binding.folders.visibility = View.VISIBLE
                 binding.loading.visibility = View.INVISIBLE
 
 
-                binding.removableStorageWarning.visibility = if(result.scannedVolume?.isRemovable?:false) {View.VISIBLE
+                binding.removableStorageWarning.visibility = if(result.scannedVolume?.isRemovable == true) {
+                    View.VISIBLE
                 } else {
                     View.GONE
                 }
 
                 (binding.dropdown as MaterialAutoCompleteTextView)
                     .setText(result.scannedVolume?.getDescription(this), false)
-                showFolder(rootElement!!)
-                updateStaticElements(rootElement!!, result.total, result.free)
+                if(!result.isPartialScan) {
+                    rootElement = internalRootElement
+                    showFolder(rootElement!!)
+                    updateStaticElements(rootElement!!, result.total, result.free)
+                } else {
+                    rootElement?.mergePartialTree(internalRootElement)
+                    currentElement?.let { changeFolder(it) }
+                }
             }
         }
     }
