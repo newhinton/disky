@@ -29,7 +29,13 @@ sealed class StoragePrototype(var name: String, var storageType: StorageType = S
 
     fun getParentPath(): String {
         if(parent != null) {
-            return parent!!.getParentPath()+"/"+name
+            var path = parent!!.getParentPath()
+            path = if(path.endsWith("/")) {
+                path + name
+            } else {
+                path + "/" + name
+            }
+            return path
         }
         return name
     }
@@ -48,12 +54,52 @@ sealed class StoragePrototype(var name: String, var storageType: StorageType = S
             children.add(it)
         }
     }
+    fun addChildren(newchildren: ArrayList<StoragePrototype>) {
+        newchildren.forEach {
+            it.parent=this
+            children.add(it)
+        }
+    }
 
     fun fixChildren() {
         children.forEach {
             it.fixChildren()
             it.parent=this
         }
+    }
+
+    /**
+     * This merges a partial storage tree into this one.
+     * Its a breath-first approach.
+     *
+     * For generic items, children are replaced for the found root-partial-tree.
+     * For other items, special handling is applied. (Apps are replaced in-place)
+     *
+     * @return Boolean True, if it found a place to merge
+     */
+    fun mergePartialTree(partialTree: StoragePrototype): Boolean{
+        children.forEach {
+            if(it.getParentPath() == partialTree.getParentPath()) {
+                it.clearChildren()
+
+                when(it.storageType) {
+                    StorageType.APP_COLLECTION -> {
+                        // it will always contain the "app"-folder. Remove it, and add children
+                        it.addChildren(partialTree.getChildren()[0].getChildren())
+                    }
+                    else -> {
+                        it.addChildren(partialTree.getChildren())
+                    }
+                }
+                return true
+            }
+        }
+        children.forEach {
+            if(it.mergePartialTree(partialTree)){
+                return true
+            }
+        }
+        return false
     }
 
     fun asJsonString(): String {
