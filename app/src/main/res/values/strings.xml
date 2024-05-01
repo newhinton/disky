@@ -27,6 +27,7 @@
     <string name="mainmenu_reload">Reload</string>
     <string name="mainmenu_settings">Settings</string>
     <string name="reload">Re-Scanning Files…</string>
+    <string name="reload_blocked_because_inapps">Refeshing is not possible in an app!</string>
     <string name="donate_message">Do you want to support the developer? Your contribution is greatly appreciated!</string>
     <string name="donate_button">Donate!</string>
     <string name="uicontext_folder_rootdir">You are in the root-directory.</string>
@@ -38,5 +39,11 @@
     <string name="calculating">Calculating…</string>
     <string name="free">Free:</string>
     <string name="warning_removable_storage">Warning! Removable Storage will be unreliable!</string>
+    <string name="contextmenu_delete">Delete</string>
+    <string name="yes_delete">Yes, delete permanently!</string>
+    <string name="no_keep">No, keep it.</string>
+    <string name="delete_confirmation_text">Are you sure you want to delete \"%1$s\"? This cannot be undone!</string>
+    <string name="delete_file_title">Delete File</string>
+    <string name="delete_folder_title">Delete Folder</string>
 
 </resources>

@@ -33,6 +33,7 @@ import de.felixnuesse.disky.IntroActivity.Companion.intro_v1_0_0_completed
 import de.felixnuesse.disky.background.ScanService
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_ABORTED
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_COMPLETE
+import de.felixnuesse.disky.background.ScanService.Companion.SCAN_REFRESH_REQUESTED
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_SUBDIR
 import de.felixnuesse.disky.databinding.ActivityMainBinding
@@ -117,24 +118,20 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             binding.storageSelector.visibility = View.GONE
         }
 
+        registerReciever()
         if(isIntroComplete) {
             triggerDataUpdate()
         }
     }
 
-    fun triggerDataUpdate() {
-        Log.e(tag(), "trigger update!")
-        runOnUiThread {
-            binding.folders.visibility = View.INVISIBLE
-            binding.loading.visibility = View.VISIBLE
-            fadeTextview(getString(R.string.calculating), binding.freeText)
-            fadeTextview(getString(R.string.calculating), binding.usedText)
-        }
-
-        lastScanStarted = System.currentTimeMillis()
+    fun registerReciever() {
         val reciever = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
                 if(intent.action == SCAN_ABORTED) {
+                    return
+                }
+                if(intent.action == SCAN_REFRESH_REQUESTED) {
+                    requestDataRefresh()
                     return
                 }
                 if(intent.action == SCAN_COMPLETE) {
@@ -145,7 +142,21 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 }
             }
         }
-        LocalBroadcastManager.getInstance(this).registerReceiver(reciever, IntentFilter(SCAN_COMPLETE).also { SCAN_ABORTED })
+        var filter = IntentFilter(SCAN_COMPLETE)
+        filter.addAction(SCAN_ABORTED)
+        filter.addAction(SCAN_REFRESH_REQUESTED)
+        LocalBroadcastManager.getInstance(this).registerReceiver(reciever, filter)
+    }
+    fun triggerDataUpdate() {
+        Log.e(tag(), "trigger update!")
+        runOnUiThread {
+            binding.folders.visibility = View.INVISIBLE
+            binding.loading.visibility = View.VISIBLE
+            fadeTextview(getString(R.string.calculating), binding.freeText)
+            fadeTextview(getString(R.string.calculating), binding.usedText)
+        }
+
+        lastScanStarted = System.currentTimeMillis()
         val service = Intent(this, ScanService::class.java)
         service.putExtra(SCAN_STORAGE, selectedStorage)
         service.putExtra(SCAN_SUBDIR, currentElement?.getParentPath())
@@ -291,20 +302,23 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             return true
         }
         if (id == R.id.action_reload) {
-            when(currentElement?.storageType) {
-                StorageType.APP -> {
-                    Toast.makeText(this, R.string.reload_blocked_because_inapps, Toast.LENGTH_LONG).show()
-                }
-                else -> {
-                    Toast.makeText(this, R.string.reload, Toast.LENGTH_LONG).show()
-                    triggerDataUpdate()
-                }
-            }
+            requestDataRefresh()
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
+    private fun requestDataRefresh() {
+        when(currentElement?.storageType) {
+            StorageType.APP -> {
+                Toast.makeText(this, R.string.reload_blocked_because_inapps, Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                Toast.makeText(this, R.string.reload, Toast.LENGTH_SHORT).show()
+                triggerDataUpdate()
+            }
+        }
+    }
     private fun fadeTextview(text: String, view: TextView) {
         if(view.text == text) {
             return

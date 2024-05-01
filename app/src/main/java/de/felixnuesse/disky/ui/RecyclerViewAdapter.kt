@@ -22,6 +22,7 @@ import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageType
+import de.felixnuesse.disky.ui.dialogs.DeleteDialog
 import java.io.File
 
 
@@ -63,6 +64,7 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
 
                     if(storageType == StorageType.FOLDER) {
                         holder.leafFolder = folders[position] as StorageBranch
+                        enableDeletion()
                     }
                     setChangeFolderCallbackTarget(this)
                 }
@@ -90,6 +92,7 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                         }
                         StorageType.FILE -> {
                             leafItem = folders[position] as StorageLeaf
+                            enableDeletion()
                         }
                         else -> {}
                     }
@@ -111,17 +114,26 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
     inner class FolderView(var binding: ItemFolderEntryBinding): RecyclerView.ViewHolder(binding.root), PopupMenu.OnMenuItemClickListener {
 
         var leafFolder: StorageBranch? = null
+        private var popupMenuEnableDeletion = false
 
         init {
             binding.root.setOnLongClickListener {
+                if(leafFolder == null) {
+                    return@setOnLongClickListener true
+                }
                 val context = binding.root.context
-                val popup = PopupMenu(context, it)
+                var popup = PopupMenu(context, it)
                 popup.setOnMenuItemClickListener(this)
                 popup.menuInflater.inflate(R.menu.context_folder_menu, popup.menu)
+                popup.menu.findItem(R.id.action_folder_delete).setVisible(popupMenuEnableDeletion)
                 popup.setForceShowIcon(true)
                 popup.show()
                 true
             }
+        }
+
+        fun enableDeletion() {
+            popupMenuEnableDeletion = true
         }
 
         override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -131,6 +143,10 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                     val explorerIntent = Intent(Intent.ACTION_VIEW)
                     explorerIntent.setDataAndType(uri, DocumentsContract.Document.MIME_TYPE_DIR)
                     binding.root.context.startActivity(explorerIntent)
+                    true
+                }
+                R.id.action_folder_delete -> {
+                    DeleteDialog(mContext, File(leafFolder!!.getParentPath())).askDelete()
                     true
                 }
                 else -> false
@@ -149,28 +165,31 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
         }
     }
     inner class LeafView(var binding: ItemLeafEntryBinding): RecyclerView.ViewHolder(binding.root), PopupMenu.OnMenuItemClickListener {
-        fun setImage(resource: Int) {
-            binding.leafImage.setImageDrawable(AppCompatResources.getDrawable(mContext, resource))
-        }
 
         var leafItem: StorageLeaf? = null
-
-        fun setChangeFolderCallbackTarget(folder: StoragePrototype) {
-            binding.linearLayout.setOnClickListener {
-                callback?.changeFolder(folder)
-            }
-        }
+        private var popupMenuEnableDeletion = false
 
         init {
             binding.root.setOnLongClickListener {
+                if(leafItem == null) {
+                    return@setOnLongClickListener true
+                }
                 val context = binding.root.context
-                val popup = PopupMenu(context, it)
+                var popup = PopupMenu(context, it)
                 popup.setOnMenuItemClickListener(this)
                 popup.menuInflater.inflate(R.menu.context_file_menu, popup.menu)
+                popup.menu.findItem(R.id.action_file_delete).setVisible(popupMenuEnableDeletion)
                 popup.setForceShowIcon(true)
                 popup.show()
                 true
             }
+        }
+
+        fun enableDeletion() {
+            popupMenuEnableDeletion = true
+        }
+        fun setImage(resource: Int) {
+            binding.leafImage.setImageDrawable(AppCompatResources.getDrawable(mContext, resource))
         }
 
         override fun onMenuItemClick(item: MenuItem): Boolean {
@@ -192,11 +211,14 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                     binding.root.context.startActivity(explorerIntent)
                     true
                 }
+                R.id.action_file_delete -> {
+                    DeleteDialog(mContext, File(leafItem!!.getParentPath())).askDelete()
+                    true
+                }
                 else -> {
                     false
                 }
             }
         }
     }
-
 }

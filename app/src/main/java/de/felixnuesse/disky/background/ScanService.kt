@@ -42,6 +42,7 @@ class ScanService: Service(), ScannerCallback {
         val SCAN_SUBDIR = "SCAN_SUBDIR"
         val SCAN_COMPLETE = "SCAN_COMPLETE"
         val SCAN_ABORTED = "SCAN_ABORTED"
+        val SCAN_REFRESH_REQUESTED = "SCAN_REFRESH_REQUESTED"
         private val NOTIFICATION_CHANNEL_ID = "general_notification_channel"
         private val NOTIFICATION_ID = 5691
         private var storageResult: StorageResult? = null
