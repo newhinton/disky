@@ -39,12 +39,12 @@ class ScanService: Service(), ScannerCallback {
 
     companion object {
         val SCAN_STORAGE = "SCAN_STORAGE"
+        val SCAN_SUBDIR = "SCAN_SUBDIR"
         val SCAN_COMPLETE = "SCAN_COMPLETE"
         val SCAN_ABORTED = "SCAN_ABORTED"
         private val NOTIFICATION_CHANNEL_ID = "general_notification_channel"
         private val NOTIFICATION_ID = 5691
         private var storageResult: StorageResult? = null
-        private var runningService: ScanService? = null
 
         /**
          * This method is destructive. The result can be fetched only once.
@@ -89,11 +89,12 @@ class ScanService: Service(), ScannerCallback {
         CoroutineScope(Dispatchers.IO).launch{
             val now = System.currentTimeMillis()
             val storageToScan = intent?.getStringExtra(SCAN_STORAGE)
+            val subfolder = intent?.getStringExtra(SCAN_SUBDIR)?: ""
             if(storageToScan.isNullOrBlank()) {
                 Log.e(tag(), "No valid storage name was provided!")
                 return@launch
             }
-            val result = scan(storageToScan, serviceRunId)
+            val result = scan(storageToScan, serviceRunId, subfolder)
             Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-now}ms ${wasStopped(thisServiceRunId)}")
             if(wasStopped(thisServiceRunId)) {
                 val resultIntent = Intent(SCAN_ABORTED)
@@ -133,31 +134,36 @@ class ScanService: Service(), ScannerCallback {
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
     }
 
-    private fun scan(storage: String, id: Long): StorageResult? {
+    private fun scan(storage: String, id: Long, subpath: String): StorageResult? {
         val selectedStorage = findStorageByNameOrUUID(storage)
         val rootElement: StoragePrototype?
 
-        Log.e(tag(), "scan storage: ${selectedStorage?.getDescription(this)}")
+        val subfolder = subpath.replace(selectedStorage?.directory!!.absolutePath+"/", "")
 
-        fsScanner = FsScanner(this, this)
-        if(selectedStorage?.directory == null) {
+        fsScanner = FsScanner(this)
+        if(selectedStorage.directory == null) {
             Log.e(tag(), "There was an error loading data!")
             return null
         }
-        rootElement = fsScanner?.scan(selectedStorage.directory!!)
+        rootElement = fsScanner?.scan(selectedStorage.directory!!, subfolder)
         if(wasStopped(id)) {
             return null
         }
 
+        val isAppfolderUpdate = subfolder.isBlank() || subfolder == getString(R.string.apps)
         // Dont scan for system and apps on external sd card
         if(selectedStorage.isPrimary && rootElement != null) {
-            AppScanner(this).scanApps(rootElement, selectedStorage)
-            if(wasStopped(id)) {
-                return null
+            if(isAppfolderUpdate) {
+                AppScanner(this).scanApps(rootElement, selectedStorage)
+                if(wasStopped(id)) {
+                    return null
+                }
             }
-            SystemScanner(this).scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
-            if(wasStopped(id)) {
-                return null
+            if (subfolder.isBlank()) {
+                SystemScanner(this).scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
+                if(wasStopped(id)) {
+                    return null
+                }
             }
         }
 
@@ -167,6 +173,7 @@ class ScanService: Service(), ScannerCallback {
         result.free = getFreeSpace(selectedStorage)
         result.used = rootElement?.getCalculatedSize()?: 0
         result.total = getTotalSpace(selectedStorage)
+        result.isPartialScan = subfolder.isNotBlank()
         return result
     }
 
