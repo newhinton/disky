@@ -291,8 +291,15 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             return true
         }
         if (id == R.id.action_reload) {
-            Toast.makeText(this, R.string.reload, Toast.LENGTH_LONG).show()
-            triggerDataUpdate()
+            when(currentElement?.storageType) {
+                StorageType.APP -> {
+                    Toast.makeText(this, R.string.reload_blocked_because_inapps, Toast.LENGTH_LONG).show()
+                }
+                else -> {
+                    Toast.makeText(this, R.string.reload, Toast.LENGTH_LONG).show()
+                    triggerDataUpdate()
+                }
+            }
             return true
         }
         return super.onOptionsItemSelected(item)
