@@ -47,6 +47,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    lint {
+        disable += "MissingTranslation"
+    }
 }
 
 dependencies {
