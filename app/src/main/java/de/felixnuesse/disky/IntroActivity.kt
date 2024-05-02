@@ -37,6 +37,8 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
         null
     }
 
+    private var mNotificationsRequested = false
+
 
     override fun onResume() {
         enableEdgeToEdge()
@@ -150,6 +152,7 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
         return when(id) {
             SLIDE_ID_STORAGE -> mPermissions.grantedStorage()
             SLIDE_ID_USAGEACCESS -> mPermissions.grantedUsageStats()
+            SLIDE_ID_NOTIFICATIONS -> mNotificationsRequested
             else -> true
         }
     }
@@ -161,6 +164,7 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
             SLIDE_ID_USAGEACCESS -> mPermissions.requestUsageStats(this)
             SLIDE_ID_NOTIFICATIONS -> {
                 notificationPermission?.launch(Manifest.permission.POST_NOTIFICATIONS)
+                mNotificationsRequested = true
             }
             else -> {}
         }
