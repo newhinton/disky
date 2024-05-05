@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name" translatable="false">disky</string>
+    <string name="apppackage_size_app" translatable="false">Apk</string>
+    <string name="apppackage_size_data">بيانات المستخدم</string>
+    <string name="apppackage_size_externalcache">ذاكرة التخزين المؤقت الخارجية</string>
+    <string name="apppackage_size_cache">ذاكرة تخزين مؤقتة</string>
+    <string name="apps">التطبيقات</string>
+    <string name="system" translatable="false">Android OS</string>
+
+    <string name="foreground_service_notification_channel_name">خدمة فحص Disky</string>
+    <string name="foreground_service_notification_title">خدمة فحص Disky</string>
+    <string name="foreground_service_notification_description">تعرض هذه القناة تقدم الفحص. يمكنك إخفاء هذا الإشعار بأمان.</string>
+    <string name="contextmenu_folder_open">فتح المجلد</string>
+
+    <string name="intro_slide_welcome_title">مرحباً!</string>
+    <string name="intro_slide_welcome_description">سوف نساعدك في العثور على Disk-hogs الخاصة بك. ولكن أولا، دعونا إعداد هذا التطبيق!</string>
+    <string name="intro_slide_notification_title">الحصول على إخطار!</string>
+    <string name="intro_slide_notification_description">نريد أن نظهر لك إشعارات عندما نقوم بفحص ملفاتك. لن نقوم بإرسال بريد عشوائي إليك!</string>
+    <string name="intro_slide_done_title">تم!</string>
+    <string name="intro_slide_done_description">أنت الآن جاهز للبدء!</string>
+    <string name="intro_storage_title">الوصول إلى التخزين</string>
+    <string name="intro_storage_description">يعتمد Disky على صلاحيات الوصول إلى كافة الملفات. يرجى منح حق الوصول إلى مساحة التخزين عندما يُطلب منك ذلك، وإلا فلن يعمل التطبيق بشكل صحيح.</string>
+    <string name="intro_slide_usage_title">إحصائيات الاستخدام</string>
+    <string name="intro_slide_usage_description">نحن نستخدم إحصائيات الاستخدام لحساب استخدام القرص بواسطة تطبيقاتك.</string>
+    <string name="contextmenu_file_open">فتح</string>
+    <string name="contextmenu_file_openfolder">فتح في المجلد</string>
+    <string name="mainmenu_reload">إعادة تحميل</string>
+    <string name="mainmenu_settings">الإعدادات</string>
+    <string name="reload">إعادة فحص الملفات...</string>
+    <string name="reload_blocked_because_inapps">إعادة التحميل غير ممكن في التطبيق!</string>
+    <string name="donate_message">هل تريد دعم المطور؟ مساهمتك موضع تقدير كبير!</string>
+    <string name="donate_button">تبرع!</string>
+    <string name="uicontext_folder_rootdir">أنت في الدليل الجذر.</string>
+    <string name="uicontext_folder_app">حاليًا، أنت تنظر إلى %1$s. ويستخدم %2$s.</string>
+    <string name="uicontext_folder_appcollection">يسرد هذا جميع تطبيقاتك المثبتة، إجمالي %1$d. يستخدمون %2$s.</string>
+    <string name="uicontext_folder_folder">لقد اخترت المجلد %1$s. يستخدم محتواه %2$s من سعة التخزين لديك.</string>
+    <string name="select_storage">حدد وحدة التخزين</string>
+    <string name="used">المستخدم:</string>
+    <string name="calculating">يتم الحساب...</string>
+    <string name="free">الحر:</string>
+    <string name="warning_removable_storage">تحذير! التخزين القابل للإزالة سيكون غير موثوق به!</string>
+    <string name="contextmenu_delete">حذف</string>
+    <string name="yes_delete">نعم، احذف نهائيًا!</string>
+    <string name="no_keep">لا، احتفظ به.</string>
+    <string name="delete_confirmation_text">هل أنت متأكد أنك تريد حذف \"%1$s\"؟ لا يمكن التراجع عن هذا !</string>
+    <string name="delete_file_title">حذف الملف</string>
+    <string name="delete_folder_title">حذف المجلد</string>
+
+</resources>
