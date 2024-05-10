@@ -12,7 +12,7 @@
     <string name="foreground_service_notification_description">This channel shows scan progress. You may safely hide this notification.</string>
     <string name="foreground_service_notification_starting_message">We are preparing to scan…</string>
     <string name="foreground_service_notification_short_message">Current Progress: %1$d%%</string>
-    <string name="foreground_service_notification_long_message">Current Progress: %1$d \n %2$s%%</string>
+    <string name="foreground_service_notification_long_message">Current Progress: %1$d%% \n %2$s</string>
     <string name="contextmenu_folder_open">Open Folder</string>
 
     <string name="intro_slide_welcome_title">Welcome!</string>
