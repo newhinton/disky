@@ -37,10 +37,15 @@ class ScanService: Service(), ScannerCallback {
     private var serviceRunId = 0L
     private var fsScanner: FsScanner? = null
 
+    private var processedSize = 0L
+    private var maxSize = 0L
+    private var lastReportedPercentage = 0
+
     companion object {
         val SCAN_STORAGE = "SCAN_STORAGE"
         val SCAN_COMPLETE = "SCAN_COMPLETE"
         val SCAN_ABORTED = "SCAN_ABORTED"
+        val SCAN_PROGRESSED = "SCAN_PROGRESSED"
         private val NOTIFICATION_CHANNEL_ID = "general_notification_channel"
         private val NOTIFICATION_ID = 5691
         private var storageResult: StorageResult? = null
@@ -70,11 +75,11 @@ class ScanService: Service(), ScannerCallback {
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel()
 
-        val message = getString(R.string.foreground_service_notification_description)
+        val message = getString(R.string.foreground_service_notification_starting_message)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(NOTIFICATION_ID, getNotification(message).build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
+            startForeground(NOTIFICATION_ID, getNotification(message, message).build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
         } else {
-            startForeground(NOTIFICATION_ID, getNotification(message).build())
+            startForeground(NOTIFICATION_ID, getNotification(message, message).build())
         }
 
 
@@ -84,6 +89,7 @@ class ScanService: Service(), ScannerCallback {
         }
         serviceRunId = thisServiceRunId
 
+        processedSize = 0L
 
         val context = this
         CoroutineScope(Dispatchers.IO).launch{
@@ -123,12 +129,13 @@ class ScanService: Service(), ScannerCallback {
         notificationManager.createNotificationChannel(channel)
     }
 
-    private fun getNotification(message: String): NotificationCompat.Builder {
+    private fun getNotification(message: String, bigmessage: String): NotificationCompat.Builder {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setContentTitle(getString(R.string.foreground_service_notification_title))
             .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(bigmessage))
             .setSmallIcon(R.drawable.icon_servicelogo)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
     }
@@ -138,6 +145,7 @@ class ScanService: Service(), ScannerCallback {
         val rootElement: StoragePrototype?
 
         Log.e(tag(), "scan storage: ${selectedStorage?.getDescription(this)}")
+        maxSize = selectedStorage?.let { getTotalSpace(it) }?:0L
 
         fsScanner = FsScanner(this, this)
         if(selectedStorage?.directory == null) {
@@ -151,11 +159,11 @@ class ScanService: Service(), ScannerCallback {
 
         // Dont scan for system and apps on external sd card
         if(selectedStorage.isPrimary && rootElement != null) {
-            AppScanner(this).scanApps(rootElement, selectedStorage)
+            AppScanner(this, this).scanApps(rootElement, selectedStorage)
             if(wasStopped(id)) {
                 return null
             }
-            SystemScanner(this).scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
+            SystemScanner(this, this).scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
             if(wasStopped(id)) {
                 return null
             }
@@ -198,8 +206,28 @@ class ScanService: Service(), ScannerCallback {
     }
 
     override fun currentlyScanning(item: String) {
-        val notification = getNotification(item)
+        val shorttext = getString(R.string.foreground_service_notification_short_message, lastReportedPercentage)
+        val longtext = getString(
+            R.string.foreground_service_notification_long_message,
+            lastReportedPercentage,
+            item
+        )
+        val notification = getNotification(shorttext, longtext)
         notificationManager.notify(NOTIFICATION_ID, notification.build())
+    }
+
+    override fun foundLeaf(size: Long) {
+
+        processedSize += size
+        val perc = ((processedSize.div(maxSize.toFloat()))*100).toInt()
+
+        if(perc != lastReportedPercentage) {
+            lastReportedPercentage = perc
+            val progress = Intent(SCAN_PROGRESSED)
+            progress.putExtra(SCAN_PROGRESSED, perc)
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(progress)
+        }
+
     }
 
     private fun stopScan() {

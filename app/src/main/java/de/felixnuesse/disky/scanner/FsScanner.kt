@@ -29,6 +29,7 @@ class FsScanner(var mContext: Context, var callback: ScannerCallback?) {
                 val fe = StorageLeaf(it.name, StorageType.FILE, it.length())
                 fe.parent=folder
                 folder.addChildren(fe)
+                callback?.foundLeaf(fe.getCalculatedSize())
             }
             if(it.isDirectory){
                 val storageElementEntry = StorageBranch(it.name, StorageType.FOLDER)

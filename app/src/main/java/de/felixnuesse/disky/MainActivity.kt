@@ -5,10 +5,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment.MEDIA_UNMOUNTED
 import android.os.storage.StorageManager
 import android.util.Log
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,12 +29,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.airbnb.lottie.LottieProperty
+import com.airbnb.lottie.model.KeyPath
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import de.felixnuesse.disky.IntroActivity.Companion.INTRO_PREFERENCES
 import de.felixnuesse.disky.IntroActivity.Companion.intro_v1_0_0_completed
 import de.felixnuesse.disky.background.ScanService
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_ABORTED
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_COMPLETE
+import de.felixnuesse.disky.background.ScanService.Companion.SCAN_PROGRESSED
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
 import de.felixnuesse.disky.databinding.ActivityMainBinding
 import de.felixnuesse.disky.extensions.getAppname
@@ -129,6 +134,23 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             binding.loading.visibility = View.VISIBLE
             fadeTextview(getString(R.string.calculating), binding.freeText)
             fadeTextview(getString(R.string.calculating), binding.usedText)
+
+            val primaryColor = TypedValue()
+            theme.resolveAttribute(com.google.android.material.R.attr.colorPrimaryDark, primaryColor, true)
+            val targetColor = Color.valueOf(Color.parseColor("#FF00FF"))
+
+            binding.lottie.addValueCallback(
+                KeyPath("**"),
+                LottieProperty.COLOR
+            ) {
+                val svg = Color.valueOf(it.startValue)
+                if(svg == targetColor) {
+                    primaryColor.data
+                } else {
+                    it.startValue
+                }
+            }
+
         }
 
         lastScanStarted = System.currentTimeMillis()
@@ -137,6 +159,15 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 if(intent.action == SCAN_ABORTED) {
                     return
                 }
+
+                if(intent.action == SCAN_PROGRESSED) {
+                    var progress = intent.getIntExtra(SCAN_PROGRESSED, 0)
+                    binding.progressIndicator.isIndeterminate = false
+                    binding.progressIndicator.progress = progress
+                    binding.progressLabel.text = "$progress%"
+                    return
+                }
+
                 if(intent.action == SCAN_COMPLETE) {
                     CoroutineScope(Dispatchers.IO).launch{
                         ScanService.getResult()?.let { scanComplete(it) }
@@ -145,7 +176,10 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 }
             }
         }
-        LocalBroadcastManager.getInstance(this).registerReceiver(reciever, IntentFilter(SCAN_COMPLETE).also { SCAN_ABORTED })
+        var filter = IntentFilter(SCAN_COMPLETE)
+        filter.addAction(SCAN_ABORTED)
+        filter.addAction(SCAN_PROGRESSED)
+        LocalBroadcastManager.getInstance(this).registerReceiver(reciever, filter)
         val service = Intent(this, ScanService::class.java)
         service.putExtra(SCAN_STORAGE, selectedStorage)
         startForegroundService(service)
