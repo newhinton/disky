@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 }
             }
         }
-        var filter = IntentFilter(SCAN_COMPLETE)
+        val filter = IntentFilter(SCAN_COMPLETE)
         filter.addAction(SCAN_ABORTED)
         filter.addAction(SCAN_REFRESH_REQUESTED)
         filter.addAction(SCAN_PROGRESSED)
@@ -296,7 +296,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             var internalRootElement = result.rootElement
             if(internalRootElement != null) {
                 binding.folders.visibility = View.VISIBLE
-                binding.loading.visibility = View.INVISIBLE
+                binding.loading.visibility = View.GONE
 
 
                 binding.removableStorageWarning.visibility = if(result.scannedVolume?.isRemovable == true) {
