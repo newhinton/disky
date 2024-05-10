@@ -5,8 +5,11 @@
     <string name="apppackage_size_cache">Cache</string>
     <string name="apps">Apps</string>
     <string name="foreground_service_notification_channel_name">Disky Scan Service</string>
-    <string name="foreground_service_notification_title">Disky Scan Service</string>
+    <string name="foreground_service_notification_title">Disky: Scannen…</string>
     <string name="foreground_service_notification_description">Dieser Kanal zeigt den Scanfortschritt an</string>
+    <string name="foreground_service_notification_starting_message">Wir bereiten den Scan vor…</string>
+    <string name="foreground_service_notification_short_message">Fortschritt: %1$d%%</string>
+    <string name="foreground_service_notification_long_message">Fortschritt: %1$d \n %2$s%%</string>
     <string name="contextmenu_folder_open">Ordner öffnen</string>
     <string name="intro_slide_welcome_title">Willkommen!</string>
     <string name="intro_slide_welcome_description">Wir helfen dir große Platzfresser zu finden. Aber erst, lass uns die App einrichten!</string>

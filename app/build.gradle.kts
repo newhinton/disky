@@ -11,7 +11,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "de.felixnuesse.disky.debug"
+        applicationId = "de.felixnuesse.disky"
         minSdk = 30
         targetSdk = 34
         versionCode = 5
@@ -66,4 +66,5 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.lottie)
 }

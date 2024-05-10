@@ -16,7 +16,7 @@ import de.felixnuesse.disky.model.StorageType
 import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.utils.PermissionManager
 
-class AppScanner(var mContext: Context) {
+class AppScanner(var mContext: Context, var callback: ScannerCallback?) {
 
 
     fun scanApps(root: StoragePrototype, selectedStorageVolume: StorageVolume) {
@@ -77,6 +77,7 @@ class AppScanner(var mContext: Context) {
 
             if(appsize>0) {
                 appfolder.addChildren(app)
+                callback?.foundLeaf(app.getCalculatedSize())
             }
         }
         root.addChildren(appfolder)
