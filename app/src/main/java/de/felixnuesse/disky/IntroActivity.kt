@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import com.github.appintro.AppIntro
 import de.felixnuesse.disky.ui.appintro.IdentifiableAppIntroFragment
@@ -35,10 +37,15 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
         null
     }
 
+    private var mNotificationsRequested = false
+
 
     override fun onResume() {
         enableEdgeToEdge()
         super.onResume()
+        setImmersiveMode()
+        window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,8 +151,8 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
     override fun allowSlideLeave(id: String): Boolean {
         return when(id) {
             SLIDE_ID_STORAGE -> mPermissions.grantedStorage()
-            SLIDE_ID_NOTIFICATIONS -> mPermissions.grantedNotifications()
             SLIDE_ID_USAGEACCESS -> mPermissions.grantedUsageStats()
+            SLIDE_ID_NOTIFICATIONS -> mNotificationsRequested
             else -> true
         }
     }
@@ -157,6 +164,7 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
             SLIDE_ID_USAGEACCESS -> mPermissions.requestUsageStats(this)
             SLIDE_ID_NOTIFICATIONS -> {
                 notificationPermission?.launch(Manifest.permission.POST_NOTIFICATIONS)
+                mNotificationsRequested = true
             }
             else -> {}
         }

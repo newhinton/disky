@@ -11,6 +11,7 @@ class StorageResult {
 
     @Transient var scannedVolume: StorageVolume? = null
     var rootElement: StoragePrototype? = null
+    var isPartialScan = false
 
     var free = 0L
     var used = 0L

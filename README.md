@@ -1,9 +1,22 @@
-# disky - Find your biggest diskspace thiefes!
+<div align="center">
+<p><img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" width="100"></p>
+
+---
+# disky
+### Find your biggest diskspace thieves!
+
+---
+
 [![license: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://github.com/newhinton/disky/blob/master/LICENSE) [![Latest Downloads](https://img.shields.io/github/downloads/newhinton/disky/latest/total
 )](https://github.com/newhinton/disky/releases) [![GitHub release](https://img.shields.io/github/v/release/newhinton/disky?include_prereleases)](https://github.com/newhinton/disky/releases/latest)
-[![supportive flags](https://img.shields.io/badge/support-🇺🇦_🏳️‍⚧_🏳️‍🌈-4aad4e)](https://felixnuesse.de/disky)
+[![supportive flags](https://img.shields.io/badge/support-🇺🇦_🏳️‍⚧_🏳️‍🌈-4aad4e)](https://felixnuesse.de/disky) [![Android Lint](https://github.com/newhinton/timed-silence/actions/workflows/lint.yml/badge.svg)](https://github.com/newhinton/disky/actions/workflows/lint.yml)
 
-[![Android Lint](https://github.com/newhinton/timed-silence/actions/workflows/lint.yml/badge.svg)](https://github.com/newhinton/disky/actions/workflows/lint.yml)
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+alt="Get it on F-Droid"
+height="80">](https://f-droid.org/packages/de.felixnuesse.disky)
+
+</div>
+
 -----------
 A filesystem analyzer that can show you the usage of your storage!
 <br/>
@@ -12,7 +25,7 @@ A filesystem analyzer that can show you the usage of your storage!
 Screenshots
 -----------
 
-<table>
+<table align="center">
   <tr style="border:none">
     <td style="border:none">
       <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="180vh" />
@@ -64,7 +77,7 @@ You can then build the app normally from Android Studio or from CLI by running:
 
 Contributing
 ------------
-See [CONTRIBUTING](./CONTRIBUTING.md)
+See [CONTRIBUTING](./CODE_OF_CONDUCT.md)
 
 Anyone is welcome to contribute and help out. However, hate, discrimination and racism are decidedly unwelcome here. If you feel offended by this, you might belong to the group of people who are not welcome. I will not tolerate hate in any way.
 

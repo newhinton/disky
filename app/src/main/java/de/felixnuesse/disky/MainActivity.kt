@@ -31,8 +31,11 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import de.felixnuesse.disky.IntroActivity.Companion.INTRO_PREFERENCES
 import de.felixnuesse.disky.IntroActivity.Companion.intro_v1_0_0_completed
 import de.felixnuesse.disky.background.ScanService
+import de.felixnuesse.disky.background.ScanService.Companion.SCAN_ABORTED
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_COMPLETE
+import de.felixnuesse.disky.background.ScanService.Companion.SCAN_REFRESH_REQUESTED
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
+import de.felixnuesse.disky.background.ScanService.Companion.SCAN_SUBDIR
 import de.felixnuesse.disky.databinding.ActivityMainBinding
 import de.felixnuesse.disky.extensions.getAppname
 import de.felixnuesse.disky.extensions.readableFileSize
@@ -70,7 +73,8 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         setSupportActionBar(binding.toolbar)
 
         val sharedPref = applicationContext.getSharedPreferences(INTRO_PREFERENCES, Context.MODE_PRIVATE)
-        if (!sharedPref.getBoolean(intro_v1_0_0_completed, false)) {
+        val isIntroComplete = sharedPref.getBoolean(intro_v1_0_0_completed, false)
+        if (!isIntroComplete) {
             startActivity(Intent(this, IntroActivity::class.java))
             finish()
         }
@@ -89,7 +93,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             insets
         }
 
-        var storageList = arrayListOf<String>()
+        val storageList = arrayListOf<String>()
         storageManager.storageVolumes.forEach {
 
             if(it.state == MEDIA_UNMOUNTED) {
@@ -114,11 +118,37 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             binding.storageSelector.visibility = View.GONE
         }
 
-        triggerDataUpdate()
+        registerReciever()
+        if(isIntroComplete) {
+            triggerDataUpdate()
+        }
     }
 
+    fun registerReciever() {
+        val reciever = object: BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent) {
+                if(intent.action == SCAN_ABORTED) {
+                    return
+                }
+                if(intent.action == SCAN_REFRESH_REQUESTED) {
+                    requestDataRefresh()
+                    return
+                }
+                if(intent.action == SCAN_COMPLETE) {
+                    CoroutineScope(Dispatchers.IO).launch{
+                        ScanService.getResult()?.let { scanComplete(it) }
+                        Log.e(tag(), "Scanning and processing took: ${System.currentTimeMillis()-lastScanStarted}ms")
+                    }
+                }
+            }
+        }
+        var filter = IntentFilter(SCAN_COMPLETE)
+        filter.addAction(SCAN_ABORTED)
+        filter.addAction(SCAN_REFRESH_REQUESTED)
+        LocalBroadcastManager.getInstance(this).registerReceiver(reciever, filter)
+    }
     fun triggerDataUpdate() {
-
+        Log.e(tag(), "trigger update!")
         runOnUiThread {
             binding.folders.visibility = View.INVISIBLE
             binding.loading.visibility = View.VISIBLE
@@ -127,17 +157,9 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         }
 
         lastScanStarted = System.currentTimeMillis()
-        val reciever = object: BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent) {
-                CoroutineScope(Dispatchers.IO).launch{
-                    ScanService.getResult()?.let { scanComplete(it) }
-                    Log.e(tag(), "Scanning and processing took: ${System.currentTimeMillis()-lastScanStarted}ms")
-                }
-            }
-        }
-        LocalBroadcastManager.getInstance(this).registerReceiver(reciever, IntentFilter(SCAN_COMPLETE))
         val service = Intent(this, ScanService::class.java)
         service.putExtra(SCAN_STORAGE, selectedStorage)
+        service.putExtra(SCAN_SUBDIR, currentElement?.getParentPath())
         startForegroundService(service)
     }
 
@@ -241,21 +263,28 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
     override fun scanComplete(result: StorageResult) {
         runOnUiThread{
-            rootElement = result.rootElement
-            if(rootElement != null) {
+            var internalRootElement = result.rootElement
+            if(internalRootElement != null) {
                 binding.folders.visibility = View.VISIBLE
                 binding.loading.visibility = View.INVISIBLE
 
 
-                binding.removableStorageWarning.visibility = if(result.scannedVolume?.isRemovable?:false) {View.VISIBLE
+                binding.removableStorageWarning.visibility = if(result.scannedVolume?.isRemovable == true) {
+                    View.VISIBLE
                 } else {
                     View.GONE
                 }
 
                 (binding.dropdown as MaterialAutoCompleteTextView)
                     .setText(result.scannedVolume?.getDescription(this), false)
-                showFolder(rootElement!!)
-                updateStaticElements(rootElement!!, result.total, result.free)
+                if(!result.isPartialScan) {
+                    rootElement = internalRootElement
+                    showFolder(rootElement!!)
+                    updateStaticElements(rootElement!!, result.total, result.free)
+                } else {
+                    rootElement?.mergePartialTree(internalRootElement)
+                    currentElement?.let { changeFolder(it) }
+                }
             }
         }
     }
@@ -273,13 +302,23 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             return true
         }
         if (id == R.id.action_reload) {
-            Toast.makeText(this, R.string.reload, Toast.LENGTH_LONG).show()
-            triggerDataUpdate()
+            requestDataRefresh()
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
+    private fun requestDataRefresh() {
+        when(currentElement?.storageType) {
+            StorageType.APP -> {
+                Toast.makeText(this, R.string.reload_blocked_because_inapps, Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                Toast.makeText(this, R.string.reload, Toast.LENGTH_SHORT).show()
+                triggerDataUpdate()
+            }
+        }
+    }
     private fun fadeTextview(text: String, view: TextView) {
         if(view.text == text) {
             return

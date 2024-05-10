@@ -13,21 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: Prepare Check-Scripts
         shell: sh
         run: |
           sudo apt-get install -y xmlstarlet
           pip3 install alt-profanity-check
-          wget https://github.com/newhinton/ci-translation-scripts/blob/main/checkProfanity.py
-          wget https://github.com/newhinton/ci-translation-scripts/blob/main/generateTranslationList.sh
-          wget https://github.com/newhinton/ci-translation-scripts/blob/main/preprocessMetadata.sh
-          wget https://github.com/newhinton/ci-translation-scripts/blob/main/getChangedTranslationFile.sh
+          wget https://raw.githubusercontent.com/newhinton/ci-translation-scripts/main/convertCommitsToTranslations.sh
+          wget https://raw.githubusercontent.com/newhinton/ci-translation-scripts/main/checkProfanity.py
+          chmod +x ./convertCommitsToTranslations.sh
           chmod +x ./checkProfanity.py
-          chmod +x ./generateTranslationList.sh
-          chmod +x ./preprocessMetadata.sh
-          chmod +x ./getChangedTranslationFile.sh
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v44
@@ -35,24 +29,23 @@ jobs:
         id: changeDetection
         run: |
           FILES="${{ steps.changed-files.outputs.all_changed_files }}"
-          echo "»$FILES<"
-          ./preprocessMetadata.sh "$FILES"
-          TRANSLATION_FILE=$(./getChangedTranslationFile.sh $FILES)
-          ./generateTranslationList.sh ${{ github.event.pull_request.commits }} $TRANSLATION_FILE
-          TRANSLATIONS=$(cat generatedContent.txt)
-          echo "TRANSLATIONS=$TRANSLATIONS" >> $GITHUB_OUTPUT
+          touch generatedContent.txt
+          ./convertCommitsToTranslations.sh ${{ github.event.pull_request.commits }} $FILES
         shell: sh
       - uses: fabasoad/translation-action@main
         id: google-translate
         with:
           provider: google
           lang: auto-en
-          source: ${{ steps.prep.outputs.TRANSLATIONS }}
+          source: ./generatedContent.txt
       - name: Print the result
         run: |
+          echo "#######"
+          cat generatedContent.txt
           echo "Translations are: '${{ steps.google-translate.outputs.text }}'"
           echo "${{ steps.google-translate.outputs.text }}" | sed 's/ ; /\n/g' > translated_texts.txt
           ./checkProfanity.py translated_texts.txt
+          cat suspicious_texts.txt
         shell: sh
       - name: Upload Raw Translations
         uses: actions/upload-artifact@v4

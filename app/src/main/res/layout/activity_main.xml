@@ -78,14 +78,14 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:tint="?attr/colorError"
-                    app:srcCompat="@drawable/icon_error" />
+                    app:srcCompat="@drawable/icon_error"
+                    app:tint="?attr/colorError" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="8dp"
-                    android:text="Warning! Removable Storage will be unreliable!"
+                    android:text="@string/warning_removable_storage"
                     android:textColor="?attr/colorError"
                     android:textSize="12sp" />
             </LinearLayout>

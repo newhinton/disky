@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -12,8 +14,8 @@ android {
         applicationId = "de.felixnuesse.disky.debug"
         minSdk = 30
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 5
+        versionName = "1.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,6 +31,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+        }
+    }
+    applicationVariants.all{
+        outputs.all {
+            if(name.contains("release"))
+                (this as BaseVariantOutputImpl).outputFileName = "disky-release-v$versionName.apk"
         }
     }
     compileOptions {
@@ -37,6 +46,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    lint {
+        disable += "MissingTranslation"
     }
 }
 

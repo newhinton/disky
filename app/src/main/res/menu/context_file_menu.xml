@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-
     <item
         android:id="@+id/action_file_open"
         android:layout_width="wrap_content"
@@ -9,11 +8,17 @@
         android:icon="@drawable/icon_file"
         android:title="@string/contextmenu_file_open" />
 
-
     <item
         android:id="@+id/action_file_openfolder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/icon_folder"
         android:title="@string/contextmenu_file_openfolder" />
+
+    <item
+        android:id="@+id/action_file_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/icon_delete"
+        android:title="@string/contextmenu_delete" />
 </menu>

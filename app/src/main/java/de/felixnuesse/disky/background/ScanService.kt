@@ -34,10 +34,15 @@ class ScanService: Service(), ScannerCallback {
     private lateinit var storageStatsManager: StorageStatsManager
     private lateinit var storageManager: StorageManager
     private lateinit var notificationManager: NotificationManager
+    private var serviceRunId = 0L
+    private var fsScanner: FsScanner? = null
 
     companion object {
         val SCAN_STORAGE = "SCAN_STORAGE"
+        val SCAN_SUBDIR = "SCAN_SUBDIR"
         val SCAN_COMPLETE = "SCAN_COMPLETE"
+        val SCAN_ABORTED = "SCAN_ABORTED"
+        val SCAN_REFRESH_REQUESTED = "SCAN_REFRESH_REQUESTED"
         private val NOTIFICATION_CHANNEL_ID = "general_notification_channel"
         private val NOTIFICATION_ID = 5691
         private var storageResult: StorageResult? = null
@@ -61,7 +66,6 @@ class ScanService: Service(), ScannerCallback {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
         storageStatsManager = getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
         storageManager = getSystemService(Context.STORAGE_SERVICE) as StorageManager
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -74,22 +78,41 @@ class ScanService: Service(), ScannerCallback {
             startForeground(NOTIFICATION_ID, getNotification(message).build())
         }
 
+
+        val thisServiceRunId = System.currentTimeMillis()
+        if(serviceRunId != 0L) {
+            stopScan()
+        }
+        serviceRunId = thisServiceRunId
+
+
         val context = this
         CoroutineScope(Dispatchers.IO).launch{
             val now = System.currentTimeMillis()
             val storageToScan = intent?.getStringExtra(SCAN_STORAGE)
+            val subfolder = intent?.getStringExtra(SCAN_SUBDIR)?: ""
             if(storageToScan.isNullOrBlank()) {
                 Log.e(tag(), "No valid storage name was provided!")
                 return@launch
             }
-            val result = scan(storageToScan)
-            Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-now}ms")
-            storageResult = result
-            val resultIntent = Intent(SCAN_COMPLETE)
-            LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
-            stopForeground(STOP_FOREGROUND_REMOVE)
+            val result = scan(storageToScan, serviceRunId, subfolder)
+            Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-now}ms ${wasStopped(thisServiceRunId)}")
+            if(wasStopped(thisServiceRunId)) {
+                val resultIntent = Intent(SCAN_ABORTED)
+                LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
+                Log.e(tag(), "Scan was prematurely stopped!")
+            } else {
+                storageResult = result
+                val resultIntent = Intent(SCAN_COMPLETE)
+                LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
+            }
+            finishService()
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun wasStopped(id: Long): Boolean {
+        return serviceRunId != id
     }
 
     private fun createNotificationChannel() {
@@ -112,31 +135,46 @@ class ScanService: Service(), ScannerCallback {
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
     }
 
-    private fun scan(storage: String): StorageResult? {
+    private fun scan(storage: String, id: Long, subpath: String): StorageResult? {
         val selectedStorage = findStorageByNameOrUUID(storage)
-        val rootElement: StoragePrototype
+        val rootElement: StoragePrototype?
 
-        Log.e(tag(), "scan storage: ${selectedStorage?.getDescription(this)}")
+        val subfolder = subpath.replace(selectedStorage?.directory!!.absolutePath+"/", "")
 
-        val scanner = FsScanner(this, this)
-        if(selectedStorage?.directory == null) {
+        fsScanner = FsScanner(this)
+        if(selectedStorage.directory == null) {
             Log.e(tag(), "There was an error loading data!")
             return null
         }
-        rootElement = scanner.scan(selectedStorage.directory!!)
+        rootElement = fsScanner?.scan(selectedStorage.directory!!, subfolder)
+        if(wasStopped(id)) {
+            return null
+        }
 
+        val isAppfolderUpdate = subfolder.isBlank() || subfolder == getString(R.string.apps)
         // Dont scan for system and apps on external sd card
-        if(selectedStorage.isPrimary) {
-            AppScanner(this).scanApps(rootElement, selectedStorage)
-            SystemScanner(this).scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
+        if(selectedStorage.isPrimary && rootElement != null) {
+            if(isAppfolderUpdate) {
+                AppScanner(this).scanApps(rootElement, selectedStorage)
+                if(wasStopped(id)) {
+                    return null
+                }
+            }
+            if (subfolder.isBlank()) {
+                SystemScanner(this).scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
+                if(wasStopped(id)) {
+                    return null
+                }
+            }
         }
 
         val result = StorageResult()
         result.scannedVolume = selectedStorage
         result.rootElement = rootElement
         result.free = getFreeSpace(selectedStorage)
-        result.used = rootElement.getCalculatedSize()
+        result.used = rootElement?.getCalculatedSize()?: 0
         result.total = getTotalSpace(selectedStorage)
+        result.isPartialScan = subfolder.isNotBlank()
         return result
     }
 
@@ -170,5 +208,24 @@ class ScanService: Service(), ScannerCallback {
     override fun currentlyScanning(item: String) {
         val notification = getNotification(item)
         notificationManager.notify(NOTIFICATION_ID, notification.build())
+    }
+
+    private fun stopScan() {
+        Log.e(tag(), "Stop Scan!")
+        serviceRunId = 0
+        fsScanner?.stopped = true
+        finishService()
+    }
+
+    /**
+     * THis needs to be called, because the service is not recreated when
+     * restarted. That means that wasStopped will be true, and the result never returns.
+     *
+     * Todo: This hack is still broken. It might be that the older thread takes longer than the new one.
+     *       After the newer one finishes, it re-enables the old one, and it might then deliver it's result.
+     */
+    private fun finishService() {
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        notificationManager.cancel(NOTIFICATION_ID)
     }
 }
