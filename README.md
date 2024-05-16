@@ -100,4 +100,5 @@ This app is released under the terms of the [GPLv3 license](https://gitea.felixn
 - [AppIntro](https://github.com/AppIntro/AppIntro) - This library is responsible for the easy-to-use introduction to the app!
 - [Lottie](https://github.com/airbnb/lottie-android) - This library makes the fancy animation possible!
 - [Undraw](https://undraw.co/) - Not really a library, but without Undraw's Images, this app wouldn't be the same!
+
 Thanks to all of them! 
