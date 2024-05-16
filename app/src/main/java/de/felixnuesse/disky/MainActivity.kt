@@ -70,6 +70,12 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
     private var lastScanStarted = 0L
 
+    companion object {
+        const val APP_PREFERENCES = "APP_PREFERENCES"
+        const val APP_PREFERENCE_SORTORDER = "APP_PREFERENCE_SORTORDER"
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -269,8 +275,15 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             val percentage = (it.getCalculatedSize().toFloat()/max.toFloat())
             it.percent = (percentage*100).toInt()
         }
+
+        val sharedPref = applicationContext.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+        val sortbySize = sharedPref.getInt(APP_PREFERENCE_SORTORDER, 0) == 0 // 0 is size. If we get more, we need to decide here how to sort.
         //second, sort children
-        val l = currentElement!!.getChildren().sortedWith(compareBy{ list -> list.getCalculatedSize()})
+        val l = if (sortbySize) {
+            currentElement!!.getChildren().sortedWith(compareBy{ list -> list.getCalculatedSize()})
+        } else {
+            currentElement!!.getChildren().sortedWith(compareBy{ list -> list.name.lowercase()}).reversed()
+        }
         currentElement!!.clearChildren()
         currentElement!!.getChildren().addAll(l.reversed())
 

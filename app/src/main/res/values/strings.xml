@@ -57,4 +57,6 @@
     <string name="sortorder">Sort Order</string>
     <string name="about_this_app">About this app</string>
     <string name="faq_description">If you have questions, they might be answered here</string>
+    <string name="sortorder_aplhabet">Alphabet</string>
+    <string name="sortorder_size">Size</string>
 </resources>

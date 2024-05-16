@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="sortoptions">
-        <item>@string/sortorder_aplhabet</item>
         <item>@string/sortorder_size</item>
+        <item>@string/sortorder_aplhabet</item>
     </string-array>
-    <string name="sortorder_aplhabet">Alphabet</string>
-    <string name="sortorder_size">Size</string>
 </resources>
