@@ -54,4 +54,14 @@
     <string name="faq_description">Wenn du Fragen hast, werden sie hier vielleicht beantwortet.</string>
     <string name="sortorder_aplhabet">Alphabet</string>
     <string name="sortorder_size">Größe</string>
+    <string name="ok">ok</string>
+    <string name="help_android_os">Android OS</string>
+    <string name="faq_label_accuracy">Ist diese App genau?</string>
+    <string name="faq_label_androidos">Was ist \"Android OS\"?</string>
+
+    <string name="help_android_os_description">Dies zeigt die Differenz zwischen dem gesamten Speicher, wieviel von deinen Dateien und dem freien Speicher an.\n\nDies enthält nicht nur das Android System, sondern auch temoräre Dateien und Apps und Dateien von anderen Profilen. Das bedeutet das dieser Wert ungenau ist.</string>
+    <string name="faq_answer_accuracy">Nein. Wir können zwar Apps und Dateien korrekt berechnen, aber nicht die des Android Systems. Das bedeutet das diese Werte sich vermutlich jedesmal ändern wenn du einen neuen Scan startest. Das ist eine Begrenzung von Android.</string>
+    <string name="faq_answer_androidos">Das ist all der Speicher den wir nicht direkt scannen können. Das beinhaltet andere Profile, deren Dateien und Apps, sowie temporäre Systemdateien. Der berechnete Wert ist deshalb nur eine Schätzung.</string>
+
+
 </resources>

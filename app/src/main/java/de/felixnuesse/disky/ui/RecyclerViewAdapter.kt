@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.DocumentsContract
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageType
 import de.felixnuesse.disky.ui.dialogs.DeleteDialog
+import de.felixnuesse.disky.ui.dialogs.HelpDialog
 import java.io.File
 
 
@@ -75,8 +77,12 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                     binding.title.text = name
                     binding.size.text = readableFileSize(getCalculatedSize())
 
+                    val leaf = this
                     when(StorageType.fromInt(holder.itemViewType)) {
-                        StorageType.OS,
+                        StorageType.OS -> {
+                            setMenu(R.menu.context_os_menu, leaf)
+                            setImage(R.drawable.icon_android)
+                        }
                         StorageType.APP_APK,
                         StorageType.APP -> {
                             setImage(R.drawable.icon_android)
@@ -91,7 +97,7 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                             setImage(R.drawable.icon_account)
                         }
                         StorageType.FILE -> {
-                            leafItem = folders[position] as StorageLeaf
+                            leafItem = leaf
                             enableDeletion()
                         }
                         else -> {}
@@ -100,7 +106,6 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
             }
         }
     }
-
 
     override fun getItemViewType(position: Int): Int {
         return folders[position].storageType.ordinal
@@ -170,15 +175,20 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
         private var popupMenuEnableDeletion = false
 
         init {
+            setMenu(R.menu.context_file_menu, null)
+        }
+
+        fun setMenu(menu: Int, leaf: StorageLeaf?) {
+            leaf.let{leafItem = it}
             binding.root.setOnLongClickListener {
                 if(leafItem == null) {
                     return@setOnLongClickListener true
                 }
                 val context = binding.root.context
-                var popup = PopupMenu(context, it)
+                val popup = PopupMenu(context, it)
                 popup.setOnMenuItemClickListener(this)
-                popup.menuInflater.inflate(R.menu.context_file_menu, popup.menu)
-                popup.menu.findItem(R.id.action_file_delete).setVisible(popupMenuEnableDeletion)
+                popup.menuInflater.inflate(menu, popup.menu)
+                popup.menu.findItem(R.id.action_file_delete)?.setVisible(popupMenuEnableDeletion)
                 popup.setForceShowIcon(true)
                 popup.show()
                 true
@@ -213,6 +223,10 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                 }
                 R.id.action_file_delete -> {
                     DeleteDialog(mContext, File(leafItem!!.getParentPath())).askDelete()
+                    true
+                }
+                R.id.action_os_help -> {
+                    HelpDialog(mContext).help(R.string.help_android_os, R.string.help_android_os_description)
                     true
                 }
                 else -> {

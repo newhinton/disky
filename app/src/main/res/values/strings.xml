@@ -59,4 +59,11 @@
     <string name="faq_description">If you have questions, they might be answered here</string>
     <string name="sortorder_aplhabet">Alphabet</string>
     <string name="sortorder_size">Size</string>
+    <string name="ok">ok</string>
+    <string name="help_android_os">Android OS</string>
+    <string name="help_android_os_description">This collects the difference between the total available diskspace, how much is used by your files and the known free storage.\n\nThis not only includes the android system itself, but also other profiles apps and files, and temporary system files. This means that this value is inaccurate.</string>
+    <string name="faq_label_accuracy">Is this app accurate?</string>
+    <string name="faq_answer_accuracy">No. We can calculate your files and apps properly, but not your android system. That means you will likely get different results for the system each time you refresh the scan. This is a limitation of android itself.</string>
+    <string name="faq_label_androidos">What is \"Android OS\"?</string>
+    <string name="faq_answer_androidos">This is all the used space that we can\'t access. That includes other profiles and their apps and the system itself. The calculated value is therefore only an estimation of its true size.</string>
 </resources>
