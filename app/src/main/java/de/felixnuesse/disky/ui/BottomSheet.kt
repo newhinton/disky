@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.enableEdgeToEdge
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import de.felixnuesse.disky.AboutActivity
+import de.felixnuesse.disky.FAQActivity
 import de.felixnuesse.disky.databinding.BottomsheetBinding
 
 
@@ -29,6 +32,14 @@ class BottomSheet(): BottomSheetDialogFragment() {
             val i = Intent(Intent.ACTION_VIEW)
             i.setData(Uri.parse("https://felixnuesse.de/donate"))
             startActivity(i)
+        }
+
+        binding.faqButton.setOnClickListener {
+            startActivity(Intent(this.context, FAQActivity::class.java))
+        }
+
+        binding.aboutButton.setOnClickListener {
+            startActivity(Intent(this.context, AboutActivity::class.java))
         }
     }
 

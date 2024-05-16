@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottomSheetContainer"
@@ -27,29 +28,93 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/drag_handle">
 
-        <!-- Bottom sheet contents. -->
+        <!-- Bottom sheet contents -->
 
         <TextView
             android:id="@+id/donateLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:padding="4dp"
             android:text="@string/donate_message"
             app:layout_constraintEnd_toStartOf="@+id/donateButton"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/donateButton" />
 
         <Button
             android:id="@+id/donateButton"
+            style="@style/BottomSheetButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:text="@string/donate_button"
             app:icon="@drawable/icon_favorite"
             app:iconTint="#E30C0C"
-            app:layout_constraintBottom_toBottomOf="@+id/donateLabel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/donateLabel" />
+            app:layout_constraintTop_toBottomOf="@+id/sortorderDropdown" />
+
+        <TextView
+            android:id="@+id/faqLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="@string/faq_description"
+            app:layout_constraintEnd_toStartOf="@+id/faqButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/faqButton" />
+
+        <Button
+            android:id="@+id/faqButton"
+            style="@style/BottomSheetButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/faq"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/donateButton"
+            app:layout_constraintTop_toBottomOf="@+id/donateButton" />
+
+        <TextView
+            android:id="@+id/aboutLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="@string/about_this_app"
+            app:layout_constraintEnd_toStartOf="@+id/aboutButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/aboutButton" />
+
+        <Button
+            android:id="@+id/aboutButton"
+            style="@style/BottomSheetButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/about"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/faqButton"
+            app:layout_constraintTop_toBottomOf="@+id/faqButton" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/sortorderDropdown"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/sortorder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:startIconDrawable="@drawable/icon_app"
+            app:startIconTint="?attr/colorOnPrimaryContainer">
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                app:simpleItems="@array/sortoptions" />
+        </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

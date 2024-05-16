@@ -2,4 +2,6 @@
 <resources>
     <dimen name="cardCornerRadius">16dp</dimen>
     <dimen name="cardPadding">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="buttonCornerRadius">8dp</dimen>
 </resources>

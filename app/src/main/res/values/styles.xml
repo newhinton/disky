@@ -55,4 +55,10 @@
         <item name="bottomSheetStyle">@style/ModalBottomSheet</item>
     </style>
 
+    <style name="BottomSheetButton" parent="Widget.Material3.Button.IconButton">
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
+        <item name="backgroundTint">?attr/colorPrimaryContainer</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
 </resources>

@@ -5,7 +5,7 @@
     <string name="apppackage_size_cache">Cache</string>
     <string name="apps">Apps</string>
     <string name="foreground_service_notification_channel_name">Disky Scan Service</string>
-    <string name="foreground_service_notification_title">Disky: Scannen…</string>
+    <string name="foreground_service_notification_title">Scannen…</string>
     <string name="foreground_service_notification_description">Dieser Kanal zeigt den Scanfortschritt an</string>
     <string name="foreground_service_notification_starting_message">Wir bereiten den Scan vor…</string>
     <string name="foreground_service_notification_short_message">Fortschritt: %1$d%%</string>
@@ -44,4 +44,14 @@
     <string name="delete_confirmation_text">Bist du dir sicher das du \"%1$s\" löschen willst? Das ist unumkehrbar!</string>
     <string name="delete_file_title">Datei löschen</string>
     <string name="delete_folder_title">Ordner löschen</string>
+    <string name="action_cancel">Abbrechen</string>
+    <string name="activity_about_madeby">Von:</string>
+    <string name="help">Hilfe</string>
+    <string name="faq">FAQ</string>
+    <string name="about">Über</string>
+    <string name="sortorder">Sortierung</string>
+    <string name="about_this_app">Über diese App</string>
+    <string name="faq_description">Wenn du Fragen hast, werden sie hier vielleicht beantwortet.</string>
+    <string name="sortorder_aplhabet">Alphabet</string>
+    <string name="sortorder_size">Größe</string>
 </resources>

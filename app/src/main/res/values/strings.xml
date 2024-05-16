@@ -8,7 +8,7 @@
     <string name="system" translatable="false">Android OS</string>
 
     <string name="foreground_service_notification_channel_name">Disky Scan Service</string>
-    <string name="foreground_service_notification_title">Disky: Scanning…</string>
+    <string name="foreground_service_notification_title">Scanning…</string>
     <string name="foreground_service_notification_description">This channel shows scan progress. You may safely hide this notification.</string>
     <string name="foreground_service_notification_starting_message">We are preparing to scan…</string>
     <string name="foreground_service_notification_short_message">Current Progress: %1$d%%</string>
@@ -48,5 +48,13 @@
     <string name="delete_confirmation_text">Are you sure you want to delete \"%1$s\"? This cannot be undone!</string>
     <string name="delete_file_title">Delete File</string>
     <string name="delete_folder_title">Delete Folder</string>
-
+    <string name="action_cancel">Cancel</string>
+    <string name="activity_about_madeby">Made by:</string>
+    <string name="help">Help</string>
+    <string name="copyright" translatable="false">"GPLv3 - ©%1$s "</string>
+    <string name="faq">FAQ</string>
+    <string name="about">About</string>
+    <string name="sortorder">Sort Order</string>
+    <string name="about_this_app">About this app</string>
+    <string name="faq_description">If you have questions, they might be answered here</string>
 </resources>

@@ -137,14 +137,12 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 }
                 if(intent.action == SCAN_REFRESH_REQUESTED) {
                     requestDataRefresh()
-                    return
                 }
                 if(intent.action == SCAN_PROGRESSED) {
                     var progress = intent.getIntExtra(SCAN_PROGRESSED, 0)
                     binding.progressIndicator.isIndeterminate = false
                     binding.progressIndicator.progress = progress
                     binding.progressLabel.text = "$progress%"
-                    return
                 }
                 if(intent.action == SCAN_COMPLETE) {
                     CoroutineScope(Dispatchers.IO).launch{
