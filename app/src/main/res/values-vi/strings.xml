@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name" translatable="false">disky</string>
+    <string name="apppackage_size_app" translatable="false">Apk</string>
+    <string name="apppackage_size_data">Dữ liệu người dùng</string>
+    <string name="apppackage_size_externalcache">Bộ đệm ngoài</string>
+    <string name="apppackage_size_cache">Bộ đệm</string>
+    <string name="apps">Ứng dụng</string>
+    <string name="system" translatable="false">Android OS</string>
+
+    <string name="foreground_service_notification_channel_name">Dịch vụ Quét Disky</string>
+    <string name="foreground_service_notification_title">Đang quét…</string>
+    <string name="foreground_service_notification_description">Kênh này hiển thị tiến trình quét. Bạn có thể ẩn thông báo này một cách an toàn.</string>
+    <string name="foreground_service_notification_starting_message">Chúng tôi đang chuẩn bị quét…</string>
+    <string name="foreground_service_notification_short_message">Tiến độ hiện tại: %1$d%%</string>
+    <string name="foreground_service_notification_long_message">Tiến độ hiện tại: %1$d%% \n %2$s</string>
+    <string name="contextmenu_folder_open">Mở thư mục</string>
+
+    <string name="intro_slide_welcome_title">Chào mừng!</string>
+    <string name="intro_slide_welcome_description">Chúng tôi sẽ giúp bạn tìm ổ đĩa của bạn. Nhưng trước tiên, chúng ta hãy thiết lập ứng dụng này!</string>
+    <string name="intro_slide_notification_title">Nhận thông báo!</string>
+    <string name="intro_slide_notification_description">Chúng tôi muốn hiển thị cho bạn thông báo khi chúng tôi quét tệp của bạn. Chúng tôi sẽ không spam bạn!</string>
+    <string name="intro_slide_done_title">Xong!</string>
+    <string name="intro_slide_done_description">Bây giờ bạn đã sẵn sàng để bắt đầu!</string>
+    <string name="intro_storage_title">Truy cập bộ nhớ</string>
+    <string name="intro_storage_description">Disky dựa vào quyền truy cập tất cả các tệp tin. Vui lòng cấp quyền truy cập bộ nhớ khi được nhắc, nếu không ứng dụng sẽ không hoạt động bình thường.</string>
+    <string name="intro_slide_usage_title">Thống kê sử dụng</string>
+    <string name="intro_slide_usage_description">Chúng tôi sử dụng số liệu thống kê sử dụng để tính toán mức sử dụng đĩa của ứng dụng của bạn.</string>
+    <string name="contextmenu_file_open">Mở</string>
+    <string name="contextmenu_file_openfolder">Mở trong thư mục</string>
+    <string name="mainmenu_reload">Tải lại</string>
+    <string name="mainmenu_settings">Thiết đặt</string>
+    <string name="reload">Quét lại tập tin…</string>
+    <string name="reload_blocked_because_inapps">Không thể làm mới trong một ứng dụng!</string>
+    <string name="donate_message">Bạn có muốn hỗ trợ nhà phát triển? Quyên góp của bạn được đánh giá rất cao!</string>
+    <string name="donate_button">Quyên tặng!</string>
+    <string name="uicontext_folder_rootdir">Bạn đang ở trong thư mục gốc.</string>
+    <string name="uicontext_folder_app">Hiện tại bạn đang xem %1$s. It uses %2$s.</string>
+    <string name="uicontext_folder_appcollection">Điều này liệt kê tất cả các ứng dụng đã cài đặt của bạn, tổng cộng là %1$d. Chúng dùng %2$s.</string>
+    <string name="uicontext_folder_folder">Bạn chọn thư mục %1$s. Nội dung của nó sử dụng %2$s dung lượng lưu trữ của bạn.</string>
+    <string name="select_storage">Chọn bộ nhớ</string>
+    <string name="used">Đã dùng:</string>
+    <string name="calculating">Đang tính…</string>
+    <string name="free">Trống:</string>
+    <string name="warning_removable_storage">Cảnh báo! Bộ nhớ di động sẽ không đáng tin cậy!</string>
+    <string name="contextmenu_delete">Xóa</string>
+    <string name="yes_delete">Có, xóa vĩnh viễn!</string>
+    <string name="no_keep">Không, giữ nó lại.</string>
+    <string name="delete_confirmation_text">Bạn có chắc chắn muốn xóa \"%1$s\" không? Hạ thủ là bất quờn!</string>
+    <string name="delete_file_title">Xóa tệp</string>
+    <string name="delete_folder_title">Xóa thư mục</string>
+    <string name="action_cancel">Hủy</string>
+    <string name="activity_about_madeby">Được tạo bởi:</string>
+    <string name="help">Giúp</string>
+    <string name="copyright" translatable="false">"GPLv3 - ©%1$s "</string>
+    <string name="faq">FAQ</string>
+    <string name="about">Giới thiệu</string>
+    <string name="sortorder">Thứ tự sắp xếp</string>
+    <string name="about_this_app">Về ứng dụng này</string>
+    <string name="faq_description">Nếu bạn có thắc mắc, chúng có thể được trả lời ở đây</string>
+    <string name="sortorder_aplhabet">Bảng chữ cái</string>
+    <string name="sortorder_size">Kích cỡ</string>
+    <string name="ok">ok</string>
+    <string name="help_android_os">HĐH Android</string>
+    <string name="help_android_os_description">Điều này thu thập sự khác biệt giữa tổng dung lượng ổ đĩa có sẵn, lượng tệp của bạn được sử dụng và dung lượng lưu trữ trống đã biết.\n\nĐiều này không chỉ bao gồm chính hệ thống Android mà còn bao gồm các ứng dụng và tệp cấu hình khác cũng như các tệp hệ thống tạm thời. Điều này có nghĩa là giá trị này không chính xác.</string>
+    <string name="faq_label_accuracy">Ứng dụng này có chính xác không?</string>
+    <string name="faq_answer_accuracy">Không. Chúng tôi có thể tính toán chính xác các tệp và ứng dụng của bạn nhưng hệ thống Android của bạn thì không. Điều đó có nghĩa là bạn có thể sẽ nhận được các kết quả khác nhau cho hệ thống mỗi lần bạn làm mới quá trình quét. Đây là một hạn chế của chính Android.</string>
+    <string name="faq_label_androidos">\"HĐH Android\" là gì?</string>
+    <string name="faq_answer_androidos">Đây là tất cả không gian đã sử dụng mà chúng tôi không thể truy cập. Điều đó bao gồm các hồ sơ khác và ứng dụng của chúng cũng như chính hệ thống. Do đó, giá trị được tính toán chỉ là ước tính kích thước thực của nó.</string>
+</resources>
