@@ -34,9 +34,9 @@
     <string name="donate_message">Geliştiriciyi desteklemek ister misiniz? Katkınız çok değerli!</string>
     <string name="donate_button">Bağış Yap!</string>
     <string name="uicontext_folder_rootdir">Kök dizindesiniz.</string>
-    <string name="uicontext_folder_app">Şu anda %1$s'i inceliyorsunuz. %2$s kullanıyor.</string>
+    <string name="uicontext_folder_app">Şu anda %1$s\'i inceliyorsunuz. %2$s kullanıyor.</string>
     <string name="uicontext_folder_appcollection">Bu, toplamda %1$d olan tüm yüklü uygulamalarınızı listeler. %2$s kullanıyorlar.</string>
-    <string name="uicontext_folder_folder">%1$s klasörünü seçtiniz. İçeriği depolama alanınızın %2$s'ini kullanıyor.</string>
+    <string name="uicontext_folder_folder">%1$s klasörünü seçtiniz. İçeriği depolama alanınızın %2$s\'ini kullanıyor.</string>
     <string name="select_storage">Depolama Seç</string>
     <string name="used">Kullanılan:</string>
     <string name="calculating">Hesaplanıyor…</string>
@@ -63,7 +63,7 @@
     <string name="help_android_os">Android İşletim Sistemi</string>
     <string name="help_android_os_description">Bu, toplam kullanılabilir disk alanı, dosyalarınızın ne kadar kullandığı ve bilinen boş depolama arasındaki farkı toplar.\n\nBu, sadece android sistemi değil, aynı zamanda diğer profiller, uygulamalar ve dosyalar ve geçici sistem dosyalarını da içerir. Bu, bu değerin kesin olmadığı anlamına gelir.</string>
     <string name="faq_label_accuracy">Bu uygulama doğru mu?</string>
-    <string name="faq_answer_accuracy">Hayır. Dosyalarınızı ve uygulamalarınızı doğru şekilde hesaplayabiliriz, ancak android sisteminizi değil. Bu, taramayı her yenilediğinizde sistem için muhtemelen farklı sonuçlar alacağınız anlamına gelir. Bu, android'in kendi sınırlamasıdır.</string>
+    <string name="faq_answer_accuracy">Hayır. Dosyalarınızı ve uygulamalarınızı doğru şekilde hesaplayabiliriz, ancak android sisteminizi değil. Bu, taramayı her yenilediğinizde sistem için muhtemelen farklı sonuçlar alacağınız anlamına gelir. Bu, android\'in kendi sınırlamasıdır.</string>
     <string name="faq_label_androidos">"Android İşletim Sistemi" nedir?</string>
     <string name="faq_answer_androidos">Bu, erişemediğimiz tüm kullanılan alanları içerir. Bu, diğer profiller ve uygulamaları ve sistemi içerir. Hesaplanan değer, gerçek boyutunun sadece bir tahminidir.</string>
 </resources>
