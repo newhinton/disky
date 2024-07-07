@@ -124,7 +124,7 @@ class ScanService: Service(), ScannerCallback {
                     LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
                 }
             } catch (e: Exception) {
-                showErrorNotification(e.message.toString())
+                showErrorNotification(e)
                 val resultIntent = Intent(SCAN_ABORTED)
                 LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
             }
@@ -168,17 +168,17 @@ class ScanService: Service(), ScannerCallback {
     }
 
     //Todo: Migrate this out into its own class
-    private fun showErrorNotification(bigmessage: String) {
+    private fun showErrorNotification(exception: Exception) {
         val error = NotificationCompat.Builder(this, ERROR_NOTIFICATION_CHANNEL_ID)
             .setContentTitle(getString(R.string.error_notification_title))
             .setContentText(getString(R.string.error_notification_channel_message))
-            .setStyle(NotificationCompat.BigTextStyle().bigText(bigmessage))
+            .setStyle(NotificationCompat.BigTextStyle().bigText(exception.message.toString()))
             .setSmallIcon(R.drawable.round_running_with_errors_24)
 
 
         val clipboardReciever = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                copyToClipboard("Error Message", bigmessage)
+                copyToClipboard("Error Message", exception.stackTraceToString())
             }
         }
 
