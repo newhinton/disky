@@ -337,6 +337,12 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
+
+        if (id == android.R.id.home) {
+            currentElement = rootElement
+            currentElement?.let { changeFolder(it) }
+            return true
+        }
         if (id == R.id.action_settings) {
             val bl = BottomSheet()
             bl.show(supportFragmentManager, BottomSheet.TAG)
