@@ -95,10 +95,8 @@ About this app
 -----------------
 ### License
 This app is released under the terms of the [GPLv3 license](https://gitea.felixnuesse.de/felix/disky/blob/master/LICENSE). 
-There are older releases that were accidentially made under the MIT license.
-I hereby relicense all former code to the GPLv3.
-
-The notable exception are the translations made by other users, up to this point. They will remain under the MIT license.
+There are older releases that accidentially contained the wrong license file, namely MIT.
+This entire Repository is and was GPLv3, as stated by this Readme in this section, and the pill below the title on top of this document.
 
 
 
