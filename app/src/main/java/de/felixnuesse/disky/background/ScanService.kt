@@ -18,6 +18,7 @@ import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import de.felixnuesse.disky.R
 import de.felixnuesse.disky.extensions.getStorageUUID
@@ -183,11 +184,7 @@ class ScanService: Service(), ScannerCallback {
         }
 
         val intentFilter = IntentFilter(ERROR_COPY_INTENT_ACTION)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(clipboardReciever, intentFilter, RECEIVER_EXPORTED)
-        } else {
-            registerReceiver(clipboardReciever, intentFilter)
-        }
+        ContextCompat.registerReceiver(this, clipboardReciever, intentFilter, ContextCompat.RECEIVER_EXPORTED)
 
         val copyIntent = PendingIntent.getBroadcast(
             this,
