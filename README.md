@@ -95,6 +95,12 @@ About this app
 -----------------
 ### License
 This app is released under the terms of the [GPLv3 license](https://gitea.felixnuesse.de/felix/disky/blob/master/LICENSE). 
+There are older releases that were accidentially made under the MIT license.
+I hereby relicense all former code to the GPLv3.
+
+The notable exception are the translations made by other users, up to this point. They will remain under the MIT license.
+
+
 
 ### Libraries
 - [AppIntro](https://github.com/AppIntro/AppIntro) - This library is responsible for the easy-to-use introduction to the app!
