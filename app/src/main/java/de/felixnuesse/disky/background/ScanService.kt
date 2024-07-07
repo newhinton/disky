@@ -2,10 +2,15 @@ package de.felixnuesse.disky.background
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.app.usage.StorageStatsManager
+import android.content.BroadcastReceiver
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
@@ -49,7 +54,11 @@ class ScanService: Service(), ScannerCallback {
         val SCAN_REFRESH_REQUESTED = "SCAN_REFRESH_REQUESTED"
         val SCAN_PROGRESSED = "SCAN_PROGRESSED"
         private val NOTIFICATION_CHANNEL_ID = "general_notification_channel"
+        private val ERROR_NOTIFICATION_CHANNEL_ID = "error_notification_channel"
+        private val ERROR_COPY_INTENT_ACTION = "de.felixnuesse.disky.background.ACTION_COPY_ERROR"
         private val NOTIFICATION_ID = 5691
+        private val ERROR_NOTIFICATION_ID = 5692
+        private val CLIPBOARD_INTENT_ID = 5693
         private var storageResult: StorageResult? = null
 
         /**
@@ -101,17 +110,25 @@ class ScanService: Service(), ScannerCallback {
                 Log.e(tag(), "No valid storage name was provided!")
                 return@launch
             }
-            val result = scan(storageToScan, serviceRunId, subfolder)
-            Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-now}ms ${wasStopped(thisServiceRunId)}")
-            if(wasStopped(thisServiceRunId)) {
+
+            try {
+                val result = scan(storageToScan, serviceRunId, subfolder)
+                Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-now}ms ${wasStopped(thisServiceRunId)}")
+                if(wasStopped(thisServiceRunId)) {
+                    val resultIntent = Intent(SCAN_ABORTED)
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
+                    Log.e(tag(), "Scan was prematurely stopped!")
+                } else {
+                    storageResult = result
+                    val resultIntent = Intent(SCAN_COMPLETE)
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
+                }
+            } catch (e: Exception) {
+                showErrorNotification(e.message.toString())
                 val resultIntent = Intent(SCAN_ABORTED)
                 LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
-                Log.e(tag(), "Scan was prematurely stopped!")
-            } else {
-                storageResult = result
-                val resultIntent = Intent(SCAN_COMPLETE)
-                LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
             }
+
             finishService()
         }
         return super.onStartCommand(intent, flags, startId)
@@ -129,6 +146,14 @@ class ScanService: Service(), ScannerCallback {
         )
         channel.setSound(null, null)
         notificationManager.createNotificationChannel(channel)
+
+        val error_channel = NotificationChannel(
+            ERROR_NOTIFICATION_CHANNEL_ID,
+            getString(R.string.error_notification_channel_name),
+            NotificationManager.IMPORTANCE_LOW
+        )
+        notificationManager.createNotificationChannel(error_channel)
+
     }
 
     private fun getNotification(message: String, bigmessage: String): NotificationCompat.Builder {
@@ -140,6 +165,49 @@ class ScanService: Service(), ScannerCallback {
             .setStyle(NotificationCompat.BigTextStyle().bigText(bigmessage))
             .setSmallIcon(R.drawable.icon_servicelogo)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+    }
+
+    //Todo: Migrate this out into its own class
+    private fun showErrorNotification(bigmessage: String) {
+        val error = NotificationCompat.Builder(this, ERROR_NOTIFICATION_CHANNEL_ID)
+            .setContentTitle(getString(R.string.error_notification_title))
+            .setContentText(getString(R.string.error_notification_channel_message))
+            .setStyle(NotificationCompat.BigTextStyle().bigText(bigmessage))
+            .setSmallIcon(R.drawable.round_running_with_errors_24)
+
+
+        val clipboardReciever = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                copyToClipboard("Error Message", bigmessage)
+            }
+        }
+
+        val intentFilter = IntentFilter(ERROR_COPY_INTENT_ACTION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(clipboardReciever, intentFilter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(clipboardReciever, intentFilter)
+        }
+
+        val copyIntent = PendingIntent.getBroadcast(
+            this,
+            CLIPBOARD_INTENT_ID,
+            Intent(ERROR_COPY_INTENT_ACTION),
+            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        error.addAction(
+            R.drawable.icon_copy,
+            getString(R.string.error_notification_action_copy),
+            copyIntent
+        )
+
+        notificationManager.notify(ERROR_NOTIFICATION_ID, error.build())
+    }
+
+    private fun copyToClipboard(label: String, content: String) {
+        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(ClipData.newPlainText(label, content))
     }
 
     private fun scan(storage: String, id: Long, subpath: String): StorageResult? {
