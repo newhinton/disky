@@ -19,6 +19,8 @@ Violations of this Code of Conduct may result in temporary or permanent expulsio
 
 If you witness or experience any behavior that violates this Code of Conduct, please report it to the moderators immediately.
 
+## Requesting a new feature
 
+If you have an idea, please first check whether or not it has already been requested. Otherwise just fill out the template and submit it! Mockups, if applicable, are appreciated, and good descriptions aswell as usecases are too!
 
 ### Thank you for your contributions!

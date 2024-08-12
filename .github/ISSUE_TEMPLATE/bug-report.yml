@@ -1,0 +1,31 @@
+---
+name: Bug report
+about: Report an error for this app
+title: ''
+labels: ''
+assignees: ''
+
+---
+
+<!---
+If you think you have found a bug, please fill out the following questions before submitting your issue.
+Please follow it, otherwise it might get dismissed. Thank you!
+-->
+
+- [ ] I have read the above note
+
+#### What version of Disky are you using? (Settings -> About)
+<!-- Example: 1.1.0 -->
+
+
+#### What is your Android version, phone model and manufacturer?
+<!-- Example: Android 11, Google Pixel 5 -->
+
+
+
+#### Which steps are required to reproduce this issue?
+
+Example:
+  1. Open Disky
+  2. Scan
+  3. Disky crashes
