@@ -77,7 +77,7 @@ You can then build the app normally from Android Studio or from CLI by running:
 
 Contributing
 ------------
-See [CONTRIBUTING](./CODE_OF_CONDUCT.md)
+See [CONTRIBUTING](./CONTRIBUTING.md)
 
 Anyone is welcome to contribute and help out. However, hate, discrimination and racism are decidedly unwelcome here. If you feel offended by this, you might belong to the group of people who are not welcome. I will not tolerate hate in any way.
 
