@@ -1,49 +1,73 @@
 <resources>
-    <string name="app_name" translatable="false">disky</string>
-    <string name="apppackage_size_app" translatable="false">Apk</string>
+    <string name="app_name" translatable="false">Disky</string>
+    <string name="apppackage_size_app" translatable="false">APK</string>
     <string name="apppackage_size_data">بيانات المستخدم</string>
     <string name="apppackage_size_externalcache">ذاكرة التخزين المؤقت الخارجية</string>
-    <string name="apppackage_size_cache">ذاكرة تخزين مؤقتة</string>
+    <string name="apppackage_size_cache">ذاكرة التخزين المؤقت</string>
     <string name="apps">التطبيقات</string>
-    <string name="system" translatable="false">Android OS</string>
+    <string name="system" translatable="false">نظام أندرويد</string>
 
-    <string name="foreground_service_notification_channel_name">خدمة فحص Disky</string>
-    <string name="foreground_service_notification_title">خدمة فحص Disky</string>
-    <string name="foreground_service_notification_description">تعرض هذه القناة تقدم الفحص. يمكنك إخفاء هذا الإشعار بأمان.</string>
+    <string name="foreground_service_notification_channel_name">خدمة مسح Disky</string>
+    <string name="foreground_service_notification_title">جارٍ المسح…</string>
+    <string name="foreground_service_notification_description">تظهر هذه القناة تقدم المسح. يمكنك إخفاء هذا الإشعار بأمان.</string>
+    <string name="foreground_service_notification_starting_message">نحن نحضر للمسح…</string>
+    <string name="foreground_service_notification_short_message">التقدم الحالي: %1$d%%</string>
+    <string name="foreground_service_notification_long_message">التقدم الحالي: %1$d%% \n %2$s</string>
     <string name="contextmenu_folder_open">فتح المجلد</string>
 
-    <string name="intro_slide_welcome_title">مرحباً!</string>
-    <string name="intro_slide_welcome_description">سوف نساعدك في العثور على Disk-hogs الخاصة بك. ولكن أولا، دعونا إعداد هذا التطبيق!</string>
-    <string name="intro_slide_notification_title">الحصول على إخطار!</string>
-    <string name="intro_slide_notification_description">نريد أن نظهر لك إشعارات عندما نقوم بفحص ملفاتك. لن نقوم بإرسال بريد عشوائي إليك!</string>
+    <string name="intro_slide_welcome_title">مرحبًا!</string>
+    <string name="intro_slide_welcome_description">سنساعدك في العثور على التطبيقات التي تستهلك مساحة كبيرة. ولكن أولاً، دعنا نعد هذا التطبيق!</string>
+    <string name="intro_slide_notification_title">احصل على إشعارات!</string>
+    <string name="intro_slide_notification_description">نريد أن نعرض لك إشعارات عندما نقوم بمسح ملفاتك. لن نزعجك!</string>
     <string name="intro_slide_done_title">تم!</string>
     <string name="intro_slide_done_description">أنت الآن جاهز للبدء!</string>
-    <string name="intro_storage_title">الوصول إلى التخزين</string>
-    <string name="intro_storage_description">يعتمد Disky على صلاحيات الوصول إلى كافة الملفات. يرجى منح حق الوصول إلى مساحة التخزين عندما يُطلب منك ذلك، وإلا فلن يعمل التطبيق بشكل صحيح.</string>
+    <string name="intro_storage_title">وصول التخزين</string>
+    <string name="intro_storage_description">يعتمد Disky على الإذن للوصول إلى جميع الملفات. يرجى منح الوصول إلى التخزين عند الطلب، وإلا فلن يعمل التطبيق بشكل صحيح.</string>
     <string name="intro_slide_usage_title">إحصائيات الاستخدام</string>
-    <string name="intro_slide_usage_description">نحن نستخدم إحصائيات الاستخدام لحساب استخدام القرص بواسطة تطبيقاتك.</string>
+    <string name="intro_slide_usage_description">نستخدم إحصائيات الاستخدام لحساب استخدام القرص بواسطة تطبيقاتك.</string>
     <string name="contextmenu_file_open">فتح</string>
     <string name="contextmenu_file_openfolder">فتح في المجلد</string>
     <string name="mainmenu_reload">إعادة تحميل</string>
     <string name="mainmenu_settings">الإعدادات</string>
-    <string name="reload">إعادة فحص الملفات...</string>
-    <string name="reload_blocked_because_inapps">إعادة التحميل غير ممكن في التطبيق!</string>
-    <string name="donate_message">هل تريد دعم المطور؟ مساهمتك موضع تقدير كبير!</string>
+    <string name="reload">إعادة مسح الملفات…</string>
+    <string name="reload_blocked_because_inapps">لا يمكن التحديث في تطبيق!</string>
+    <string name="donate_message">هل تريد دعم المطور؟ مساهمتك محل تقدير كبير!</string>
     <string name="donate_button">تبرع!</string>
     <string name="uicontext_folder_rootdir">أنت في الدليل الجذر.</string>
-    <string name="uicontext_folder_app">حاليًا، أنت تنظر إلى %1$s. ويستخدم %2$s.</string>
-    <string name="uicontext_folder_appcollection">يسرد هذا جميع تطبيقاتك المثبتة، إجمالي %1$d. يستخدمون %2$s.</string>
-    <string name="uicontext_folder_folder">لقد اخترت المجلد %1$s. يستخدم محتواه %2$s من سعة التخزين لديك.</string>
-    <string name="select_storage">حدد وحدة التخزين</string>
+    <string name="uicontext_folder_app">حاليًا، أنت تنظر إلى %1$s. إنها تستخدم %2$s.</string>
+    <string name="uicontext_folder_appcollection">هذه قائمة بجميع التطبيقات المثبتة لديك، بإجمالي %1$d. إنها تستخدم %2$s.</string>
+    <string name="uicontext_folder_folder">لقد اخترت مجلد %1$s. محتواه يستخدم %2$s من تخزينك.</string>
+    <string name="select_storage">اختر التخزين</string>
     <string name="used">المستخدم:</string>
-    <string name="calculating">يتم الحساب...</string>
-    <string name="free">الحر:</string>
-    <string name="warning_removable_storage">تحذير! التخزين القابل للإزالة سيكون غير موثوق به!</string>
+    <string name="calculating">جارٍ الحساب…</string>
+    <string name="free">المتاح:</string>
+    <string name="warning_removable_storage">تحذير! التخزين القابل للإزالة سيكون غير موثوق!</string>
     <string name="contextmenu_delete">حذف</string>
-    <string name="yes_delete">نعم، احذف نهائيًا!</string>
+    <string name="yes_delete">نعم، احذف بشكل دائم!</string>
     <string name="no_keep">لا، احتفظ به.</string>
-    <string name="delete_confirmation_text">هل أنت متأكد أنك تريد حذف \"%1$s\"؟ لا يمكن التراجع عن هذا !</string>
+    <string name="delete_confirmation_text">هل أنت متأكد أنك تريد حذف \"%1$s\"؟ لا يمكن التراجع عن ذلك!</string>
     <string name="delete_file_title">حذف الملف</string>
     <string name="delete_folder_title">حذف المجلد</string>
-
+    <string name="action_cancel">إلغاء</string>
+    <string name="activity_about_madeby">صنع بواسطة:</string>
+    <string name="help">مساعدة</string>
+    <string name="copyright" translatable="false">"GPLv3 - ©%1$s "</string>
+    <string name="faq">الأسئلة الشائعة</string>
+    <string name="about">حول</string>
+    <string name="sortorder">ترتيب الفرز</string>
+    <string name="about_this_app">حول هذا التطبيق</string>
+    <string name="faq_description">إذا كانت لديك أسئلة، فقد تجد الإجابات هنا</string>
+    <string name="sortorder_aplhabet">أبجدي</string>
+    <string name="sortorder_size">الحجم</string>
+    <string name="ok">حسناً</string>
+    <string name="help_android_os">نظام أندرويد</string>
+    <string name="help_android_os_description">هذا يجمع الفرق بين إجمالي مساحة القرص المتاحة، وكمية المساحة المستخدمة بواسطة ملفاتك، والمساحة الحرة المعروفة.\n\nهذا لا يشمل فقط نظام أندرويد نفسه، بل أيضًا تطبيقات وملفات ملفات تعريف أخرى، وملفات النظام المؤقتة. هذا يعني أن هذه القيمة غير دقيقة.</string>
+    <string name="faq_label_accuracy">هل هذا التطبيق دقيق؟</string>
+    <string name="faq_answer_accuracy">لا. يمكننا حساب ملفاتك وتطبيقاتك بشكل صحيح، ولكن ليس نظام أندرويد الخاص بك. هذا يعني أنك ستحصل على نتائج مختلفة للنظام في كل مرة تقوم فيها بتحديث المسح. هذه هي قيود نظام أندرويد نفسه.</string>
+    <string name="faq_label_androidos">ما هو "نظام أندرويد"؟</string>
+    <string name="faq_answer_androidos">هذا هو كل المساحة المستخدمة التي لا يمكننا الوصول إليها. وهذا يشمل ملفات تعريف أخرى وتطبيقاتها والنظام نفسه. لذا فإن القيمة المحسوبة هي مجرد تقدير لحجمها الحقيقي.</string>
+    <string name="error_notification_channel_name">الأخطاء</string>
+    <string name="error_notification_channel_message">واجهت خدمة المسح خطأ.</string>
+    <string name="error_notification_title">لم يكن المسح ناجحًا</string>
+    <string name="error_notification_action_copy">نسخ الخطأ</string>
 </resources>
