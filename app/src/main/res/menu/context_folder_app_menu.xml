@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_folder_app_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/icon_open"
+        android:title="@string/contextmenu_folder_app_open" />
+
+    <item
+        android:id="@+id/action_folder_app_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/icon_settings"
+        android:title="@string/contextmenu_app_open_settings" />
+</menu>

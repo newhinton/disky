@@ -5,13 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.DocumentsContract
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import de.felixnuesse.disky.R
 import de.felixnuesse.disky.databinding.ItemFolderEntryBinding
@@ -19,6 +19,8 @@ import de.felixnuesse.disky.databinding.ItemLeafEntryBinding
 import de.felixnuesse.disky.extensions.getAppIcon
 import de.felixnuesse.disky.extensions.getAppname
 import de.felixnuesse.disky.extensions.readableFileSize
+import de.felixnuesse.disky.extensions.startApp
+import de.felixnuesse.disky.extensions.startAppSettings
 import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.model.StoragePrototype
@@ -50,6 +52,7 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
         if(holder is FolderView) {
             with(holder) {
                 with(folders[position]){
+                    val branch = folders[position] as StorageBranch
                     binding.title.text = name
                     binding.size.text = readableFileSize(getCalculatedSize())
                     binding.progressBar.progress = percent
@@ -62,10 +65,11 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                         binding.title.text = getAppname(name, mContext)
                         binding.imageView.imageTintList = null
                         binding.imageView.setImageDrawable(getAppIcon(name, mContext))
+                        setMenu(R.menu.context_folder_app_menu, branch)
                     }
 
                     if(storageType == StorageType.FOLDER) {
-                        holder.leafFolder = folders[position] as StorageBranch
+                        holder.leafFolder = branch
                         enableDeletion()
                     }
                     setChangeFolderCallbackTarget(this)
@@ -122,15 +126,20 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
         private var popupMenuEnableDeletion = false
 
         init {
+            setMenu(R.menu.context_folder_menu, null)
+        }
+
+        fun setMenu(menu: Int, branch: StorageBranch?) {
+            branch.let{leafFolder = it}
             binding.root.setOnLongClickListener {
                 if(leafFolder == null) {
                     return@setOnLongClickListener true
                 }
                 val context = binding.root.context
-                var popup = PopupMenu(context, it)
+                val popup = PopupMenu(context, it)
                 popup.setOnMenuItemClickListener(this)
-                popup.menuInflater.inflate(R.menu.context_folder_menu, popup.menu)
-                popup.menu.findItem(R.id.action_folder_delete).setVisible(popupMenuEnableDeletion)
+                popup.menuInflater.inflate(menu, popup.menu)
+                popup.menu.findItem(R.id.action_folder_delete)?.setVisible(popupMenuEnableDeletion)
                 popup.setForceShowIcon(true)
                 popup.show()
                 true
@@ -152,6 +161,14 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                 }
                 R.id.action_folder_delete -> {
                     DeleteDialog(mContext, File(leafFolder!!.getParentPath())).askDelete()
+                    true
+                }
+                R.id.action_folder_app_open -> {
+                    leafFolder?.let { startApp(it.name, mContext) }
+                    true
+                }
+                R.id.action_folder_app_settings -> {
+                    leafFolder?.let { startAppSettings(it.name, mContext) }
                     true
                 }
                 else -> false

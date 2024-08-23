@@ -70,4 +70,6 @@
     <string name="error_notification_channel_message">The Scan-Service encountered an error.</string>
     <string name="error_notification_title">Scanning was not successful</string>
     <string name="error_notification_action_copy">Copy Error</string>
+    <string name="contextmenu_folder_app_open">Open</string>
+    <string name="contextmenu_app_open_settings">Settings</string>
 </resources>
