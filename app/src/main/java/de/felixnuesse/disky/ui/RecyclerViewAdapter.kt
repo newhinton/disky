@@ -11,13 +11,14 @@ import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import de.felixnuesse.disky.R
 import de.felixnuesse.disky.databinding.ItemFolderEntryBinding
 import de.felixnuesse.disky.databinding.ItemLeafEntryBinding
 import de.felixnuesse.disky.extensions.getAppIcon
+import de.felixnuesse.disky.extensions.getAppIconDisabled
 import de.felixnuesse.disky.extensions.getAppname
+import de.felixnuesse.disky.extensions.isAppEnabled
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.extensions.startApp
 import de.felixnuesse.disky.extensions.startAppSettings
@@ -47,7 +48,7 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
         }
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint("UseCompatLoadingForDrawables", "SetTextI18n")
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(holder is FolderView) {
             with(holder) {
@@ -65,7 +66,13 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                         binding.title.text = getAppname(name, mContext)
                         binding.imageView.imageTintList = null
                         binding.imageView.setImageDrawable(getAppIcon(name, mContext))
-                        setMenu(R.menu.context_folder_app_menu, branch)
+                        if(isAppEnabled(name, mContext)) {
+                            setMenu(R.menu.context_folder_app_menu, branch)
+                        } else {
+                            binding.title.text = getAppname(name, mContext) + " " + mContext.getString(R.string.app_disabled_suffix)
+                            binding.title.isEnabled = false
+                            binding.imageView.setImageDrawable(getAppIconDisabled(name, mContext))
+                        }
                     }
 
                     if(storageType == StorageType.FOLDER) {

@@ -14,4 +14,13 @@
         android:layout_height="wrap_content"
         android:icon="@drawable/icon_settings"
         android:title="@string/contextmenu_app_open_settings" />
+
+    <item
+        android:id="@+id/action_folder_app_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/icon_delete"
+        android:title="@string/contextmenu_folder_app_delete"
+        android:visible="false" />
+
 </menu>

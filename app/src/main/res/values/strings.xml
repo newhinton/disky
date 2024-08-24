@@ -72,4 +72,6 @@
     <string name="error_notification_action_copy">Copy Error</string>
     <string name="contextmenu_folder_app_open">Open</string>
     <string name="contextmenu_app_open_settings">Settings</string>
+    <string name="contextmenu_folder_app_delete">Uninstall</string>
+    <string name="app_disabled_suffix">(Disabled)</string>
 </resources>
