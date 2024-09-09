@@ -66,9 +66,8 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                         binding.title.text = getAppname(name, mContext)
                         binding.imageView.imageTintList = null
                         binding.imageView.setImageDrawable(getAppIcon(name, mContext))
-                        if(isAppEnabled(name, mContext)) {
-                            setMenu(R.menu.context_folder_app_menu, branch)
-                        } else {
+                        setMenu(R.menu.context_folder_app_menu, branch)
+                        if(!isAppEnabled(name, mContext)) {
                             binding.title.text = getAppname(name, mContext) + " " + mContext.getString(R.string.app_disabled_suffix)
                             binding.title.isEnabled = false
                             binding.imageView.setImageDrawable(getAppIconDisabled(name, mContext))
