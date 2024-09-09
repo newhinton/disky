@@ -55,6 +55,8 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                 with(folders[position]){
                     val branch = folders[position] as StorageBranch
                     binding.title.text = name
+                    // the recyclerview does not reenable the title on scroll.
+                    binding.title.isEnabled = true
                     binding.size.text = readableFileSize(getCalculatedSize())
                     binding.progressBar.progress = percent
 
