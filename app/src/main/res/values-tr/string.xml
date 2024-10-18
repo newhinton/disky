@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">disky</string>
     <string name="apppackage_size_app" translatable="false">Apk</string>
-    <string name="apppackage_size_data">Kullanıcı Verisi</string>
+    <string name="apppackage_size_data">Kullanıcı Verileri</string>
     <string name="apppackage_size_externalcache">Harici Önbellek</string>
     <string name="apppackage_size_cache">Önbellek</string>
     <string name="apps">Uygulamalar</string>
@@ -9,42 +9,42 @@
 
     <string name="foreground_service_notification_channel_name">Disky Tarama Servisi</string>
     <string name="foreground_service_notification_title">Taranıyor…</string>
-    <string name="foreground_service_notification_description">Bu kanal tarama ilerlemesini gösterir. Bu bildirimi güvenle gizleyebilirsiniz.</string>
-    <string name="foreground_service_notification_starting_message">Taramaya hazırlanıyoruz…</string>
-    <string name="foreground_service_notification_short_message">Mevcut İlerleme: %1$d%%</string>
-    <string name="foreground_service_notification_long_message">Mevcut İlerleme: %1$d%% \n %2$s</string>
+    <string name="foreground_service_notification_description">Bu kanal, tarama ilerlemesini gösterir. Bu bildirimi güvenle gizleyebilirsiniz.</string>
+    <string name="foreground_service_notification_starting_message">Tarama için hazırlanıyoruz…</string>
+    <string name="foreground_service_notification_short_message">Güncel İlerleme: %1$d%%</string>
+    <string name="foreground_service_notification_long_message">Güncel İlerleme: %1$d%% \n %2$s</string>
     <string name="contextmenu_folder_open">Klasörü Aç</string>
 
-    <string name="intro_slide_welcome_title">Hoş Geldiniz!</string>
-    <string name="intro_slide_welcome_description">Disk alanınızı kullananları bulmanıza yardımcı olacağız. Ama önce bu uygulamayı kurmamıza izin verin!</string>
+    <string name="intro_slide_welcome_title">Hoş geldiniz!</string>
+    <string name="intro_slide_welcome_description">Disk alanını çok kullanan dosyaları bulmanıza yardımcı olacağız. Ancak önce uygulamayı ayarlayalım!</string>
     <string name="intro_slide_notification_title">Bildirim Alın!</string>
-    <string name="intro_slide_notification_description">Dosyalarınızı tararken size bildirimler göstermek istiyoruz. Sizi rahatsız etmeyeceğiz!</string>
+    <string name="intro_slide_notification_description">Dosyalarınızı tararken size bildirimler göstermek istiyoruz. Size spam yapmayacağız!</string>
     <string name="intro_slide_done_title">Tamamlandı!</string>
     <string name="intro_slide_done_description">Artık başlamaya hazırsınız!</string>
     <string name="intro_storage_title">Depolama Erişimi</string>
-    <string name="intro_storage_description">Disky, tüm dosyalara erişim iznine dayanır. İstendiğinde depolama erişimini lütfen verin, aksi takdirde uygulama düzgün çalışmaz.</string>
+    <string name="intro_storage_description">Disky, tüm dosyalara erişim iznine dayanır. Lütfen istenildiğinde depolama erişimi izni verin, aksi takdirde uygulama düzgün çalışmayacaktır.</string>
     <string name="intro_slide_usage_title">Kullanım İstatistikleri</string>
-    <string name="intro_slide_usage_description">Kullanım istatistiklerini, uygulamalarınızın disk kullanımını hesaplamak için kullanıyoruz.</string>
+    <string name="intro_slide_usage_description">Uygulamalarınızın disk kullanımını hesaplamak için kullanım istatistiklerini kullanıyoruz.</string>
     <string name="contextmenu_file_open">Aç</string>
     <string name="contextmenu_file_openfolder">Klasörde Aç</string>
     <string name="mainmenu_reload">Yeniden Yükle</string>
     <string name="mainmenu_settings">Ayarlar</string>
     <string name="reload">Dosyalar Yeniden Taranıyor…</string>
-    <string name="reload_blocked_because_inapps">Bir uygulamada yenileme mümkün değil!</string>
-    <string name="donate_message">Geliştiriciyi desteklemek ister misiniz? Katkınız çok değerli!</string>
+    <string name="reload_blocked_because_inapps">Bir uygulama içinde yenileme yapılamaz!</string>
+    <string name="donate_message">Geliştiriciye destek olmak ister misiniz? Katkınız çok değerlidir!</string>
     <string name="donate_button">Bağış Yap!</string>
     <string name="uicontext_folder_rootdir">Kök dizindesiniz.</string>
     <string name="uicontext_folder_app">Şu anda %1$s\'i inceliyorsunuz. %2$s kullanıyor.</string>
-    <string name="uicontext_folder_appcollection">Bu, toplamda %1$d olan tüm yüklü uygulamalarınızı listeler. %2$s kullanıyorlar.</string>
-    <string name="uicontext_folder_folder">%1$s klasörünü seçtiniz. İçeriği depolama alanınızın %2$s\'ini kullanıyor.</string>
+    <string name="uicontext_folder_appcollection">Bu liste tüm yüklü uygulamalarınızı içerir, toplam %1$d tane. Bunlar %2$s kullanıyor.</string>
+    <string name="uicontext_folder_folder">%1$s klasörünü seçtiniz. İçeriği depolamanızın %2$s\'sini kullanıyor.</string>
     <string name="select_storage">Depolama Seç</string>
     <string name="used">Kullanılan:</string>
     <string name="calculating">Hesaplanıyor…</string>
     <string name="free">Boş:</string>
-    <string name="warning_removable_storage">Uyarı! Çıkarılabilir Depolama güvenilir olmayacak!</string>
+    <string name="warning_removable_storage">Uyarı! Çıkarılabilir depolama güvenilmez olabilir!</string>
     <string name="contextmenu_delete">Sil</string>
     <string name="yes_delete">Evet, kalıcı olarak sil!</string>
-    <string name="no_keep">Hayır, tut.</string>
+    <string name="no_keep">Hayır, sakla.</string>
     <string name="delete_confirmation_text">"%1$s" öğesini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz!</string>
     <string name="delete_file_title">Dosyayı Sil</string>
     <string name="delete_folder_title">Klasörü Sil</string>
@@ -56,14 +56,22 @@
     <string name="about">Hakkında</string>
     <string name="sortorder">Sıralama Düzeni</string>
     <string name="about_this_app">Bu uygulama hakkında</string>
-    <string name="faq_description">Sorularınız varsa, burada cevaplarını bulabilirsiniz</string>
+    <string name="faq_description">Sorularınız varsa, cevapları burada olabilir</string>
     <string name="sortorder_aplhabet">Alfabetik</string>
     <string name="sortorder_size">Boyut</string>
     <string name="ok">Tamam</string>
-    <string name="help_android_os">Android İşletim Sistemi</string>
-    <string name="help_android_os_description">Bu, toplam kullanılabilir disk alanı, dosyalarınızın ne kadar kullandığı ve bilinen boş depolama arasındaki farkı toplar.\n\nBu, sadece android sistemi değil, aynı zamanda diğer profiller, uygulamalar ve dosyalar ve geçici sistem dosyalarını da içerir. Bu, bu değerin kesin olmadığı anlamına gelir.</string>
+    <string name="help_android_os">Android OS</string>
+    <string name="help_android_os_description">Bu, toplam kullanılabilir disk alanı, dosyalarınızın kullandığı miktar ve bilinen boş depolama arasındaki farkı toplar.\n\nBu sadece Android sistemini değil, diğer profillerin uygulamalarını ve dosyalarını, geçici sistem dosyalarını da içerir. Bu nedenle bu değer kesin değildir.</string>
     <string name="faq_label_accuracy">Bu uygulama doğru mu?</string>
-    <string name="faq_answer_accuracy">Hayır. Dosyalarınızı ve uygulamalarınızı doğru şekilde hesaplayabiliriz, ancak android sisteminizi değil. Bu, taramayı her yenilediğinizde sistem için muhtemelen farklı sonuçlar alacağınız anlamına gelir. Bu, android\'in kendi sınırlamasıdır.</string>
-    <string name="faq_label_androidos">"Android İşletim Sistemi" nedir?</string>
-    <string name="faq_answer_androidos">Bu, erişemediğimiz tüm kullanılan alanları içerir. Bu, diğer profiller ve uygulamaları ve sistemi içerir. Hesaplanan değer, gerçek boyutunun sadece bir tahminidir.</string>
+    <string name="faq_answer_accuracy">Hayır. Dosyalarınızı ve uygulamalarınızı doğru bir şekilde hesaplayabiliriz, ancak Android sisteminizi hesaplayamayız. Bu, taramayı her yenilediğinizde sistem için farklı sonuçlar almanız anlamına gelir. Bu, Android\'in bir sınırlamasıdır.</string>
+    <string name="faq_label_androidos">"Android OS" nedir?</string>
+    <string name="faq_answer_androidos">Bu, erişemediğimiz tüm kullanılan alanı içerir. Diğer profiller ve onların uygulamaları ile sistemin kendisi buna dahildir. Hesaplanan değer bu nedenle yalnızca gerçek boyutunun bir tahminidir.</string>
+    <string name="error_notification_channel_name">Hatalar</string>
+    <string name="error_notification_channel_message">Tarama Servisi bir hata ile karşılaştı.</string>
+    <string name="error_notification_title">Tarama başarısız oldu</string>
+    <string name="error_notification_action_copy">Hata Kopyala</string>
+    <string name="contextmenu_folder_app_open">Aç</string>
+    <string name="contextmenu_app_open_settings">Ayarlar</string>
+    <string name="contextmenu_folder_app_delete">Kaldır</string>
+    <string name="app_disabled_suffix">(Devre Dışı)</string>
 </resources>
