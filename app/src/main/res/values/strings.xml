@@ -48,6 +48,9 @@
     <string name="delete_confirmation_text">Are you sure you want to delete \"%1$s\"? This cannot be undone!</string>
     <string name="delete_file_title">Delete File</string>
     <string name="delete_folder_title">Delete Folder</string>
+    <string name="storagewarning_notification_title">Disky: Warning! Storage filling up!</string>
+    <string name="storagewarning_notification_channel_name">Full Storage Warning</string>
+
     <string name="action_cancel">Cancel</string>
     <string name="activity_about_madeby">Made by:</string>
     <string name="help">Help</string>

@@ -53,6 +53,7 @@ import de.felixnuesse.disky.ui.BottomSheet
 import de.felixnuesse.disky.ui.ChangeFolderCallback
 import de.felixnuesse.disky.ui.RecyclerViewAdapter
 import de.felixnuesse.disky.utils.PermissionManager
+import de.felixnuesse.disky.worker.WorkerManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -96,6 +97,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             //finish()
         }
 
+
         storageManager = getSystemService(Context.STORAGE_SERVICE) as StorageManager
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -131,7 +133,8 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
         registerReciever()
         if(isIntroComplete) {
-            triggerDataUpdate()
+            //triggerDataUpdate()
+            WorkerManager().scheduleDaily(this)
         }
     }
 
