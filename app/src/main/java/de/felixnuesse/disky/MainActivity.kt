@@ -142,6 +142,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         val reciever = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
                 if(intent.action == SCAN_ABORTED) {
+                    binding.progressLabel.text = "Scan was aborted"
                     return
                 }
                 if(intent.action == SCAN_REFRESH_REQUESTED) {
