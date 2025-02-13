@@ -53,7 +53,6 @@ import de.felixnuesse.disky.ui.BottomSheet
 import de.felixnuesse.disky.ui.ChangeFolderCallback
 import de.felixnuesse.disky.ui.RecyclerViewAdapter
 import de.felixnuesse.disky.utils.PermissionManager
-import de.felixnuesse.disky.worker.WorkerManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -133,14 +132,15 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
         registerReciever()
         if(isIntroComplete) {
-            //triggerDataUpdate()
-            WorkerManager().scheduleDaily(this)
+            triggerDataUpdate()
+            //WorkerManager().scheduleDaily(this)
         }
     }
 
     fun registerReciever() {
         val reciever = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
+                Log.e("MAIN", "onRecieve")
                 if(intent.action == SCAN_ABORTED) {
                     binding.progressLabel.text = "Scan was aborted"
                     return
