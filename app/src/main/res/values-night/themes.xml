@@ -35,5 +35,6 @@
         <item name="iconTint">?attr/colorPrimary</item>
 
         <item name="popupMenuBackgroundColor">?attr/colorSurfaceVariant</item>
+        <item name="aboutButtonTextColor">@color/md_theme_light_onPrimaryContainer</item>
     </style>
 </resources>
