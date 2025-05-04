@@ -70,9 +70,9 @@ class AppScanner(var mContext: Context, var callback: ScannerCallback?) {
 
             if(stats.dataBytes > 0) {
                 val name = mContext.getString(R.string.apppackage_size_data)
-                val entry = StorageLeaf(name, StorageType.APP_DATA, stats.dataBytes)
+                val entry = StorageLeaf(name, StorageType.APP_DATA, stats.dataBytes - stats.cacheBytes)
                 app.addChildren(entry)
-                appsize+=stats.dataBytes
+                appsize+=stats.dataBytes - stats.cacheBytes
             }
 
             if(appsize>0) {
