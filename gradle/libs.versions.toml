@@ -1,32 +1,24 @@
 [versions]
-agp = "8.2.2"
-kotlin = "1.9.0"
-coreKtx = "1.13.0"
+agp = "8.11.0"
+kotlin = "2.2.0"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
-appcompat = "1.6.1"
-kotlinxSerializationJson = "1.6.2"
-material = "1.11.0"
-activity = "1.9.0"
-constraintlayout = "2.1.4"
-workRuntimeKtx = "2.9.0"
+junitVersion = "1.2.1"
+workRuntimeKtx = "2.10.2"
 appIntro = "6.3.1"
-lottie = "6.4.0"
 
 [libraries]
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.16.0" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version = "3.6.1" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.1" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.9.0" }
+material = { group = "com.google.android.material", name = "material", version = "1.12.0" }
+androidx-activity = { group = "androidx.activity", name = "activity", version = "1.10.1" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.2.1" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 appintro = { group = "com.github.AppIntro", name = "AppIntro", version.ref = "appIntro" }
-lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
+lottie = { group = "com.airbnb.android", name = "lottie", version = "6.6.7" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

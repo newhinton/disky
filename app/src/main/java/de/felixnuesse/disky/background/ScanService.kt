@@ -21,7 +21,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import de.felixnuesse.disky.R
+import de.felixnuesse.disky.extensions.getFreeSpace
 import de.felixnuesse.disky.extensions.getStorageUUID
+import de.felixnuesse.disky.extensions.getTotalSpace
 import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageResult
@@ -211,7 +213,7 @@ class ScanService: Service(), ScannerCallback {
         val selectedStorage = findStorageByNameOrUUID(storage)
         val rootElement: StoragePrototype?
 
-        maxSize = selectedStorage?.let { getTotalSpace(it) }?:0L
+        maxSize = selectedStorage?.let { getTotalSpace(storageStatsManager, it) }?:0L
         val subfolder = subpath.replace(selectedStorage?.directory!!.absolutePath+"/", "")
 
         fsScanner = FsScanner(this)
@@ -234,7 +236,12 @@ class ScanService: Service(), ScannerCallback {
                 }
             }
             if (subfolder.isBlank()) {
-                SystemScanner(this, this).scanApps(rootElement, getTotalSpace(selectedStorage), getFreeSpace(selectedStorage))
+                SystemScanner(this, this)
+                    .scanApps(
+                        rootElement,
+                        getTotalSpace(storageStatsManager, selectedStorage),
+                        getFreeSpace(storageStatsManager, selectedStorage)
+                    )
                 if(wasStopped(id)) {
                     return null
                 }
@@ -244,30 +251,13 @@ class ScanService: Service(), ScannerCallback {
         val result = StorageResult()
         result.scannedVolume = selectedStorage
         result.rootElement = rootElement
-        result.free = getFreeSpace(selectedStorage)
+        result.free = getFreeSpace(storageStatsManager, selectedStorage)
         result.used = rootElement?.getCalculatedSize()?: 0
-        result.total = getTotalSpace(selectedStorage)
+        result.total = getTotalSpace(storageStatsManager, selectedStorage)
         result.isPartialScan = subfolder.isNotBlank()
         return result
     }
 
-    private fun getTotalSpace(selectedStorage: StorageVolume): Long {
-        return try {
-            val uuid = getStorageUUID(selectedStorage)
-            uuid?.let { storageStatsManager.getTotalBytes(it) }?: 0
-        } catch (e: IOException) {
-            0
-        }
-    }
-
-    private fun getFreeSpace(selectedStorage: StorageVolume): Long {
-        return try {
-            val uuid = getStorageUUID(selectedStorage)
-            uuid?.let { storageStatsManager.getFreeBytes(it) }?: 0
-        } catch (e: IOException) {
-            0
-        }
-    }
 
     private fun findStorageByNameOrUUID(name: String): StorageVolume? {
         storageManager.storageVolumes.forEach {
@@ -278,7 +268,16 @@ class ScanService: Service(), ScannerCallback {
         return null
     }
 
+    private var currentlyScanningLastAction = System.currentTimeMillis()
     override fun currentlyScanning(item: String) {
+
+        var now = System.currentTimeMillis()
+        if((now - currentlyScanningLastAction) < 100) {
+            //Log.e(tag(), "currentlyScanning, skip since last update is less than 100ms")
+            return
+        }
+        
+        currentlyScanningLastAction = System.currentTimeMillis()
         val shorttext = getString(R.string.foreground_service_notification_short_message, lastReportedPercentage)
         val longtext = getString(
             R.string.foreground_service_notification_long_message,
@@ -289,16 +288,27 @@ class ScanService: Service(), ScannerCallback {
         notificationManager.notify(NOTIFICATION_ID, notification.build())
     }
 
+
+    private var foundLeafLastAction = System.currentTimeMillis()
     override fun foundLeaf(size: Long) {
 
         processedSize += size
         val perc = ((processedSize.div(maxSize.toFloat()))*100).toInt()
+
+
+        var now = System.currentTimeMillis()
+        if(perc != 100 && (now - foundLeafLastAction) < 100) {
+            // Log.e(tag(), "foundLeaf, skip since last update is less than 100ms")
+            return
+        }
+
 
         if(perc != lastReportedPercentage) {
             lastReportedPercentage = perc
             val progress = Intent(SCAN_PROGRESSED)
             progress.putExtra(SCAN_PROGRESSED, perc)
             LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(progress)
+            foundLeafLastAction = System.currentTimeMillis()
         }
 
     }

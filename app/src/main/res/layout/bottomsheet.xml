@@ -117,5 +117,48 @@
                 app:simpleItems="@array/sortoptions" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lowStorageCheckTimeDropdown"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/lowStorageCheckTypeHint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/aboutButton"
+            app:startIconDrawable="@drawable/access_time"
+            app:startIconTint="?attr/colorOnPrimaryContainer">
+
+            <AutoCompleteTextView
+                android:id="@+id/lowStorageCheckTimeAutocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                app:simpleItems="@array/lowStorageCheckTypeOptions" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lowStorageCheckThresholdDropdown"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/lowStorageCheckThresholdHint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lowStorageCheckTimeDropdown"
+            app:startIconDrawable="@drawable/round_percent"
+            app:startIconTint="?attr/colorOnPrimaryContainer">
+
+            <AutoCompleteTextView
+                android:id="@+id/lowStorageCheckThresholdAutocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                app:simpleItems="@array/lowStorageCheckThresholdOptions" />
+        </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

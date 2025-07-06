@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "de.felixnuesse.disky"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "de.felixnuesse.disky"
+        applicationId = "de.felixnuesse.disky2"
         minSdk = 30
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 8
         versionName = "1.2.1"
 

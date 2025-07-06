@@ -13,6 +13,23 @@
     <string name="foreground_service_notification_starting_message">We are preparing to scan…</string>
     <string name="foreground_service_notification_short_message">Current Progress: %1$d%%</string>
     <string name="foreground_service_notification_long_message">Current Progress: %1$d%% \n %2$s</string>
+
+    <string name="low_storage_notification_channel_name">Disky Low Storage Warning</string>
+    <string name="low_storage_notification_title">Low Storage!</string>
+
+    <string name="lowStorageCheckType_off">Disabled</string>
+    <string name="lowStorageCheckType_hourly">Hourly</string>
+    <string name="lowStorageCheckType_daily">Daily</string>
+    <string name="lowStorageCheckType_weekly">Weekly</string>
+    <string name="lowStorageCheckType_monthly">Monthly</string>
+
+    <string name="lowStorageCheckThreshold_5">5%</string>
+    <string name="lowStorageCheckThreshold_10">10%</string>
+    <string name="lowStorageCheckThreshold_15">15%</string>
+    <string name="lowStorageCheckThreshold_20">20%</string>
+    <string name="lowStorageCheckThreshold_25">25%</string>
+    <string name="lowStorageCheckThreshold_30">30%</string>
+
     <string name="contextmenu_folder_open">Open Folder</string>
 
     <string name="intro_slide_welcome_title">Welcome!</string>
@@ -77,4 +94,6 @@
     <string name="contextmenu_app_open_settings">Settings</string>
     <string name="contextmenu_folder_app_delete">Uninstall</string>
     <string name="app_disabled_suffix">(Disabled)</string>
+    <string name="lowStorageCheckTypeHint">Low Storage Warning Checks</string>
+    <string name="lowStorageCheckThresholdHint">Low Storage Threshold</string>
 </resources>

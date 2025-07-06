@@ -53,6 +53,7 @@ import de.felixnuesse.disky.ui.BottomSheet
 import de.felixnuesse.disky.ui.ChangeFolderCallback
 import de.felixnuesse.disky.ui.RecyclerViewAdapter
 import de.felixnuesse.disky.utils.PermissionManager
+import de.felixnuesse.disky.worker.BackgroundWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -73,6 +74,8 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     companion object {
         const val APP_PREFERENCES = "APP_PREFERENCES"
         const val APP_PREFERENCE_SORTORDER = "APP_PREFERENCE_SORTORDER"
+        const val APP_PREFERENCE_LSW_TYPE = "APP_PREFERENCE_LSW_TYPE"
+        const val APP_PREFERENCE_LSW_TRESHOLD = "APP_PREFERENCE_LSW_TRESHOLD"
     }
 
 
@@ -133,14 +136,14 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         registerReciever()
         if(isIntroComplete) {
             triggerDataUpdate()
-            //WorkerManager().scheduleDaily(this)
+            BackgroundWorker.schedule(this)
         }
     }
 
     fun registerReciever() {
         val reciever = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
-                Log.e("MAIN", "onRecieve")
+                //Log.e("MAIN", "onRecieve")
                 if(intent.action == SCAN_ABORTED) {
                     binding.progressLabel.text = "Scan was aborted"
                     return
@@ -181,6 +184,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             theme.resolveAttribute(com.google.android.material.R.attr.colorPrimaryDark, primaryColor, true)
             val targetColor = Color.valueOf(Color.parseColor("#FF00FF"))
 
+            Log.e(tag(), "prepared ui...")
             binding.lottie.addValueCallback(
                 KeyPath("**"),
                 LottieProperty.COLOR
@@ -198,7 +202,10 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         val service = Intent(this, ScanService::class.java)
         service.putExtra(SCAN_STORAGE, selectedStorage)
         service.putExtra(SCAN_SUBDIR, currentElement?.getParentPath())
+
+        Log.e(tag(), "start service...")
         startForegroundService(service)
+        Log.e(tag(), "started service!")
     }
 
     override fun onBackPressed() {
@@ -307,6 +314,11 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
     override fun scanComplete(result: StorageResult) {
+
+        // todo: remove this logging:
+        result.scannedVolume
+        Log.e("POST_SCAN", "${result.scannedVolume} ${result.free.div(result.total)} ${result.used}")
+
         runOnUiThread{
             var internalRootElement = result.rootElement
             if(internalRootElement != null) {

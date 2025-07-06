@@ -4,4 +4,21 @@
         <item>@string/sortorder_size</item>
         <item>@string/sortorder_aplhabet</item>
     </string-array>
+
+    <string-array name="lowStorageCheckTypeOptions">
+        <item>@string/lowStorageCheckType_off</item>
+        <item>@string/lowStorageCheckType_hourly</item>
+        <item>@string/lowStorageCheckType_daily</item>
+        <item>@string/lowStorageCheckType_weekly</item>
+        <item>@string/lowStorageCheckType_monthly</item>
+    </string-array>
+
+    <string-array name="lowStorageCheckThresholdOptions">
+        <item>@string/lowStorageCheckThreshold_5</item>
+        <item>@string/lowStorageCheckThreshold_10</item>
+        <item>@string/lowStorageCheckThreshold_15</item>
+        <item>@string/lowStorageCheckThreshold_20</item>
+        <item>@string/lowStorageCheckThreshold_25</item>
+        <item>@string/lowStorageCheckThreshold_30</item>
+    </string-array>
 </resources>

@@ -1,9 +1,12 @@
 package de.felixnuesse.disky.extensions
 
+import android.app.usage.StorageStatsManager
 import android.os.Build
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.util.Log
+import de.felixnuesse.disky.extensions.getStorageUUID
+import java.io.IOException
 import java.util.UUID
 
 
@@ -28,4 +31,24 @@ fun Any.getStorageUUID(selectedStorage: StorageVolume): UUID? {
     }
 
     return uuid
+}
+
+
+
+fun Any.getTotalSpace(storageStatsManager: StorageStatsManager, selectedStorage: StorageVolume): Long {
+    return try {
+        val uuid = getStorageUUID(selectedStorage)
+        uuid?.let { storageStatsManager.getTotalBytes(it) }?: 0
+    } catch (e: IOException) {
+        0
+    }
+}
+
+fun Any.getFreeSpace(storageStatsManager: StorageStatsManager, selectedStorage: StorageVolume): Long {
+    return try {
+        val uuid = getStorageUUID(selectedStorage)
+        uuid?.let { storageStatsManager.getFreeBytes(it) }?: 0
+    } catch (e: IOException) {
+        0
+    }
 }
