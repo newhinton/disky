@@ -34,6 +34,18 @@ class BackgroundWorker (private var mContext: Context, workerParams: WorkerParam
     private lateinit var notificationManager: NotificationManager
 
     companion object {
+
+
+        private const val BACKGROUNDTASK_DISABLED = 0
+        private const val BACKGROUNDTASK_HOURLY = 1
+        private const val BACKGROUNDTASK_DAILY = 2
+        private const val BACKGROUNDTASK_WEEKLY = 3
+        private const val BACKGROUNDTASK_MONTHLY = 4
+
+        private const val DAILY_HOUR_TO_RUN = 19
+
+
+
         fun now(context: Context) {
             val data = Data.Builder()
             val request = OneTimeWorkRequestBuilder<BackgroundWorker>()
@@ -55,15 +67,15 @@ class BackgroundWorker (private var mContext: Context, workerParams: WorkerParam
             var repeatInterval = 0L
             when(type) {
                 // 0 is disabled
-                0 -> { return }
+                BACKGROUNDTASK_DISABLED -> { return }
                 // 1 is hourly
-                1 -> repeatInterval = 1
+                BACKGROUNDTASK_HOURLY -> repeatInterval = 1
                 // 2 is daily
-                2 -> repeatInterval = 24
+                BACKGROUNDTASK_DAILY -> repeatInterval = 24
                 // 3 is weekly
-                3 -> repeatInterval = 168
+                BACKGROUNDTASK_WEEKLY -> repeatInterval = 168
                 // 4 is monthly
-                4 -> repeatInterval = 5040
+                BACKGROUNDTASK_MONTHLY -> repeatInterval = 5040
 
             }
 
@@ -72,12 +84,12 @@ class BackgroundWorker (private var mContext: Context, workerParams: WorkerParam
             val calendar = Calendar.getInstance()
             val now = calendar.timeInMillis
 
-            if(repeatInterval == 1L) {
+            if(type == BACKGROUNDTASK_HOURLY) {
                 calendar.add(Calendar.HOUR, 1)
             } else {
                 val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
-                calendar.set(Calendar.HOUR_OF_DAY, 19)
-                if(currentHour >= 19) {
+                calendar.set(Calendar.HOUR_OF_DAY, DAILY_HOUR_TO_RUN)
+                if(currentHour >= DAILY_HOUR_TO_RUN) {
                     calendar.add(Calendar.HOUR, 24)
                 }
             }
