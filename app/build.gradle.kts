@@ -11,7 +11,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "de.felixnuesse.disky2"
+        applicationId = "de.felixnuesse.disky"
         minSdk = 30
         targetSdk = 36
         versionCode = 8
