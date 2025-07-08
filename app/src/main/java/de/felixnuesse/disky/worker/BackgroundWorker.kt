@@ -75,7 +75,11 @@ class BackgroundWorker (private var mContext: Context, workerParams: WorkerParam
             if(repeatInterval == 1L) {
                 calendar.add(Calendar.HOUR, 1)
             } else {
+                val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
                 calendar.set(Calendar.HOUR_OF_DAY, 19)
+                if(currentHour >= 19) {
+                    calendar.add(Calendar.HOUR, 24)
+                }
             }
 
             calendar.set(Calendar.MINUTE, 0)
