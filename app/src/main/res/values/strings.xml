@@ -96,4 +96,6 @@
     <string name="app_disabled_suffix">(Disabled)</string>
     <string name="lowStorageCheckTypeHint">Low Storage Warning Checks</string>
     <string name="lowStorageCheckThresholdHint">Low Storage Threshold</string>
+    <string name="go_up">Go Back</string>
+    <string name="no_items">No Items</string>
 </resources>

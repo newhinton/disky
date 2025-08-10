@@ -45,6 +45,8 @@ import de.felixnuesse.disky.databinding.ActivityMainBinding
 import de.felixnuesse.disky.extensions.getAppname
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.extensions.tag
+import de.felixnuesse.disky.model.GoBackUp
+import de.felixnuesse.disky.model.NoItems
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageResult
 import de.felixnuesse.disky.model.StorageType
@@ -102,7 +104,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
         storageManager = getSystemService(Context.STORAGE_SERVICE) as StorageManager
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -305,7 +307,20 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(this, R.anim.recyclerview_animation)
         recyclerView.layoutAnimation = animation
         recyclerView.layoutManager = LinearLayoutManager(this)
-        val recyclerViewAdapter = RecyclerViewAdapter(this, currentRoot.getChildren(), this)
+
+
+        // create a copy of the list. If we dont, the new items are getting added permanently, and
+        // going back and forth will create duplicates of them.
+        val children = arrayListOf<StoragePrototype>()
+        if(currentRoot.parent != null) {
+            children.add(0, GoBackUp(currentRoot.parent!!))
+        }
+        children.addAll(currentRoot.getChildren())
+        if(currentRoot.getChildren().isEmpty()) {
+            children.add(NoItems())
+        }
+
+        val recyclerViewAdapter = RecyclerViewAdapter(this, children, this)
         recyclerView.adapter = recyclerViewAdapter
     }
 

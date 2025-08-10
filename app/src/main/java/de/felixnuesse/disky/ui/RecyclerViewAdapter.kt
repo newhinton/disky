@@ -3,6 +3,7 @@ package de.felixnuesse.disky.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 import android.provider.DocumentsContract
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import de.felixnuesse.disky.extensions.isAppEnabled
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.extensions.startApp
 import de.felixnuesse.disky.extensions.startAppSettings
+import de.felixnuesse.disky.model.GoBackUp
 import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.model.StoragePrototype
@@ -43,7 +45,10 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
             StorageType.APP_CACHE,
             StorageType.OS ->
                 LeafView(ItemLeafEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-
+            StorageType.GO_BACK_UP ->
+                GoBackView(ItemLeafEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            StorageType.EMPTY ->
+                NoItemsView(ItemLeafEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> FolderView(ItemFolderEntryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
@@ -83,7 +88,15 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                     setChangeFolderCallbackTarget(this)
                 }
             }
-        } else {
+        } else if (holder is GoBackView) {
+            with(holder) {
+                with(folders[position] as GoBackUp){
+                    holder.setParentCallback(this)
+                }
+            }
+        } else if (holder is NoItemsView) {
+            // don't do anything with it
+        } else{
             with(holder as LeafView) {
                 with(folders[position] as StorageLeaf){
                     binding.title.text = name
@@ -258,6 +271,31 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                     false
                 }
             }
+        }
+    }
+
+
+    inner class GoBackView(var binding: ItemLeafEntryBinding): RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.leafImage.setImageDrawable(AppCompatResources.getDrawable(mContext, R.drawable.round_arrow_back))
+            binding.title.text = mContext.getString(R.string.go_up)
+        }
+
+        fun setParentCallback(item: GoBackUp){
+            binding.linearLayout.setOnClickListener {
+                callback?.changeFolder(item.parent!!)
+            }
+        }
+    }
+
+
+    inner class NoItemsView(binding: ItemLeafEntryBinding): RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.leafImage.setImageDrawable(null)
+            binding.title.text = mContext.getString(R.string.no_items)
+            binding.title.setTypeface(binding.title.getTypeface(), Typeface.ITALIC)
         }
     }
 }
