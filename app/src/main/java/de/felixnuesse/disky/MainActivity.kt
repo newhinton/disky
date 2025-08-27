@@ -189,6 +189,13 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         runOnUiThread {
             binding.folders.visibility = View.INVISIBLE
             binding.loading.visibility = View.VISIBLE
+
+            binding.lottie.setOnLongClickListener {
+                binding.folders.visibility = View.VISIBLE
+                binding.loading.visibility = View.GONE
+                return@setOnLongClickListener false
+            }
+
             fadeTextview(getString(R.string.calculating), binding.freeText)
             fadeTextview(getString(R.string.calculating), binding.usedText)
 
