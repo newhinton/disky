@@ -23,6 +23,7 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -140,6 +141,15 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             triggerDataUpdate()
             BackgroundWorker.schedule(this)
         }
+
+        // Add a back pressed callback
+        onBackPressedDispatcher.addCallback(this) {
+            if(!handleBack()){
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+                isEnabled = true
+            }
+        }
     }
 
     fun registerReciever() {
@@ -211,10 +221,17 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
     override fun onBackPressed() {
-        if (currentElement != rootElement) {
-            currentElement?.parent?.let { showFolder(it) }
-        } else {
+        if(!handleBack()){
             super.onBackPressed()
+        }
+    }
+
+    fun handleBack(): Boolean {
+        return if (currentElement != rootElement) {
+            currentElement?.parent?.let { showFolder(it) }
+            true
+        } else {
+            false
         }
     }
 
