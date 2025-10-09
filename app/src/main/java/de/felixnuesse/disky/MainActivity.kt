@@ -376,11 +376,11 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 if(!result.isPartialScan) {
                     rootElement = internalRootElement
                     showFolder(rootElement!!)
-                    updateStaticElements(rootElement!!, result.total, result.free)
                 } else {
                     rootElement?.mergePartialTree(internalRootElement)
                     currentElement?.let { changeFolder(it) }
                 }
+                updateStaticElements(rootElement!!, result.total, result.free)
             }
         }
     }

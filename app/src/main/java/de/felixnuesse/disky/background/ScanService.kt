@@ -22,7 +22,6 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import de.felixnuesse.disky.R
 import de.felixnuesse.disky.extensions.getFreeSpace
-import de.felixnuesse.disky.extensions.getStorageUUID
 import de.felixnuesse.disky.extensions.getTotalSpace
 import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StoragePrototype
@@ -34,7 +33,6 @@ import de.felixnuesse.disky.scanner.SystemScanner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.IOException
 
 
 class ScanService: Service(), ScannerCallback {
@@ -271,7 +269,7 @@ class ScanService: Service(), ScannerCallback {
     private var currentlyScanningLastAction = System.currentTimeMillis()
     override fun currentlyScanning(item: String) {
 
-        var now = System.currentTimeMillis()
+        val now = System.currentTimeMillis()
         if((now - currentlyScanningLastAction) < 100) {
             //Log.e(tag(), "currentlyScanning, skip since last update is less than 100ms")
             return
