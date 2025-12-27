@@ -98,4 +98,6 @@
     <string name="lowStorageCheckThresholdHint">Low Storage Threshold</string>
     <string name="go_up">Go Back</string>
     <string name="no_items">No Items</string>
+    <string name="is_below_the_threshold_of">%1$s is below the threshold of %2$d%%!</string>
+    <string name="is_below_the_threshold_of_there_are_only_free">%1$s is below the threshold of %2$d%%!\nThere are only %3$s free!</string>
 </resources>

@@ -3,9 +3,11 @@ package de.felixnuesse.disky.worker
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.usage.StorageStatsManager
 import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
+import android.content.Intent
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import androidx.core.app.NotificationCompat
@@ -172,9 +174,21 @@ class BackgroundWorker (private var mContext: Context, workerParams: WorkerParam
 
     private fun getNotification(volume: StorageVolume, threshold: Int, free: Long): Notification {
         // todo: configurable threshold
-        val message = "${volume.getDescription(mContext)} is below the threshold of $threshold%!"
-        val bigmessage = "${volume.getDescription(mContext)} is below the threshold of $threshold%!\n" +
-                "There are only ${readableFileSize(free)} free!"
+        val message = mContext.getString(
+            R.string.is_below_the_threshold_of,
+            volume.getDescription(mContext),
+            threshold
+        )
+        val bigmessage = mContext.getString(
+            R.string.is_below_the_threshold_of_there_are_only_free,
+            volume.getDescription(mContext),
+            threshold,
+            readableFileSize(free)
+        )
+
+        val notificationIntent = Intent(mContext, MainActivity::class.java)
+        notificationIntent.flags = (Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val intent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
 
         return NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL_ID)
             .setOngoing(true)
@@ -183,6 +197,7 @@ class BackgroundWorker (private var mContext: Context, workerParams: WorkerParam
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(bigmessage))
             .setSmallIcon(R.drawable.icon_servicelogo)
+            .setContentIntent(intent)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE).build()
     }
 }
