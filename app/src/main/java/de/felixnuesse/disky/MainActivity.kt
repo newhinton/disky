@@ -229,11 +229,6 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         Log.e(tag(), "started service!")
     }
 
-    override fun onBackPressed() {
-        if(!handleBack()){
-            super.onBackPressed()
-        }
-    }
 
     fun handleBack(): Boolean {
         return if (currentElement != rootElement) {
