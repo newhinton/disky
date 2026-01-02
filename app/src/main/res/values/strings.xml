@@ -53,7 +53,7 @@
     <string name="uicontext_folder_rootdir">You are in the root-directory.</string>
     <string name="uicontext_folder_app">Currently, you are looking at %1$s. It uses %2$s.</string>
     <string name="uicontext_folder_appcollection">This lists all your installed apps, %1$d in total. They use %2$s.</string>
-    <string name="uicontext_folder_folder">You choose the %1$s folder. It\'s content uses %2$s of your storage.</string>
+    <string name="uicontext_folder_folder">You choose the %1$s folder. Its content uses %2$s of your storage.</string>
     <string name="select_storage">Select Storage</string>
     <string name="used">Used:</string>
     <string name="calculating">Calculating…</string>
@@ -98,4 +98,6 @@
     <string name="lowStorageCheckThresholdHint">Low Storage Threshold</string>
     <string name="go_up">Go Back</string>
     <string name="no_items">No Items</string>
+    <string name="is_below_the_threshold_of">%1$s is below the threshold of %2$d%%!</string>
+    <string name="is_below_the_threshold_of_there_are_only_free">%1$s is below the threshold of %2$d%%!\nThere are only %3$s free!</string>
 </resources>
