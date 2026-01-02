@@ -22,7 +22,7 @@
 
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardView"
+        android:id="@+id/overview"
         style="@style/PrimaryCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -177,13 +177,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/overview"
         tools:listitem="@layout/item_folder_entry" />
 
     <LinearLayout
         android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:gravity="center"
         android:orientation="vertical"
         android:paddingStart="64dp"
         android:paddingTop="32dp"
@@ -192,7 +193,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/folders"
         app:layout_constraintStart_toStartOf="@+id/folders"
-        app:layout_constraintTop_toTopOf="@+id/folders">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie"

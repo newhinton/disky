@@ -188,10 +188,12 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         Log.e(tag(), "trigger update!")
         runOnUiThread {
             binding.folders.visibility = View.INVISIBLE
+            binding.overview.visibility = View.INVISIBLE
             binding.loading.visibility = View.VISIBLE
 
             binding.lottie.setOnLongClickListener {
                 binding.folders.visibility = View.VISIBLE
+                binding.overview.visibility = View.VISIBLE
                 binding.loading.visibility = View.GONE
                 return@setOnLongClickListener false
             }
@@ -362,6 +364,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             var internalRootElement = result.rootElement
             if(internalRootElement != null) {
                 binding.folders.visibility = View.VISIBLE
+                binding.overview.visibility = View.VISIBLE
                 binding.loading.visibility = View.GONE
 
 
