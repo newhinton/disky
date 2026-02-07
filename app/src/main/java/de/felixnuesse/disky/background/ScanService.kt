@@ -60,7 +60,10 @@ class ScanService: Service(), ScannerCallback {
         private val NOTIFICATION_ID = 5691
         private val ERROR_NOTIFICATION_ID = 5692
         private val CLIPBOARD_INTENT_ID = 5693
+        @Volatile
         private var storageResult: StorageResult? = null
+        @Volatile
+        private var resultLock = Object()
 
         /**
          * This method is destructive. The result can be fetched only once.
@@ -68,9 +71,11 @@ class ScanService: Service(), ScannerCallback {
          * This way, we guarantee somewhat recent data.
          */
         fun getResult(): StorageResult? {
-            var tempRes = storageResult
-            storageResult = null
-            return tempRes
+            synchronized(resultLock) {
+                val tempRes = storageResult
+                storageResult = null
+                return tempRes
+            }
         }
 
     }
@@ -96,9 +101,11 @@ class ScanService: Service(), ScannerCallback {
 
         val thisServiceRunId = System.currentTimeMillis()
         if(serviceRunId != 0L) {
-            stopScan()
+            Log.e(tag(), "Stopping previous scan with ID: $serviceRunId")
+            fsScanner?.stopped = true
         }
         serviceRunId = thisServiceRunId
+        Log.e(tag(), "Starting new scan with ID: $thisServiceRunId")
 
         processedSize = 0L
 
@@ -120,11 +127,16 @@ class ScanService: Service(), ScannerCallback {
                     LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
                     Log.e(tag(), "Scan was prematurely stopped!")
                 } else {
-                    storageResult = result
+                    synchronized(resultLock) {
+                        storageResult = result
+                    }
+                    Log.e(tag(), "Broadcasting SCAN_COMPLETE, result is ${if(result != null) "not null" else "null"}")
                     val resultIntent = Intent(SCAN_COMPLETE)
                     LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
+                    Log.e(tag(), "SCAN_COMPLETE broadcast sent")
                 }
             } catch (e: Exception) {
+                Log.e(tag(), "Exception during scan: ${e.message}", e)
                 showErrorNotification(e)
                 val resultIntent = Intent(SCAN_ABORTED)
                 LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
@@ -209,16 +221,21 @@ class ScanService: Service(), ScannerCallback {
 
     private fun scan(storage: String, id: Long, subpath: String): StorageResult? {
         val selectedStorage = findStorageByNameOrUUID(storage)
-        val rootElement: StoragePrototype?
-
-        maxSize = selectedStorage?.let { getTotalSpace(storageStatsManager, it) }?:0L
-        val subfolder = subpath.replace(selectedStorage?.directory!!.absolutePath+"/", "")
-
-        fsScanner = FsScanner(this)
-        if(selectedStorage.directory == null) {
-            Log.e(tag(), "There was an error loading data!")
+        if(selectedStorage == null) {
+            Log.e(tag(), "Could not find storage: $storage")
             return null
         }
+        if(selectedStorage.directory == null) {
+            Log.e(tag(), "Storage directory is null for: $storage")
+            return null
+        }
+
+        val rootElement: StoragePrototype?
+
+        maxSize = getTotalSpace(storageStatsManager, selectedStorage)
+        val subfolder = subpath.replace(selectedStorage.directory!!.absolutePath+"/", "")
+
+        fsScanner = FsScanner(this)
         rootElement = fsScanner?.scan(selectedStorage.directory!!, subfolder)
         if(wasStopped(id)) {
             return null
