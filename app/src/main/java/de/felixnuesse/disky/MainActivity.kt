@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     private var selectedStorage = ""
 
     private var lastScanStarted = 0L
+    private var scanReceiver: BroadcastReceiver? = null
 
     companion object {
         const val APP_PREFERENCES = "APP_PREFERENCES"
@@ -153,11 +154,22 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
     fun registerReciever() {
+        // Unregister any existing receiver first
+        scanReceiver?.let {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(it)
+        }
+
         val reciever = object: BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
-                //Log.e("MAIN", "onRecieve")
+                Log.e(tag(), "Broadcast received: ${intent.action}")
                 if(intent.action == SCAN_ABORTED) {
-                    binding.progressLabel.text = "Scan was aborted"
+                    Log.e(tag(), "SCAN_ABORTED received")
+                    runOnUiThread {
+                        binding.progressLabel.text = "Scan was aborted"
+                        binding.folders.visibility = View.VISIBLE
+                        binding.overview.visibility = View.VISIBLE
+                        binding.loading.visibility = View.GONE
+                    }
                     return
                 }
                 if(intent.action == SCAN_REFRESH_REQUESTED) {
@@ -170,18 +182,43 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                     binding.progressLabel.text = "$progress%"
                 }
                 if(intent.action == SCAN_COMPLETE) {
-                    CoroutineScope(Dispatchers.IO).launch{
-                        ScanService.getResult()?.let { scanComplete(it) }
-                        Log.e(tag(), "Scanning and processing took: ${System.currentTimeMillis()-lastScanStarted}ms")
+                    Log.e(tag(), "SCAN_COMPLETE received, getting result...")
+                    val result = ScanService.getResult()
+                    Log.e(tag(), "Result from service: ${if(result != null) "not null" else "null"}")
+                    if(result != null) {
+                        CoroutineScope(Dispatchers.IO).launch{
+                            scanComplete(result)
+                            Log.e(tag(), "Scanning and processing took: ${System.currentTimeMillis()-lastScanStarted}ms")
+                        }
+                    } else {
+                        Log.e(tag(), "SCAN_COMPLETE received but result was null!")
+                        runOnUiThread {
+                            binding.folders.visibility = View.VISIBLE
+                            binding.overview.visibility = View.VISIBLE
+                            binding.loading.visibility = View.GONE
+                            binding.progressLabel.text = "Scan completed but no data received"
+                        }
                     }
                 }
             }
         }
+        scanReceiver = reciever
         val filter = IntentFilter(SCAN_COMPLETE)
         filter.addAction(SCAN_ABORTED)
         filter.addAction(SCAN_REFRESH_REQUESTED)
         filter.addAction(SCAN_PROGRESSED)
         LocalBroadcastManager.getInstance(this).registerReceiver(reciever, filter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scanReceiver?.let {
+            try {
+                LocalBroadcastManager.getInstance(this).unregisterReceiver(it)
+            } catch (e: Exception) {
+                Log.e(tag(), "Error unregistering receiver: ${e.message}")
+            }
+        }
     }
 
     fun triggerDataUpdate() {
@@ -190,6 +227,8 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             binding.folders.visibility = View.INVISIBLE
             binding.overview.visibility = View.INVISIBLE
             binding.loading.visibility = View.VISIBLE
+            binding.progressIndicator.isIndeterminate = true
+            binding.progressLabel.text = getString(R.string.calculating)
 
             binding.lottie.setOnLongClickListener {
                 binding.folders.visibility = View.VISIBLE
@@ -379,6 +418,12 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                     currentElement?.let { changeFolder(it) }
                 }
                 updateStaticElements(rootElement!!, result.total, result.free)
+            } else {
+                Log.e(tag(), "scanComplete called but rootElement is null!")
+                binding.folders.visibility = View.VISIBLE
+                binding.overview.visibility = View.VISIBLE
+                binding.loading.visibility = View.GONE
+                Toast.makeText(this, "Scan completed but no data was found", Toast.LENGTH_SHORT).show()
             }
         }
     }
