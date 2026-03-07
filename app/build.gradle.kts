@@ -14,8 +14,8 @@ android {
         applicationId = "de.felixnuesse.disky"
         minSdk = 30
         targetSdk = 36
-        versionCode = 9
-        versionName = "1.3.1"
+        versionCode = 10
+        versionName = "1.3.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,6 +52,16 @@ android {
     lint {
         disable += "MissingTranslation"
     }
+
+
+    // https://gitlab.com/fdroid/fdroiddata/-/merge_requests/33304
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
+    }
+
 }
 
 dependencies {
