@@ -154,15 +154,14 @@ class RecyclerViewAdapter(private var mContext: Context, private val folders: Li
                                         }
 
                                         override fun onResourceReady(resource: Drawable, model: Any, target: com.bumptech.glide.request.target.Target<Drawable?>?, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+                                            // make it invisible, so that the rest of the layout does not shift
+                                            // since its stuck to the image
+                                            binding.leafImage.visibility = View.INVISIBLE
+                                            binding.leafImageUntinted.visibility = View.VISIBLE
                                             return false
                                         }
                                     })
                                     .into(binding.leafImageUntinted)
-
-                                // make it invisible, so that the rest of the layout does not shift
-                                // since its stuck to the image
-                                binding.leafImage.visibility = View.INVISIBLE
-                                binding.leafImageUntinted.visibility = View.VISIBLE
 
                             } catch (e: IOException) {
                                 e.printStackTrace()
