@@ -20,17 +20,16 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 
-class FsScanner(var callback: ScannerCallback?) {
+class FullyMulticoreFsScanner(var callback: ScannerCallback?) {
 
-    var TAG = "FsScanner"
-    var cores = 4 // Runtime.getRuntime().availableProcessors()
+    var TAG = "FullyMulticoreFsScanner"
     var stopped = false
 
-    var lastScan = 0L
-
+    var cores = 4 // Runtime.getRuntime().availableProcessors()
 
     // newCachedThreadPool
     val executor = Executors.newWorkStealingPool(cores) as ExecutorService
+    var lastScan = 0L
 
     fun submit(task: StoragePrototype) {
         executor.submit {
@@ -49,6 +48,7 @@ class FsScanner(var callback: ScannerCallback?) {
         val rm = im_scan(file, subfolder)
         Log.e(TAG, "Time: ${System.currentTimeMillis()-nowMulti} ms (MULTI)")
         lastScan = System.currentTimeMillis()-nowMulti
+
 
         // single core: 10-11seconds
         //val nowSingle = System.currentTimeMillis()
