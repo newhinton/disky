@@ -19,14 +19,13 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
     private var storageStatsManager = mContext.getSystemService(STORAGE_STATS_SERVICE) as StorageStatsManager
     private var storageManager = mContext.getSystemService(STORAGE_SERVICE) as StorageManager
     
-    private var fsScanner: FsScanner? = null
+    private var fsScanner: ScannerInterface? = null
     private var fullyMulticoreFsScanner: FullyMulticoreFsScanner? = null
     private var stopped = false
 
 
     fun stop() {
-        fsScanner?.stopped = true
-        fullyMulticoreFsScanner?.stopped = true
+        fsScanner?.stop()
     }
 
     fun scan(storage: String, subpath: String?): StorageResult? {
@@ -38,8 +37,7 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
         callback?.setMaxSize(getTotalSpace(storageStatsManager, selectedStorage))
         val subfolder = subpath?.replace(selectedStorage.directory!!.absolutePath+"/", "")?: ""
 
-        fsScanner = FsScanner(callback)
-        fullyMulticoreFsScanner = FullyMulticoreFsScanner(callback)
+        fsScanner = FsScanner(callback) // FullyMulticoreFsScanner(callback)
         if(selectedStorage.directory == null) {
             Log.e(tag(), "There was an error loading data!")
             return null

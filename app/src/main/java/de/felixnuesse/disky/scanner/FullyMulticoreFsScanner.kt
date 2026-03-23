@@ -2,32 +2,23 @@ package de.felixnuesse.disky.scanner
 
 import android.net.Uri
 import android.util.Log
+import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageType
 import java.io.File
-import java.util.Collections
-import java.util.concurrent.Callable
-import java.util.concurrent.ConcurrentLinkedDeque
-import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.LinkedBlockingDeque
-import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 
 
-class FullyMulticoreFsScanner(var callback: ScannerCallback?) {
+class FullyMulticoreFsScanner(var callback: ScannerCallback?): ScannerInterface {
 
-    var TAG = "FullyMulticoreFsScanner"
     var stopped = false
 
     var cores = Runtime.getRuntime().availableProcessors()
 
-    // newCachedThreadPool
     val executor = Executors.newWorkStealingPool(cores) as ExecutorService
     var lastScan = 0L
 
@@ -37,25 +28,16 @@ class FullyMulticoreFsScanner(var callback: ScannerCallback?) {
         }
     }
 
-    fun scan(file: File, subfolder: String): StoragePrototype {
+    override fun scan(file: File, subfolder: String): StoragePrototype {
+        val now = System.currentTimeMillis()
+        val result = internalFullyMultithreadedScan(file, subfolder)
+        lastScan = System.currentTimeMillis()-now
+        Log.e(tag(), "Time: $lastScan ms (Fully Multi-Core;$cores)")
+        return result
+    }
 
-
-        // Log.e(TAG, "file: ${file.toString()}")
-        // Log.e(TAG, "subfolder: ${subfolder}")
-
-
-        val nowMulti = System.currentTimeMillis()
-        val rm = im_scan(file, subfolder)
-        Log.e(TAG, "Time: ${System.currentTimeMillis()-nowMulti} ms (MULTI)")
-        lastScan = System.currentTimeMillis()-nowMulti
-
-
-        // single core: 10-11seconds
-        //val nowSingle = System.currentTimeMillis()
-        //val r = i_scan(file, subfolder)
-        //Log.e(TAG, "Time: ${System.currentTimeMillis()-nowSingle} ms")
-
-        return rm
+    override fun stop() {
+        stopped = true
     }
 
     private fun getFullPath(file: File, subfolder: String): String {
@@ -66,17 +48,13 @@ class FullyMulticoreFsScanner(var callback: ScannerCallback?) {
         }
     }
 
+    private fun internalFullyMultithreadedScan(file: File, subfolder: String): StoragePrototype {
+        val rootFolder = getFullPath(file, subfolder)
+        val root = StorageBranch(rootFolder)
 
-    private fun im_scan(file: File, subfolder: String): StoragePrototype {
-        val rootfolder = getFullPath(file, subfolder)
-        val root = StorageBranch(rootfolder)
-
-        // Log.e(TAG, "Cores: $cores")
         submit(root)
-
         executor.shutdown()
         executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)
-
         return root
     }
 

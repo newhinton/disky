@@ -51,7 +51,6 @@ class UpdateCallback(private var mContext: Context): ScannerCallback {
             return
         }
         foundLeafLastAction = System.currentTimeMillis()
-        System.err.println(toString())
 
         if(perc != lastReportedPercentage) {
             lastReportedPercentage = perc
@@ -61,10 +60,4 @@ class UpdateCallback(private var mContext: Context): ScannerCallback {
         }
 
     }
-
-    override fun toString(): String {
-        return "UpdateCallback(processedSize=$processedSize, lastReportedPercentage=$lastReportedPercentage, maxSize=$maxSize)"
-    }
-
-
 }
