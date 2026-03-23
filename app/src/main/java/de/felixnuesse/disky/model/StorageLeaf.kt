@@ -9,7 +9,7 @@ class StorageLeaf(
     var size: Long = 0
 ): StoragePrototype(leafname, leafStorageType) {
 
-    override fun getCalculatedSize(): Long {
+    override fun getCalculatedSize(forceRecalculation: Boolean): Long {
         return size
     }
 }

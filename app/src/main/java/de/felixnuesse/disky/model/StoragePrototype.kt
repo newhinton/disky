@@ -19,7 +19,10 @@ sealed class StoragePrototype(var name: String, var storageType: StorageType = S
     var percent: Int = 0
 
 
-    open fun getCalculatedSize(): Long {
+    open fun getCalculatedSize(forceRecalculation: Boolean = false): Long {
+        if(!forceRecalculation && calculatedSize != null) {
+            return calculatedSize!!
+        }
         calculatedSize = 0
         children.forEach {
             calculatedSize = calculatedSize!! + it.getCalculatedSize()
