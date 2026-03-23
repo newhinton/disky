@@ -29,9 +29,9 @@ class FullyMulticoreFsScanner(var callback: ScannerCallback?): ScannerInterface 
     }
 
     override fun scan(file: File, subfolder: String): StoragePrototype {
-        val now = System.currentTimeMillis()
+        val start = System.currentTimeMillis()
         val result = internalFullyMultithreadedScan(file, subfolder)
-        lastScan = System.currentTimeMillis()-now
+        lastScan = System.currentTimeMillis()-start
         Log.e(tag(), "Time: $lastScan ms (Fully Multi-Core;$cores)")
         return result
     }

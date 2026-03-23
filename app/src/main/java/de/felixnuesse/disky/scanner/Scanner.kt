@@ -20,15 +20,21 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
     private var storageManager = mContext.getSystemService(STORAGE_SERVICE) as StorageManager
     
     private var fsScanner: ScannerInterface? = null
-    private var fullyMulticoreFsScanner: FullyMulticoreFsScanner? = null
     private var stopped = false
+    private var lastTimestamp = System.currentTimeMillis()
 
+    fun printRuntimeTime(additionalLabel: String = "") {
+        val took = System.currentTimeMillis() - lastTimestamp
+        Log.e(tag(), "Scannertime: $took ms (label='$additionalLabel')")
+        lastTimestamp = System.currentTimeMillis()
+    }
 
     fun stop() {
         fsScanner?.stop()
     }
 
     fun scan(storage: String, subpath: String?): StorageResult? {
+        lastTimestamp = System.currentTimeMillis()
         val selectedStorage = findStorageByNameOrUUID(storage)
         val rootElement: StoragePrototype?
 
@@ -37,21 +43,23 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
         callback?.setMaxSize(getTotalSpace(storageStatsManager, selectedStorage))
         val subfolder = subpath?.replace(selectedStorage.directory!!.absolutePath+"/", "")?: ""
 
-        fsScanner = FsScanner(callback) // FullyMulticoreFsScanner(callback)
+        fsScanner = FullyMulticoreFsScanner(callback) // FsScanner(callback)
         if(selectedStorage.directory == null) {
             Log.e(tag(), "There was an error loading data!")
             return null
         }
+        printRuntimeTime("startup and prep")
 
         rootElement = fsScanner?.scan(selectedStorage.directory!!, subfolder)
         if(stopped) {
             return null
         }
+        printRuntimeTime("fs scan")
 
-        val isAppfolderUpdate = subfolder.isBlank() || subfolder == mContext.getString(R.string.apps)
-        // Dont scan for system and apps on external sd card
+        val isAppFolderUpdate = subfolder.isBlank() || subfolder == mContext.getString(R.string.apps)
+        // Don't scan for system and apps on external sd card
         if(selectedStorage.isPrimary && rootElement != null) {
-            if(isAppfolderUpdate) {
+            if(isAppFolderUpdate) {
 
                 val nowMulti = System.currentTimeMillis()
                 AppScanner(mContext, callback).scanApps(rootElement, selectedStorage)
@@ -61,6 +69,7 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
                     return null
                 }
             }
+            printRuntimeTime("app scan")
             if (subfolder.isBlank()) {
                 SystemScanner(mContext, callback)
                     .scanApps(
@@ -72,6 +81,7 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
                     return null
                 }
             }
+            printRuntimeTime("sys scan")
         }
 
         val result = StorageResult()
@@ -81,6 +91,7 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
         result.used = rootElement?.getCalculatedSize()?: 0
         result.total = getTotalSpace(storageStatsManager, selectedStorage)
         result.isPartialScan = subfolder.isNotBlank()
+        printRuntimeTime("res prep")
         return result
     }
 
@@ -92,7 +103,9 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
             }
         }
         // todo: throw new exception
-        throw Exception()
+        val msg = "We could not determine the used storage with name: $name. This is a fatal error!"
+        Log.e(tag(), msg)
+        throw RuntimeException(msg)
     }
 
 }

@@ -29,9 +29,9 @@ class FsScanner(var callback: ScannerCallback?): ScannerInterface {
     }
 
     override fun scan(file: File, subfolder: String): StoragePrototype {
-        val nowMulti = System.currentTimeMillis()
+        val start = System.currentTimeMillis()
         val result = internalSemiMultithreadedScan(file, subfolder)
-        lastScan = System.currentTimeMillis()-nowMulti
+        lastScan = System.currentTimeMillis()-start
         Log.e(tag(), "Time: $lastScan ms (Semi Multi-Core;$cores)")
         return result
     }
