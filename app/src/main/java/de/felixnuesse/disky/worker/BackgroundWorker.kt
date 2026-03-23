@@ -30,7 +30,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 
-class BackgroundWorker (private var mContext: Context, workerParams: WorkerParameters): Worker(mContext, workerParams) {
+class BackgroundWorker(private var mContext: Context, workerParams: WorkerParameters): Worker(mContext, workerParams) {
 
 
     private lateinit var notificationManager: NotificationManager

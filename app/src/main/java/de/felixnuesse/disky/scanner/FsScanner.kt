@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class FsScanner(var callback: ScannerCallback?) {
 
     var TAG = "FsScanner"
-    var cores = 4 // Runtime.getRuntime().availableProcessors()
+    var cores = Runtime.getRuntime().availableProcessors()
     var stopped = false
 
     var lastScan = 0L

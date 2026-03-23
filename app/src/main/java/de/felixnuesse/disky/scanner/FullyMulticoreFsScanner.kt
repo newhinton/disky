@@ -25,7 +25,7 @@ class FullyMulticoreFsScanner(var callback: ScannerCallback?) {
     var TAG = "FullyMulticoreFsScanner"
     var stopped = false
 
-    var cores = 4 // Runtime.getRuntime().availableProcessors()
+    var cores = Runtime.getRuntime().availableProcessors()
 
     // newCachedThreadPool
     val executor = Executors.newWorkStealingPool(cores) as ExecutorService
