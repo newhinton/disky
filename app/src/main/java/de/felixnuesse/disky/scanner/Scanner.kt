@@ -21,8 +21,6 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
     
     private var fsScanner: FsScanner? = null
     private var fullyMulticoreFsScanner: FullyMulticoreFsScanner? = null
-
-    private var maxSize = 0L
     private var stopped = false
 
 
@@ -35,7 +33,9 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
         val selectedStorage = findStorageByNameOrUUID(storage)
         val rootElement: StoragePrototype?
 
-        maxSize = getTotalSpace(storageStatsManager, selectedStorage)
+        // todo: If we re-scan a sub-path, this is wrong. We should use the parent-folder-size, but
+        //      this is hard to do since we don't know the size.
+        callback?.setMaxSize(getTotalSpace(storageStatsManager, selectedStorage))
         val subfolder = subpath?.replace(selectedStorage.directory!!.absolutePath+"/", "")?: ""
 
         fsScanner = FsScanner(callback)

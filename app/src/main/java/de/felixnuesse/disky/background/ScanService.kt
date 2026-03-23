@@ -22,8 +22,6 @@ class ScanService: Service() {
     private lateinit var notificationUtils: NotificationUtils
     private var serviceRunId = 0L
 
-    private lateinit var updates: UpdateCallback
-
     private var startedScan: Long = 0
 
     companion object {
@@ -42,7 +40,6 @@ class ScanService: Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         notificationUtils = NotificationUtils(applicationContext)
-        updates = UpdateCallback(applicationContext)
 
         val message = getString(R.string.foreground_service_notification_starting_message)
         val notification = notificationUtils.getNotification(message, message).build()
@@ -73,7 +70,9 @@ class ScanService: Service() {
             }
 
             try {
-                val result = Scanner(context, updates).scan(storageToScan, subfolder)
+                val callback = UpdateCallback(applicationContext)
+
+                val result = Scanner(context, callback).scan(storageToScan, subfolder)
                 Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-now}ms ${wasStopped(thisServiceRunId)}")
                 if(wasStopped(thisServiceRunId)) {
                     val resultIntent = Intent(SCAN_ABORTED)

@@ -124,15 +124,15 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         binding.dropdown.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             selectedStorage = storageList[position]
             binding.removableStorageWarning.visibility = View.GONE
-            triggerDataUpdate()
+            refreshData()
         }
         if (storageList.size == 1) {
             binding.storageSelector.visibility = View.GONE
         }
 
-        registerReciever()
+        registerReceiver()
         if (isIntroComplete) {
-            triggerDataUpdate()
+            refreshData()
             BackgroundWorker.schedule(this)
         }
 
@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             return true
         }
         if (id == R.id.action_reload) {
-            requestDataRefresh()
+            refreshData(true)
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -192,8 +192,6 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
     override fun scanComplete(result: StorageResult) {
 
-        // todo: remove this logging:
-        result.scannedVolume
         Log.e(
             "POST_SCAN",
             "${result.scannedVolume} ${result.free.div(result.total)} ${result.used}"
@@ -232,7 +230,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
     /** UI METHODS **/
 
-    fun registerReciever() {
+    fun registerReceiver() {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
                 if (intent.action == SCAN_ABORTED) {
@@ -240,7 +238,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                     return
                 }
                 if (intent.action == SCAN_REFRESH_REQUESTED) {
-                    requestDataRefresh()
+                    refreshData(true)
                 }
                 if (intent.action == SCAN_PROGRESSED) {
                     val progress = intent.getIntExtra(SCAN_PROGRESSED, 0)
@@ -249,6 +247,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                     binding.progressLabel.text = "$progress%"
                 }
                 if (intent.action == SCAN_COMPLETE) {
+                    binding.progressLabel.text = "0%" // reset, so that on a re-scan, it shows 0 first.
                     Log.e(
                         tag(),
                         "OLD: Scanning and processing took: ${System.currentTimeMillis() - lastScanStarted}ms"
@@ -263,8 +262,29 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter)
     }
 
-    fun triggerDataUpdate() {
+    fun refreshData(considerContext: Boolean = false) {
         Log.e(tag(), "trigger update!")
+
+        var currentTypeNotApplicable = false
+
+        if(considerContext) {
+
+            val type = when (currentElement?.storageType) {
+                StorageType.APP -> {
+                    currentTypeNotApplicable = true
+                    R.string.reload_blocked_because_inapps
+                }
+                else -> {
+                    R.string.reload
+                }
+            }
+
+            Toast.makeText(this, type, Toast.LENGTH_SHORT).show()
+        }
+        if(currentTypeNotApplicable) {
+            return
+        }
+
         runOnUiThread {
             binding.folders.visibility = View.INVISIBLE
             binding.overview.visibility = View.INVISIBLE
@@ -302,7 +322,6 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         }
         */
     }
-
 
     fun handleBack(): Boolean {
         return if (currentElement != rootElement) {
@@ -407,19 +426,5 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
         val recyclerViewAdapter = RecyclerViewAdapter(this, children, this)
         recyclerView.adapter = recyclerViewAdapter
-    }
-
-    private fun requestDataRefresh() {
-        when (currentElement?.storageType) {
-            StorageType.APP -> {
-                Toast.makeText(this, R.string.reload_blocked_because_inapps, Toast.LENGTH_SHORT)
-                    .show()
-            }
-
-            else -> {
-                Toast.makeText(this, R.string.reload, Toast.LENGTH_SHORT).show()
-                triggerDataUpdate()
-            }
-        }
     }
 }

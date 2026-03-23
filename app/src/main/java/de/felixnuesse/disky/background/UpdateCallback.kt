@@ -18,6 +18,9 @@ class UpdateCallback(private var mContext: Context): ScannerCallback {
     private var foundLeafLastAction = System.currentTimeMillis()
     private var currentlyScanningLastAction = System.currentTimeMillis()
 
+    override fun setMaxSize(totalSpace: Long) {
+        maxSize = totalSpace
+    }
 
     override fun currentlyScanning(item: String) {
 
@@ -39,25 +42,29 @@ class UpdateCallback(private var mContext: Context): ScannerCallback {
     }
 
     override fun foundLeaf(size: Long) {
-
         processedSize += size
         val perc = ((processedSize.div(maxSize.toFloat()))*100).toInt()
-
 
         val now = System.currentTimeMillis()
         if(perc != 100 && (now - foundLeafLastAction) < 100) {
             // Log.e(tag(), "foundLeaf, skip since last update is less than 100ms")
             return
         }
-
+        foundLeafLastAction = System.currentTimeMillis()
+        System.err.println(toString())
 
         if(perc != lastReportedPercentage) {
             lastReportedPercentage = perc
             val progress = Intent(SCAN_PROGRESSED)
             progress.putExtra(SCAN_PROGRESSED, perc)
             LocalBroadcastManager.getInstance(mContext).sendBroadcast(progress)
-            foundLeafLastAction = System.currentTimeMillis()
         }
 
     }
+
+    override fun toString(): String {
+        return "UpdateCallback(processedSize=$processedSize, lastReportedPercentage=$lastReportedPercentage, maxSize=$maxSize)"
+    }
+
+
 }
