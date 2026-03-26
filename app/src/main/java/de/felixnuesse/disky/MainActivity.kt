@@ -156,9 +156,9 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             } catch (e: Exception) {
                 Timber.tag(tag()).e("There was an exception: ${e.message}")
                 Timber.tag(tag()).e(e)
+                Toast.makeText(this, "Exception: ${e.javaClass}", Toast.LENGTH_LONG).show()
             }
         }
-
     }
 
 
