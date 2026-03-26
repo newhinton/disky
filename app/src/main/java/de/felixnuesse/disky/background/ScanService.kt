@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import de.felixnuesse.disky.R
 import de.felixnuesse.disky.background.NotificationUtils.Companion.FOREGROUND_NOTIFICATION_ID
@@ -15,6 +14,7 @@ import de.felixnuesse.disky.scanner.Scanner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 class ScanService: Service() {
@@ -65,7 +65,7 @@ class ScanService: Service() {
             val storageToScan = intent?.getStringExtra(SCAN_STORAGE)
             val subfolder = intent?.getStringExtra(SCAN_SUBDIR)?: ""
             if(storageToScan.isNullOrBlank()) {
-                Log.e(tag(), "No valid storage name was provided!")
+                Timber.tag(tag()).e("No valid storage name was provided!")
                 return@launch
             }
 
@@ -73,11 +73,15 @@ class ScanService: Service() {
                 val callback = UpdateCallback(applicationContext)
 
                 val result = Scanner(context, callback).scan(storageToScan, subfolder)
-                Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-now}ms ${wasStopped(thisServiceRunId)}")
+                Timber.tag(tag()).e(
+                    "Scanning took: ${System.currentTimeMillis() - now}ms ${
+                        wasStopped(thisServiceRunId)
+                    }"
+                )
                 if(wasStopped(thisServiceRunId)) {
                     val resultIntent = Intent(SCAN_ABORTED)
                     LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
-                    Log.e(tag(), "Scan was prematurely stopped!")
+                    Timber.tag(tag()).e("Scan was prematurely stopped!")
                 } else {
                     ResultRepository.postResult(result!!)
                     val resultIntent = Intent(SCAN_COMPLETE)
@@ -89,7 +93,7 @@ class ScanService: Service() {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(resultIntent)
             }
 
-            Log.e(tag(), "Scanning took: ${System.currentTimeMillis()-startedScan}ms")
+            Timber.tag(tag()).e("Scanning took: ${System.currentTimeMillis() - startedScan}ms")
             finishService()
         }
         return super.onStartCommand(intent, flags, startId)
@@ -100,7 +104,7 @@ class ScanService: Service() {
     }
 
     private fun stopScan() {
-        Log.e(tag(), "Stop Scan!")
+        Timber.tag(tag()).e("Stop Scan!")
         serviceRunId = 0
         finishService()
     }

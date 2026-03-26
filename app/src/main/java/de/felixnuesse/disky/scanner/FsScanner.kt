@@ -1,12 +1,12 @@
 package de.felixnuesse.disky.scanner
 
 import android.net.Uri
-import android.util.Log
 import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageType
+import timber.log.Timber
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -32,7 +32,7 @@ class FsScanner(var callback: ScannerCallback?): ScannerInterface {
         val start = System.currentTimeMillis()
         val result = internalSemiMultithreadedScan(file, subfolder)
         lastScan = System.currentTimeMillis()-start
-        Log.e(tag(), "Time: $lastScan ms (Semi Multi-Core;$cores)")
+        Timber.tag(tag()).e("Time: $lastScan ms (Semi Multi-Core;$cores)")
         return result
     }
 

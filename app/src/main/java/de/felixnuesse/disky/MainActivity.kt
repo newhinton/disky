@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Environment.MEDIA_UNMOUNTED
 import android.os.storage.StorageManager
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -53,6 +52,7 @@ import de.felixnuesse.disky.worker.BackgroundWorker
 import de.felixnuesse.disky.ui.utils.LottieColorizer.Companion.colorizeLottie
 import de.felixnuesse.disky.ui.utils.SortingUtils
 import de.felixnuesse.disky.ui.utils.TextFading.Companion.fadeTextview
+import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCallback {
@@ -83,12 +83,14 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         setSupportActionBar(binding.toolbar)
 
         val sharedPref =
-            applicationContext.getSharedPreferences(INTRO_PREFERENCES, Context.MODE_PRIVATE)
+            applicationContext.getSharedPreferences(INTRO_PREFERENCES, MODE_PRIVATE)
         val isIntroComplete = sharedPref.getBoolean(intro_v1_0_0_completed, false)
         if (!isIntroComplete) {
             startActivity(Intent(this, IntroActivity::class.java))
             finish()
         }
+
+        LoggingUtils().configure(applicationContext)
 
         if (!PermissionManager(this).hasAllRequiredPermissions()) {
             // todo: implement runtime intro for removed permissions
@@ -146,14 +148,23 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         }
 
         ResultRepository.result.observe(this) { complexObject ->
-            // Update UI with the complex object
-            scanComplete(complexObject)
-            Log.e(
-                tag(),
-                "Scanning and processing took: ${System.currentTimeMillis() - lastScanStarted}ms"
-            )
+            try {
+                // Update UI with the complex object
+                scanComplete(complexObject)
+                Timber.tag(tag()).e("Scanning and processing took: ${System.currentTimeMillis() - lastScanStarted}ms"
+                )
+            } catch (e: Exception) {
+                Timber.tag(tag()).e("There was an exception: ${e.message}")
+                Timber.tag(tag()).e(e)
+            }
         }
 
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        Timber.e("onResume")
     }
 
 
@@ -187,17 +198,31 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     /** OVERRIDES FOR INTERFACES **/
 
     override fun changeFolder(folder: StoragePrototype) {
+        Timber.e("changeFolder")
         showFolder(folder)
     }
 
     override fun scanComplete(result: StorageResult) {
 
-        Log.e(
-            "POST_SCAN",
+
+        Timber.tag("POST_SCAN").e("scanComplete")
+        Timber.tag("POST_SCAN").e("Result SV: ${result.scannedVolume}")
+        Timber.tag("POST_SCAN").e("Result FR: ${result.free}")
+        Timber.tag("POST_SCAN").e("Result TO: ${result.total}")
+        Timber.tag("POST_SCAN").e("Result US: ${result.used}")
+        Timber.tag("POST_SCAN").e("Result PS: ${result.isPartialScan}")
+        Timber.tag("POST_SCAN").e("Result RN: ${result.rootElement?.name}")
+        val s = android.text.format.Formatter.formatShortFileSize(this,
+            result.asJsonString().toByteArray().size.toLong()
+        )
+        Timber.tag("POST_SCAN").e("Result RN: ${s}")
+
+        Timber.tag("POST_SCAN").e(
             "${result.scannedVolume} ${result.free.div(result.total)} ${result.used}"
         )
 
         runOnUiThread {
+            Timber.tag("POST_SCAN").e("runOnUiThread")
             val internalRootElement = result.rootElement
             if (internalRootElement != null) {
                 binding.folders.visibility = View.VISIBLE
@@ -223,6 +248,8 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                     currentElement?.let { changeFolder(it) }
                 }
                 updateStaticElements(rootElement!!, result.total, result.free)
+            } else {
+                Timber.tag("POST_SCAN").e("internalRootElement was null, aborting display")
             }
         }
     }
@@ -231,8 +258,10 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     /** UI METHODS **/
 
     fun registerReceiver() {
+        Timber.e("registerReciever")
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
+                Timber.e("onRecieve: ${intent.action}")
                 if (intent.action == SCAN_ABORTED) {
                     binding.progressLabel.text = getString(R.string.scan_was_aborted)
                     return
@@ -242,14 +271,15 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 }
                 if (intent.action == SCAN_PROGRESSED) {
                     val progress = intent.getIntExtra(SCAN_PROGRESSED, 0)
+                    Timber.e("Prog: ${progress}")
                     binding.progressIndicator.isIndeterminate = false
                     binding.progressIndicator.progress = progress
                     binding.progressLabel.text = "$progress%"
                 }
                 if (intent.action == SCAN_COMPLETE) {
+                    Timber.e("Scan done!")
                     binding.progressLabel.text = "0%" // reset, so that on a re-scan, it shows 0 first.
-                    Log.e(
-                        tag(),
+                    Timber.tag(tag()).e(
                         "OLD: Scanning and processing took: ${System.currentTimeMillis() - lastScanStarted}ms"
                     )
                 }
@@ -263,7 +293,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
     fun refreshData(considerContext: Boolean = false) {
-        Log.e(tag(), "trigger update!")
+        Timber.tag(tag()).e("trigger update!")
 
         var currentTypeNotApplicable = false
 
@@ -294,9 +324,11 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 binding.folders.visibility = View.VISIBLE
                 binding.overview.visibility = View.VISIBLE
                 binding.loading.visibility = View.GONE
+                Timber.e("Lottie: Remove Animation")
                 return@setOnLongClickListener false
             }
 
+            Timber.e("prepared ui...")
             fadeTextview(getString(R.string.calculating), binding.freeText)
             fadeTextview(getString(R.string.calculating), binding.usedText)
             colorizeLottie(binding.lottie, theme)
@@ -307,9 +339,9 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         service.putExtra(SCAN_STORAGE, selectedStorage)
         service.putExtra(SCAN_SUBDIR, currentElement?.getParentPath())
 
-        Log.e(tag(), "start service...")
+        Timber.tag(tag()).e("start service...")
         startForegroundService(service)
-        Log.e(tag(), "started service!")
+        Timber.tag(tag()).e("started service!")
 
 
         /*
@@ -333,6 +365,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     }
 
     fun updateStaticElements(currentRoot: StoragePrototype?, rootTotal: Long, rootUnused: Long) {
+        Timber.e("updateStaticElements")
         if (currentRoot != null) {
             val currentlyUsed = currentRoot.getCalculatedSize().div(rootTotal.toDouble())
             fadeTextview(
@@ -343,23 +376,29 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 .ofInt(binding.dataUsage, "progress", (currentlyUsed * 100).toInt())
                 .setDuration(300)
                 .start()
+            Timber.e("updateStaticElements: CurrentRoot not null!")
         } else {
             binding.dataUsage.progress = 0
+            Timber.e("updateStaticElements: Progress 0")
         }
 
         fadeTextview(readableFileSize(rootUnused), binding.freeText)
     }
 
     fun showFolder(currentRoot: StoragePrototype) {
+        Timber.e("showFolder")
         currentElement = currentRoot
 
         if (currentRoot.parent == null) {
+            Timber.e("showFolder 1")
             fadeTextview(
                 getString(R.string.uicontext_folder_rootdir),
                 binding.infoText)
         }
+        Timber.e("showFolder 2")
 
         if (currentRoot.storageType == StorageType.APP) {
+            Timber.e("showFolder 3")
             fadeTextview(
                 getString(
                     R.string.uicontext_folder_app,
@@ -369,8 +408,11 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 binding.infoText
             )
         }
+        Timber.e("showFolder 4")
+
 
         if (currentRoot.storageType == StorageType.APP_COLLECTION) {
+            Timber.e("showFolder 5")
             fadeTextview(
                 getString(
                     R.string.uicontext_folder_appcollection,
@@ -380,8 +422,10 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 binding.infoText
             )
         }
+        Timber.e("showFolder 6")
 
         if (currentRoot.storageType == StorageType.FOLDER) {
+            Timber.e("showFolder 7")
             fadeTextview(
                 getString(
                     R.string.uicontext_folder_folder,
@@ -391,13 +435,16 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                 binding.infoText
             )
         }
+        Timber.e("showFolder 8")
 
         //first, calculate percentages.
         val max = currentRoot.getCalculatedSize()
+        Timber.e("showFolder 9")
         currentRoot.getChildren().forEach {
             val percentage = (it.getCalculatedSize().toFloat() / max.toFloat())
             it.percent = (percentage * 100).toInt()
         }
+        Timber.e("showFolder 10")
 
         val sortedList = SortingUtils.getSortedList(applicationContext, currentElement!!.getChildren())
         currentElement!!.clearChildren()
@@ -428,3 +475,5 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         recyclerView.adapter = recyclerViewAdapter
     }
 }
+
+

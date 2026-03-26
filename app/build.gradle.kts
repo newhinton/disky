@@ -77,6 +77,14 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.serialization.json)
+
+    // graphics
     implementation(libs.lottie)
-    implementation ("com.github.bumptech.glide:glide:4.16.0")
+
+    // Caching
+    implementation (libs.glide)
+
+    // Logging
+    implementation(libs.timber)
+    implementation(libs.treessence)
 }

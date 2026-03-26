@@ -6,13 +6,13 @@ import android.content.Context.STORAGE_SERVICE
 import android.content.Context.STORAGE_STATS_SERVICE
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
-import android.util.Log
 import de.felixnuesse.disky.R
 import de.felixnuesse.disky.extensions.getFreeSpace
 import de.felixnuesse.disky.extensions.getTotalSpace
 import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageResult
+import timber.log.Timber
 
 class Scanner(private var mContext: Context, private var callback: ScannerCallback?) {
 
@@ -25,7 +25,7 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
 
     fun printRuntimeTime(additionalLabel: String = "") {
         val took = System.currentTimeMillis() - lastTimestamp
-        Log.e(tag(), "Scannertime: $took ms (label='$additionalLabel')")
+        Timber.tag(tag()).e("Scannertime: $took ms (label='$additionalLabel')")
         lastTimestamp = System.currentTimeMillis()
     }
 
@@ -45,7 +45,7 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
 
         fsScanner = FullyMulticoreFsScanner(callback) // FsScanner(callback)
         if(selectedStorage.directory == null) {
-            Log.e(tag(), "There was an error loading data!")
+            Timber.tag(tag()).e("There was an error loading data!")
             return null
         }
         printRuntimeTime("startup and prep")
@@ -63,7 +63,8 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
 
                 val nowMulti = System.currentTimeMillis()
                 AppScanner(mContext, callback).scanApps(rootElement, selectedStorage)
-                Log.e(tag(), "Time: ${System.currentTimeMillis()-nowMulti} ms (AppScanner)")
+                Timber.tag(tag())
+                    .e("Time: ${System.currentTimeMillis() - nowMulti} ms (AppScanner)")
 
                 if(stopped) {
                     return null
@@ -104,7 +105,7 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
         }
         // todo: throw new exception
         val msg = "We could not determine the used storage with name: $name. This is a fatal error!"
-        Log.e(tag(), msg)
+        Timber.tag(tag()).e(msg)
         throw RuntimeException(msg)
     }
 

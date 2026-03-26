@@ -7,6 +7,7 @@ import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageType
+import timber.log.Timber
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -32,7 +33,7 @@ class FullyMulticoreFsScanner(var callback: ScannerCallback?): ScannerInterface 
         val start = System.currentTimeMillis()
         val result = internalFullyMultithreadedScan(file, subfolder)
         lastScan = System.currentTimeMillis()-start
-        Log.e(tag(), "Time: $lastScan ms (Fully Multi-Core;$cores)")
+        Timber.tag(tag()).e("Time: $lastScan ms (Fully Multi-Core;$cores)")
         return result
     }
 

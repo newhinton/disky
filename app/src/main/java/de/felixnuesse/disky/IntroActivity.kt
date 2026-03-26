@@ -14,6 +14,7 @@ import com.github.appintro.AppIntro
 import de.felixnuesse.disky.ui.appintro.IdentifiableAppIntroFragment
 import de.felixnuesse.disky.ui.appintro.SlideLeaveInterface
 import de.felixnuesse.disky.utils.PermissionManager
+import androidx.core.content.edit
 
 class IntroActivity : AppIntro(), SlideLeaveInterface {
 
@@ -139,10 +140,9 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
 
 
     private fun endIntro() {
-        val sharedPref = applicationContext.getSharedPreferences(INTRO_PREFERENCES, Context.MODE_PRIVATE)
-        with (sharedPref.edit()) {
+        val sharedPref = applicationContext.getSharedPreferences(INTRO_PREFERENCES, MODE_PRIVATE)
+        sharedPref.edit {
             putBoolean(intro_v1_0_0_completed, true)
-            apply()
         }
         startActivity(Intent(this, MainActivity::class.java))
         finish()

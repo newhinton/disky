@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import de.felixnuesse.disky.databinding.ActivityAboutBinding
 import java.util.Calendar
+import androidx.core.net.toUri
 
 class AboutActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAboutBinding
@@ -66,6 +67,6 @@ class AboutActivity : AppCompatActivity() {
     }
 
     fun openURL(url: String) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
     }
 }

@@ -16,6 +16,7 @@ import de.felixnuesse.disky.model.StoragePrototype
 import de.felixnuesse.disky.model.StorageType
 import de.felixnuesse.disky.model.StorageLeaf
 import de.felixnuesse.disky.utils.PermissionManager
+import timber.log.Timber
 import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.CopyOnWriteArrayList
@@ -47,7 +48,7 @@ class AppScanner(var mContext: Context, var callback: ScannerCallback?) {
         val packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
         val uuid = getStorageUUID(selectedStorageVolume)
         if (uuid == null) {
-            Log.e(tag(), "The provided storage volume was invalid!")
+            Timber.tag(tag()).e("The provided storage volume was invalid!")
             return
         }
 

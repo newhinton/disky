@@ -1,13 +1,17 @@
 [versions]
 agp = "8.11.0"
+glide = "5.0.5"
 kotlin = "2.2.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
+timber = "5.0.1"
+treessence = "1.1.2"
 workRuntimeKtx = "2.10.2"
 appIntro = "6.3.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.16.0" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version = "3.6.1" }
@@ -19,6 +23,8 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 appintro = { group = "com.github.AppIntro", name = "AppIntro", version.ref = "appIntro" }
 lottie = { group = "com.airbnb.android", name = "lottie", version = "6.6.7" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+treessence = { module = "com.github.bastienpaulfr:Treessence", version.ref = "treessence" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
