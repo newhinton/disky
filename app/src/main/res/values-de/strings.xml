@@ -37,7 +37,7 @@
     <string name="used">Benutzt:</string>
     <string name="calculating">Berechne…</string>
     <string name="free">Frei:</string>
-    <string name="warning_removable_storage">Warnung! Entfernbarer Speicher ist unzuverlässig!</string>
+    <string name="warning_removable_storage">Warnung! Entfernbarer Speicher ist unzuverlässig! App-Daten können fehlen.</string>
     <string name="contextmenu_delete">Lösche</string>
     <string name="yes_delete">Ja, permanent löschen!</string>
     <string name="no_keep">Nein, behalten.</string>

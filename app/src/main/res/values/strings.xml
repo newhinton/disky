@@ -58,7 +58,7 @@
     <string name="used">Used:</string>
     <string name="calculating">Calculating…</string>
     <string name="free">Free:</string>
-    <string name="warning_removable_storage">Warning! Removable Storage will be unreliable!</string>
+    <string name="warning_removable_storage">Warning! Removable Storage will be unreliable! Appdata might not be included.</string>
     <string name="contextmenu_delete">Delete</string>
     <string name="yes_delete">Yes, delete permanently!</string>
     <string name="no_keep">No, keep it.</string>

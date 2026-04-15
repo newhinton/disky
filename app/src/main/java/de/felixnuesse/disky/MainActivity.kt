@@ -34,6 +34,7 @@ import de.felixnuesse.disky.background.ScanService.Companion.SCAN_PROGRESSED
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_STORAGE
 import de.felixnuesse.disky.background.ScanService.Companion.SCAN_SUBDIR
 import de.felixnuesse.disky.databinding.ActivityMainBinding
+import de.felixnuesse.disky.extensions.divOrMin
 import de.felixnuesse.disky.extensions.getAppname
 import de.felixnuesse.disky.extensions.readableFileSize
 import de.felixnuesse.disky.extensions.tag
@@ -125,6 +126,9 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         dropdown.setText(selectedStorage, false)
         binding.dropdown.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             selectedStorage = storageList[position]
+            // when changing the storage, we also need to reset the current folder.
+            // otherwise calculating will fail for non internal storage.
+            currentElement = null
             binding.removableStorageWarning.visibility = View.GONE
             refreshData()
         }
@@ -215,10 +219,10 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         val s = android.text.format.Formatter.formatShortFileSize(this,
             result.asJsonString().toByteArray().size.toLong()
         )
-        Timber.tag("POST_SCAN").e("Result RN: ${s}")
+        Timber.tag("POST_SCAN").e("Result RN: $s")
 
         Timber.tag("POST_SCAN").e(
-            "${result.scannedVolume} ${result.free.div(result.total)} ${result.used}"
+            "${result.scannedVolume} ${divOrMin(result.free, result.total)} ${result.used}"
         )
 
         runOnUiThread {
@@ -336,6 +340,11 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
         lastScanStarted = System.currentTimeMillis()
         val service = Intent(this, ScanService::class.java)
+
+
+        Timber.tag("Scanner_").e("Storage $selectedStorage")
+        Timber.tag("Scanner_").e("Storage ${currentElement?.getParentPath()}")
+
         service.putExtra(SCAN_STORAGE, selectedStorage)
         service.putExtra(SCAN_SUBDIR, currentElement?.getParentPath())
 

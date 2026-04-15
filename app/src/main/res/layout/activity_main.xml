@@ -81,6 +81,7 @@
                     app:srcCompat="@drawable/icon_error"
                     app:tint="?attr/colorError" />
 
+                <!--When calculating data, appdata might be ommited.-->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"

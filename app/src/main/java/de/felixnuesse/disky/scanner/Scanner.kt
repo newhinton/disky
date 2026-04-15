@@ -103,7 +103,7 @@ class Scanner(private var mContext: Context, private var callback: ScannerCallba
                 return it
             }
         }
-        // todo: throw new exception
+
         val msg = "We could not determine the used storage with name: $name. This is a fatal error!"
         Timber.tag(tag()).e(msg)
         throw RuntimeException(msg)
