@@ -20,8 +20,7 @@
     <style name="BaseCircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
         <item name="trackThickness">4dp</item>
         <item name="trackCornerRadius">4dp</item>
-        <item name="indicatorColor">?attr/colorLinearIndicator</item>
-        <item name="trackColor">?attr/colorPrimaryContainer</item>
+        <item name="indicatorColor">?attr/colorOnSecondaryContainer</item>
         <item name="trackStopIndicatorSize">0dp</item>
     </style>
 
@@ -30,7 +29,7 @@
     </style>
 
     <!-- Card Styles need to be applied to the card directly.-->
-    <style name="PrimaryCardView" parent="Widget.Material3.CardView.Outlined">
+    <style name="PrimaryCardView" parent="Widget.Material3.CardView.Filled">
         <item name="cardBackgroundColor">?attr/colorSecondaryContainer</item>
         <item name="cardCornerRadius">@dimen/cardCornerRadius</item>
         <item name="contentPadding">@dimen/cardPadding</item>
