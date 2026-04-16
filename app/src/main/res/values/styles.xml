@@ -14,12 +14,15 @@
         <item name="trackThickness">6dp</item>
         <item name="trackCornerRadius">4dp</item>
         <item name="indicatorColor">?attr/colorLinearIndicator</item>
+        <item name="trackStopIndicatorSize">0dp</item>
     </style>
 
     <style name="BaseCircularProgressIndicator" parent="Widget.Material3.CircularProgressIndicator">
         <item name="trackThickness">4dp</item>
         <item name="trackCornerRadius">4dp</item>
-        <item name="indicatorColor">?attr/colorCircularIndicator</item>
+        <item name="indicatorColor">?attr/colorLinearIndicator</item>
+        <item name="trackColor">?attr/colorPrimaryContainer</item>
+        <item name="trackStopIndicatorSize">0dp</item>
     </style>
 
     <style name="CircularProgressBackground" parent="BaseCircularProgressIndicator">

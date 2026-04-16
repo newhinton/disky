@@ -92,15 +92,6 @@
             </LinearLayout>
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/dataUsageBackground"
-                style="@style/CircularProgressBackground"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:progress="100"
-                app:layout_constraintStart_toStartOf="@+id/dataUsage"
-                app:layout_constraintTop_toTopOf="@+id/dataUsage" />
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/dataUsage"
                 style="@style/BaseCircularProgressIndicator"
                 android:layout_width="wrap_content"
@@ -138,8 +129,8 @@
                 android:text="@string/free"
                 android:textAlignment="textEnd"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/dataUsageBackground"
-                app:layout_constraintTop_toTopOf="@+id/dataUsageBackground" />
+                app:layout_constraintEnd_toStartOf="@+id/dataUsage"
+                app:layout_constraintTop_toTopOf="@+id/dataUsage" />
 
             <TextView
                 android:id="@+id/freeText"
@@ -161,7 +152,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dataUsageBackground" />
+                app:layout_constraintTop_toBottomOf="@+id/dataUsage" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
