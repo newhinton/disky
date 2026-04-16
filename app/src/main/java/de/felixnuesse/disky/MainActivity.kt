@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         }
 
 
-        storageManager = getSystemService(Context.STORAGE_SERVICE) as StorageManager
+        storageManager = getSystemService(STORAGE_SERVICE) as StorageManager
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -211,9 +211,9 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
         Timber.tag("POST_SCAN").e("scanComplete")
         Timber.tag("POST_SCAN").e("Result SV: ${result.scannedVolume}")
-        Timber.tag("POST_SCAN").e("Result FR: ${result.free}")
-        Timber.tag("POST_SCAN").e("Result TO: ${result.total}")
-        Timber.tag("POST_SCAN").e("Result US: ${result.used}")
+        Timber.tag("POST_SCAN").e("Result FR: ${result.free} ${readableFileSize(result.free)}")
+        Timber.tag("POST_SCAN").e("Result TO: ${result.total} ${readableFileSize(result.total)}")
+        Timber.tag("POST_SCAN").e("Result US: ${result.used} ${readableFileSize(result.used)}")
         Timber.tag("POST_SCAN").e("Result PS: ${result.isPartialScan}")
         Timber.tag("POST_SCAN").e("Result RN: ${result.rootElement?.name}")
         val s = android.text.format.Formatter.formatShortFileSize(this,
@@ -376,7 +376,11 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
     fun updateStaticElements(currentRoot: StoragePrototype?, rootTotal: Long, rootUnused: Long) {
         Timber.e("updateStaticElements")
         if (currentRoot != null) {
-            val currentlyUsed = currentRoot.getCalculatedSize().div(rootTotal.toDouble())
+            var base = rootTotal
+            if(base == 0L) {
+                base = 1L
+            }
+            val currentlyUsed = currentRoot.getCalculatedSize().div(base.toDouble())
             fadeTextview(
                 readableFileSize(currentRoot.getCalculatedSize()),
                 binding.usedText
