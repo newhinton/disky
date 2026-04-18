@@ -8,9 +8,7 @@ import android.os.Build
 import android.os.Process
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
-import android.util.Log
 import de.felixnuesse.disky.R
-import de.felixnuesse.disky.extensions.getStorageUUID
 import de.felixnuesse.disky.extensions.tag
 import de.felixnuesse.disky.model.StorageBranch
 import de.felixnuesse.disky.model.StoragePrototype
