@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Process
+import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import android.util.Log
 import de.felixnuesse.disky.R
@@ -36,20 +37,17 @@ class AppScanner(var mContext: Context, var callback: ScannerCallback?) {
 
 
     fun scanApps(root: StoragePrototype, selectedStorageVolume: StorageVolume) {
-
         val appfolder = StorageBranch(mContext.getString(R.string.apps), StorageType.APP_COLLECTION)
 
         if (!PermissionManager(mContext).grantedUsageStats()) {
             return
         }
 
-
         val packageManager = mContext.packageManager
         val packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-        val uuid = getStorageUUID(selectedStorageVolume)
-        if (uuid == null) {
-            Timber.tag(tag()).e("The provided storage volume was invalid!")
-            return
+
+        if(!selectedStorageVolume.isPrimary) {
+            Timber.tag(tag()).e("The provided storage volume is not a valid scan target for apps!")
         }
 
         stack.addAll(packages)
@@ -58,7 +56,7 @@ class AppScanner(var mContext: Context, var callback: ScannerCallback?) {
             executor.submit {
                 while (true) {
                     val app = stack.pollFirst()?: break
-                    process(app, uuid)
+                    process(app, StorageManager.UUID_DEFAULT)
                 }
             }
         }

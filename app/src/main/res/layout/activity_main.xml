@@ -67,7 +67,7 @@
                 android:id="@+id/removableStorageWarning"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="start"
+                android:gravity="start|center_vertical"
                 android:orientation="horizontal"
                 android:padding="8dp"
                 android:visibility="gone"
@@ -84,7 +84,7 @@
                 <!--When calculating data, appdata might be ommited.-->
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/warning_removable_storage"
                     android:textColor="?attr/colorError"
