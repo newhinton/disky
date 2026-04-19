@@ -15,6 +15,7 @@ import de.felixnuesse.disky.ui.appintro.IdentifiableAppIntroFragment
 import de.felixnuesse.disky.ui.appintro.SlideLeaveInterface
 import de.felixnuesse.disky.utils.PermissionManager
 import androidx.core.content.edit
+import timber.log.Timber
 
 class IntroActivity : AppIntro(), SlideLeaveInterface {
 
@@ -31,6 +32,9 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
 
     private var mPermissions = PermissionManager(this)
     private var color = R.color.intro_color1
+    private var mRequestedAppusagePermissions = false
+
+    private var mCurrentSlideId = ""
 
     private var notificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         mPermissions.registerInitialRequestNotificationPermission(this)
@@ -47,6 +51,19 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
         setImmersiveMode()
         window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        Timber.e("WE ARE ON: ${mCurrentSlideId}")
+
+        when(mCurrentSlideId) {
+            SLIDE_ID_STORAGE -> {
+                if(mPermissions.grantedStorage()) {
+                    this.goToNextSlide()
+                }
+            }
+            SLIDE_ID_USAGEACCESS -> {
+                // this is optional, just skip it when resuming.
+                this.goToNextSlide()
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,17 +168,25 @@ class IntroActivity : AppIntro(), SlideLeaveInterface {
     override fun allowSlideLeave(id: String): Boolean {
         return when(id) {
             SLIDE_ID_STORAGE -> mPermissions.grantedStorage()
-            SLIDE_ID_USAGEACCESS -> mPermissions.grantedUsageStats()
+            SLIDE_ID_USAGEACCESS -> mPermissions.grantedUsageStats() || mRequestedAppusagePermissions
             SLIDE_ID_NOTIFICATIONS -> mNotificationsRequested
             else -> true
         }
     }
 
-    @SuppressLint("InlinedApi") // If the permission is not reqired, notificationPermission is null anyway.
+    // If the permission is not required, notificationPermission is null anyway.
+    @SuppressLint("InlinedApi")
     override fun onSlideLeavePrevented(id: String) {
         when(id) {
-            SLIDE_ID_STORAGE -> mPermissions.requestStorage(this)
-            SLIDE_ID_USAGEACCESS -> mPermissions.requestUsageStats(this)
+            SLIDE_ID_STORAGE -> {
+                mCurrentSlideId = SLIDE_ID_STORAGE
+                mPermissions.requestStorage(this)
+            }
+            SLIDE_ID_USAGEACCESS -> {
+                mCurrentSlideId = SLIDE_ID_USAGEACCESS
+                mPermissions.requestUsageStats(this)
+                mRequestedAppusagePermissions = true
+            }
             SLIDE_ID_NOTIFICATIONS -> {
                 notificationPermission?.launch(Manifest.permission.POST_NOTIFICATIONS)
                 mNotificationsRequested = true
