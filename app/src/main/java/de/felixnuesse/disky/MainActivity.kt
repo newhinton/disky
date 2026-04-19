@@ -92,13 +92,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         }
 
         LoggingUtils().configure(applicationContext)
-
-        if (!PermissionManager(this).hasAllRequiredPermissions()) {
-            // todo: implement runtime intro for removed permissions
-            //startActivity(Intent(this, IntroActivity::class.java))
-            //finish()
-        }
-
+        updateWarningElements()
 
         storageManager = getSystemService(STORAGE_SERVICE) as StorageManager
 
@@ -168,6 +162,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
     override fun onResume() {
         super.onResume()
+        updateWarningElements()
         Timber.e("onResume")
     }
 
@@ -260,6 +255,48 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
 
 
     /** UI METHODS **/
+
+    fun updateWarningElements() {
+
+        val didntHaveAppusagePermission = binding.warningAppAccess.visibility != View.GONE
+        val didntHaveStoragePermission = binding.warningStorageAccess.visibility != View.GONE
+        var hasAppUsage = true
+        var hasStorage = true
+
+        binding.warningAppAccess.visibility = View.GONE
+        binding.warningStorageAccess.visibility = View.GONE
+
+        val permissions = PermissionManager(this)
+        if(!permissions.grantedUsageStats()) {
+            binding.warningAppAccess.visibility = View.VISIBLE
+            hasAppUsage = false
+        }
+
+        if(!permissions.grantedStorage()) {
+            binding.warningStorageAccess.visibility = View.VISIBLE
+            hasStorage = false
+        }
+
+        binding.warningbuttonFixAppPermissions.setOnClickListener {
+            // this is broken. It does not properly direct the user to a working
+            // screen. The screen that opens does not do anything
+            // this is why we omit the package-name, and let the user
+            // manually open the correct app. That works.
+            permissions.requestUsageStats(this, true)
+        }
+
+        binding.warningbuttonFixStoragePermissions.setOnClickListener {
+            permissions.requestStorage(this)
+        }
+
+
+        val storageAccessChanged = didntHaveStoragePermission && hasStorage
+        val appusageAccessChanged = didntHaveAppusagePermission && hasAppUsage
+
+        if(storageAccessChanged || appusageAccessChanged) {
+            refreshData(true)
+        }
+    }
 
     fun registerReceiver() {
         Timber.e("registerReciever")

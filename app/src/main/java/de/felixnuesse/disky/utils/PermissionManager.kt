@@ -82,15 +82,18 @@ class PermissionManager(private var mContext: Context) {
         activity.startActivityForResult(intent, REQ_ALL_FILES_ACCESS)
     }
 
-    fun requestUsageStats(activity: Activity) {
+    fun requestUsageStats(activity: Activity, omitPackagename: Boolean = false) {
         val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-        intent.data = Uri.fromParts(
-            "package",
-            activity.packageName,
-            null
-        )
 
-        activity.startActivityForResult(intent, REQ_USAGE_PERMISSION_ACCESS)
+        if(!omitPackagename) {
+            intent.data = Uri.fromParts(
+                "package",
+                activity.packageName,
+                null
+            )
+        }
+
+        activity.startActivity(intent)
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

@@ -101,4 +101,8 @@
     <string name="is_below_the_threshold_of">%1$s is below the threshold of %2$d%%!</string>
     <string name="is_below_the_threshold_of_there_are_only_free">%1$s is below the threshold of %2$d%%!\nThere are only %3$s free!</string>
     <string name="scan_was_aborted">Scan was aborted</string>
+    <string name="missingpermission_button_fix">Fix!</string>
+    <string name="icon_warning_content_description">Warning Icon in red, Circle with an Exclamation Mark</string>
+    <string name="warning_storage_permission_missing">Warning! We do not have access to scan all your files! This will create nonsense-results!</string>
+    <string name="warning_appusage_permission_missing">Warning! We are not allowed to scan your apps. Apps will now be counted as system usage!</string>
 </resources>
