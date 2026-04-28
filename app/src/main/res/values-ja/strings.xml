@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="apppackage_size_data">ユーザーデータ</string>
+    <string name="apppackage_size_externalcache">外部キャッシュ</string>
+    <string name="apppackage_size_cache">キャッシュ</string>
+    <string name="apps">アプリ</string>
+
+    <string name="foreground_service_notification_channel_name">Disky スキャンサービス</string>
+    <string name="foreground_service_notification_title">スキャン中…</string>
+    <string name="foreground_service_notification_description">このチャンネルはスキャンの進捗を表示します。通知を非表示にしても問題ありません。</string>
+    <string name="foreground_service_notification_starting_message">スキャンを準備しています…</string>
+    <string name="foreground_service_notification_short_message">現在の進捗: %1$d%%</string>
+    <string name="foreground_service_notification_long_message">現在の進捗: %1$d%% \n %2$s</string>
+
+    <string name="low_storage_notification_channel_name">Disky ストレージ不足の警告</string>
+    <string name="low_storage_notification_title">ストレージが不足しています！</string>
+
+    <string name="lowStorageCheckType_off">無効</string>
+    <string name="lowStorageCheckType_hourly">毎時</string>
+    <string name="lowStorageCheckType_daily">毎日</string>
+    <string name="lowStorageCheckType_weekly">毎週</string>
+    <string name="lowStorageCheckType_monthly">毎月</string>
+
+    <string name="lowStorageCheckThreshold_5">5%</string>
+    <string name="lowStorageCheckThreshold_10">10%</string>
+    <string name="lowStorageCheckThreshold_15">15%</string>
+    <string name="lowStorageCheckThreshold_20">20%</string>
+    <string name="lowStorageCheckThreshold_25">25%</string>
+    <string name="lowStorageCheckThreshold_30">30%</string>
+
+    <string name="contextmenu_folder_open">フォルダを開く</string>
+
+    <string name="intro_slide_welcome_title">ようこそ！</string>
+    <string name="intro_slide_welcome_description">ストレージを圧迫しているものを見つけるお手伝いをします。まずはアプリの設定をしましょう！</string>
+    <string name="intro_slide_notification_title">通知を受け取りましょう！</string>
+    <string name="intro_slide_notification_description">ファイルのスキャン中に通知をお届けします。大量の通知でご迷惑をおかけしません！</string>
+    <string name="intro_slide_done_title">準備完了！</string>
+    <string name="intro_slide_done_description">さあ、始めましょう！</string>
+    <string name="intro_storage_title">ストレージへのアクセス</string>
+    <string name="intro_storage_description">Disky はすべてのファイルへのアクセス権限が必要です。求められたらストレージへのアクセスを許可してください。 \n\n Disky にはこの権限が必要です！</string>
+    <string name="intro_slide_usage_title">利用統計</string>
+    <string name="intro_slide_usage_description">アプリのディスク使用量を算出するために利用統計を使用します。</string>
+
+    <string name="contextmenu_file_open">開く</string>
+    <string name="contextmenu_file_openfolder">フォルダで開く</string>
+    <string name="mainmenu_reload">再スキャン</string>
+    <string name="mainmenu_settings">設定</string>
+    <string name="reload">ファイルを再スキャン中…</string>
+    <string name="reload_blocked_because_inapps">アプリ内では再スキャンできません！</string>
+    <string name="donate_message">開発者を支援しませんか？ご支援をお待ちしています！</string>
+    <string name="donate_button">寄付する！</string>
+    <string name="uicontext_folder_rootdir">ルートディレクトリにいます。</string>
+    <string name="uicontext_folder_app">現在 %1$s を表示しています。%2$s を使用しています。</string>
+    <string name="uicontext_folder_appcollection">インストール済みの全てのアプリを一覧表示しています。合計 %1$d 個、%2$s を使用しています。</string>
+    <string name="uicontext_folder_folder">%1$s フォルダを選択しています。コンテンツはストレージの %2$s を使用しています。</string>
+    <string name="select_storage">ストレージを選択</string>
+    <string name="used">使用中:</string>
+    <string name="calculating">計算中…</string>
+    <string name="free">空き:</string>
+    <string name="warning_removable_storage">警告！リムーバブルストレージは正確に表示されない場合があります！アプリデータが含まれないことがあります。</string>
+    <string name="contextmenu_delete">削除</string>
+    <string name="yes_delete">はい、完全に削除します！</string>
+    <string name="no_keep">いいえ、残しておきます。</string>
+    <string name="delete_confirmation_text">\"%1$s\" を削除しますか？この操作は取り消せません！</string>
+    <string name="delete_file_title">ファイルを削除</string>
+    <string name="delete_folder_title">フォルダを削除</string>
+    <string name="storagewarning_notification_title">Disky: 警告！ストレージがいっぱいになっています！</string>
+    <string name="storagewarning_notification_channel_name">ストレージ満杯の警告</string>
+
+    <string name="action_cancel">キャンセル</string>
+    <string name="activity_about_madeby">開発者:</string>
+    <string name="help">ヘルプ</string>
+    <string name="faq">FAQ</string>
+    <string name="about">情報</string>
+    <string name="sortorder">並び替え</string>
+    <string name="about_this_app">このアプリについて</string>
+    <string name="faq_description">ご質問があれば、ここで回答が見つかるかもしれません</string>
+    <string name="sortorder_aplhabet">アルファベット順</string>
+    <string name="sortorder_size">サイズ順</string>
+    <string name="ok">OK</string>
+    <string name="help_android_os">Android OS</string>
+    <string name="help_android_os_description">これは、利用可能なディスク容量の合計、ファイルが使用している容量、および既知の空き容量の差を収集します。\n\nこれには Android システム自体だけでなく、他のプロファイルのアプリとファイル、および一時的なシステムファイルも含まれます。そのため、この値は不正確です。</string>
+    <string name="faq_label_accuracy">このアプリは正確ですか？</string>
+    <string name="faq_answer_accuracy">いいえ。ファイルとアプリは正確に計算できますが、Android システム自体は計算できません。スキャンを更新するたびにシステムの値が異なる場合があります。これは Android 自体の制限です。</string>
+    <string name="faq_label_androidos">\"Android OS\" とは何ですか？</string>
+    <string name="faq_answer_androidos">これはアクセスできないすべての使用済み領域です。他のプロファイルとそのアプリ、システム自体が含まれます。そのため、計算値は実際のサイズの推定値にすぎません。</string>
+    <string name="error_notification_channel_name">エラー</string>
+    <string name="error_notification_channel_message">スキャンサービスでエラーが発生しました。</string>
+    <string name="error_notification_title">スキャンに失敗しました</string>
+    <string name="error_notification_action_copy">エラーをコピー</string>
+    <string name="contextmenu_folder_app_open">開く</string>
+    <string name="contextmenu_app_open_settings">設定</string>
+    <string name="contextmenu_folder_app_delete">アンインストール</string>
+    <string name="app_disabled_suffix">（無効）</string>
+    <string name="lowStorageCheckTypeHint">ストレージ不足の警告チェック</string>
+    <string name="lowStorageCheckThresholdHint">ストレージ不足のしきい値</string>
+    <string name="go_up">戻る</string>
+    <string name="no_items">項目なし</string>
+    <string name="is_below_the_threshold_of">%1$s のしきい値が %2$d%% を下回っています！</string>
+    <string name="is_below_the_threshold_of_there_are_only_free">%1$s のしきい値が %2$d%% を下回っています！\n空き容量が %3$s しかありません！</string>
+    <string name="scan_was_aborted">スキャンが中断されました</string>
+    <string name="missingpermission_button_fix">修正する！</string>
+    <string name="icon_warning_content_description">赤い警告アイコン、感嘆符付きの円</string>
+    <string name="warning_storage_permission_missing">警告！すべてのファイルをスキャンする権限がありません！正しい結果が表示されません！</string>
+    <string name="warning_appusage_permission_missing">警告！アプリをスキャンする権限がありません。アプリはシステム使用量としてカウントされます！</string>
+</resources>
