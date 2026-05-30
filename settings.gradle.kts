@@ -17,6 +17,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // used for: ??
+        // also used for: FreeDroidWarn
         maven("https://jitpack.io")
     }
 }

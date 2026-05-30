@@ -53,6 +53,7 @@ import de.felixnuesse.disky.worker.BackgroundWorker
 import de.felixnuesse.disky.ui.utils.LottieColorizer.Companion.colorizeLottie
 import de.felixnuesse.disky.ui.utils.SortingUtils
 import de.felixnuesse.disky.ui.utils.TextFading.Companion.fadeTextview
+import org.woheller69.freeDroidWarn.FreeDroidWarn
 import timber.log.Timber
 
 
@@ -82,6 +83,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE);
 
         val sharedPref =
             applicationContext.getSharedPreferences(INTRO_PREFERENCES, MODE_PRIVATE)
