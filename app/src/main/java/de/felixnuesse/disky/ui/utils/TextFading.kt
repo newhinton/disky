@@ -1,34 +1,18 @@
 package de.felixnuesse.disky.ui.utils
 
 import android.view.View
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import android.widget.TextView
 
 class TextFading {
 
     companion object {
         fun fadeTextview(text: String, view: TextView) {
-            if(view.text == text) {
-                return
-            }
+
             view.visibility = View.VISIBLE
+            view.text = text
 
-            val fadeIn = AlphaAnimation(0.0f, 1.0f)
-            val fadeOut = AlphaAnimation(1.0f, 0.0f)
-            fadeIn.duration = 300
-            fadeOut.duration = 300
-
-            fadeOut.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {}
-                override fun onAnimationRepeat(animation: Animation?) {}
-                override fun onAnimationEnd(animation: Animation) {
-                    view.text = text
-                    view.startAnimation(fadeIn)
-                }
-
-            })
-            view.startAnimation(fadeOut)
+            // it is likely, that the animators are broken and interfering with each other.
+         // use singletons to manage them, when readding this function
         }
     }
 }

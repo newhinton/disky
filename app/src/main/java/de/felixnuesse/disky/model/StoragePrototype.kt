@@ -73,7 +73,7 @@ sealed class StoragePrototype(var name: String, var storageType: StorageType = S
 
     /**
      * This merges a partial storage tree into this one.
-     * Its a breath-first approach.
+     * It's a breath-first approach.
      *
      * For generic items, children are replaced for the found root-partial-tree.
      * For other items, special handling is applied. (Apps are replaced in-place)

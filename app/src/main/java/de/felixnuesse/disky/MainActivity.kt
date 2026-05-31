@@ -246,6 +246,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
                     showFolder(rootElement!!)
                 } else {
                     rootElement?.mergePartialTree(internalRootElement)
+                    rootElement?.getCalculatedSize(true)
                     currentElement?.let { changeFolder(it) }
                 }
                 updateStaticElements(rootElement!!, result.total, result.free)
@@ -419,13 +420,15 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
             if(base == 0L) {
                 base = 1L
             }
-            val currentlyUsed = currentRoot.getCalculatedSize().div(base.toDouble())
+            val used = currentRoot.getCalculatedSize(true)
+            val currentlyUsedPerc = used.div(base.toDouble())
+            Timber.tag("updateStaticElements").e("rfs used: ${readableFileSize(used)}")
             fadeTextview(
-                readableFileSize(currentRoot.getCalculatedSize()),
+                readableFileSize(used),
                 binding.usedText
             )
             ObjectAnimator
-                .ofInt(binding.dataUsage, "progress", (currentlyUsed * 100).toInt())
+                .ofInt(binding.dataUsage, "progress", (currentlyUsedPerc * 100).toInt())
                 .setDuration(300)
                 .start()
             Timber.e("updateStaticElements: CurrentRoot not null!")
@@ -435,6 +438,7 @@ class MainActivity : AppCompatActivity(), ChangeFolderCallback, ScanCompleteCall
         }
 
         fadeTextview(readableFileSize(rootUnused), binding.freeText)
+        Timber.tag("updateStaticElements").e("rfs rootUnused: ${readableFileSize(rootUnused)}")
     }
 
     fun showFolder(currentRoot: StoragePrototype) {
